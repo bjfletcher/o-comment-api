@@ -275,22 +275,24 @@ oCommentsData.api.getComments({
 
 ```javascript
 {
-    "collectionId": 12512,
-    "maxEventId": 51612321,
-    "comments": [
-        {
-            id: 125123,
-            author: "author name 1",
-            content: "This is a comment."
-            timestamp: 1405687488230
-        },
-        {
-            id: 6234123,
-            author: "author name 2",
-            content: "This is another comment."
-            timestamp: 1405625288230
-        }
-    ],
+    "collection": {
+        "collectionId": 12512,
+        "maxEventId": 51612321,
+        "comments": [
+            {
+                id: 125123,
+                author: "author name 1",
+                content: "This is a comment."
+                timestamp: 1405687488230
+            },
+            {
+                id: 6234123,
+                author: "author name 2",
+                content: "This is another comment."
+                timestamp: 1405625288230
+            }
+        ]
+    },
     "auth": {
         "token": "eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI",
         "expires": 1401810274263,
