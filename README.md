@@ -279,11 +279,13 @@ oCommentsData.api.getComments({
     "maxEventId": 51612321,
     "comments": [
         {
+            id: 125123,
             author: "author name 1",
             content: "This is a comment."
             timestamp: 1405687488230
         },
         {
+            id: 6234123,
             author: "author name 2",
             content: "This is another comment."
             timestamp: 1405625288230
