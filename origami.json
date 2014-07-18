@@ -1,0 +1,9 @@
+{
+    "description": "JavaScript helper for the communication with the Comments web services. Obtain authentication data, initialize a Livefyre widget, get comments or an article or post a comment.",
+    "origamiType": "module",
+    "origamiVersion": 1,
+    "support": "hyperion@ft.com",
+    "supportStatus": "not implemented",
+    "ci": {},
+    "browserFeatures": {}
+}

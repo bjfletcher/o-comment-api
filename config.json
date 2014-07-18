@@ -1,0 +1,28 @@
+{
+    "livefyre": {
+        "network": "ft.fyre.co"
+    },
+    "suds": {
+        "baseUrl": "http://session-user-data.webservices.ft.com",
+        "endpoints": {
+            "livefyre": {
+                "init": "/v1/livefyre/init",
+            },
+            "user": {
+                "updateUser": "/v1/user/updateuser",
+                "getAuth": "/v1/user/getauth"
+            }
+        }
+    },
+    "ccs": {
+        "baseUrl": "http://comment-creation-service.webservices.ft.com",
+        "endpoints": {
+            "getComments": "/v1/getcomments",
+            "postComment": "/v1/postcomment"
+        }
+    },
+    "cache": {
+        "authName": "comments-prod-auth",
+        "initBaseName": "comments-prod-init-"
+    }
+}
