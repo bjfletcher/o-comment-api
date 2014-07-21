@@ -1,36 +1,35 @@
 # o-comments-data
 
-Front End JavaScript module which helps the data communication with different comments web services.
-The module also embeds a caching layer which can be optionally used and also direct access to the caching layer for fast-retrieving of the data.
+A JavaScript module which provides an API for the various web services that allow commenting for the FT.
 
-Name of the web services with which this module communicates:
-- SUDS: Session user data service
-- CCS: Comment creation service
+Web services with which this module communicates:
+
+- Session User Data Service (SUDS) - A service which provides the authentication and metadata required to create and use Livefyre comment collections.
+- Comment Creation Service (CCS) - A service which allows the creation, and retrieval of comments from the Livefyre APIs
 
 ## How to use it
 There are two ways of using this module:
 
 ### Standalone
-Run 'grunt', then insert the JS found in the dist folder:
+Run `grunt`, then insert the JS found in the dist folder:
 
 ```javascript
 <script src="dist/javascripts/oCommentsData.min.js"></script>
 ```
 
-The module's API can be accessed using the 'oCommentsData' variable.
+The module's API can be accessed using 'oCommentsData' in the global scope.
 
 ### Bower and browserify
-With bower, the module's API can be accessed by 'o-comments-data'.
+With bower, simply require the module's:
 
 ```javascript
 var oCommentsData = require('o-comments-data');
 ```
 
 ## API
-<strong>The main methods which are related to the web services and the caching layer are the following:</strong>
 
-### api.getLivefyreInitConfig
-This method communicates directly with the 'livefyre/init' endpoint of SUDS. It accepts an object, and based on that generates a Livefyre object (both init and auth fields).
+### api.init
+This method communicates directly with the 'livefyre/init' endpoint of SUDS. It accepts a configuration object and a callback as paramaters. A Livefyre object is passed into the callback (both init and auth fields).
 
 ##### Configuration
 ###### Mandatory fields:
