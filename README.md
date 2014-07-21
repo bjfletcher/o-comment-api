@@ -29,8 +29,8 @@ var oCommentsData = require('o-comments-data');
 ## API
 <strong>The main methods which are related to the web services and the caching layer are the following:</strong>
 
-### api.init
-This method communicates directly with the 'init' endpoint of SUDS. It accepts an object, and based on that generates a Livefyre object (both init and auth fields).
+### api.getLivefyreInitConfig
+This method communicates directly with the 'livefyre/init' endpoint of SUDS. It accepts an object, and based on that generates a Livefyre object (both init and auth fields).
 
 ##### Configuration
 ###### Mandatory fields:
@@ -77,7 +77,7 @@ oCommentsData.api.init({
 });
 ```
 
-##### Sample return
+##### Sample response
 
 ```javascript
 {
@@ -168,7 +168,7 @@ function (err, data) {
 ```
 
 
-##### Sample return
+##### Sample response
 
 ```javascript
 {
@@ -271,7 +271,7 @@ oCommentsData.api.getComments({
 });
 ```
 
-##### Sample return
+##### Sample response
 
 ```javascript
 {
@@ -363,7 +363,7 @@ ___
 
 <strong>The methods which are meant to configure the module are the following:</strong>
 
-### changeConfiguration
+### init
 This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified.
 
 ### enableLogging

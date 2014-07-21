@@ -30,7 +30,7 @@ var livefyre = {};
  *            + isLoggedIn: function which returns true or false based on the user's logged in status
  *            + getSession: function which returns the user's session if he's logged in
  */
-livefyre.init = function (conf, callback) {
+livefyre.getInitConfig = function (conf, callback) {
     "use strict";
 
     if (typeof callback !== 'function') {

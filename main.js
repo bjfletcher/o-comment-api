@@ -13,7 +13,7 @@ config.set(defaultConfig);
  * @type {Object}
  */
 exports.api = {
-    init: suds.livefyre.init,
+    getLivefyreInitConfig: suds.livefyre.getInitConfig,
     getAuth: suds.user.getAuth,
     updateUser: suds.user.updateUser,
 

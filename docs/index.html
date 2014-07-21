@@ -104,8 +104,8 @@
 <pre><code class="lang-javascript">var oCommentsData = require(&#39;o-comments-data&#39;);</code></pre>
 <h2 id="api">API</h2>
 <p><strong>The main methods which are related to the web services and the caching layer are the following:</strong></p>
-<h3 id="init">init</h3>
-<p>This method communicates directly with the &#39;init&#39; endpoint of SUDS. It accepts an object, and based on that generates a Livefyre object (both init and auth fields).</p>
+<h3 id="api-getlivefyreinitconfig">api.getLivefyreInitConfig</h3>
+<p>This method communicates directly with the &#39;livefyre/init&#39; endpoint of SUDS. It accepts an object, and based on that generates a Livefyre object (both init and auth fields).</p>
 <h5 id="configuration">Configuration</h5>
 <h6 id="mandatory-fields-">Mandatory fields:</h6>
 <pre><code>   - elId: ID of the HTML element in which the widget should be loaded
@@ -121,7 +121,7 @@
        + isLoggedIn: function which returns true or false based on the user&#39;s logged in status
        + getSession: function which returns the user&#39;s session if he&#39;s logged in</code></pre>
 <h5 id="example">Example</h5>
-<pre><code class="lang-javascript">oCommentsData.init({
+<pre><code class="lang-javascript">oCommentsData.api.init({
     elId: &#39;dom-id&#39;,
     articleId: &#39;art15123&#39;,
     url: &#39;http://example.com/article/art15123&#39;,
@@ -142,7 +142,7 @@
 
     // do something with the data
 });</code></pre>
-<h5 id="sample-return">Sample return</h5>
+<h5 id="sample-response">Sample response</h5>
 <pre><code class="lang-javascript">{
     &quot;init&quot;: {
         &quot;app&quot;: &quot;main&quot;,
@@ -169,7 +169,7 @@
 <p>For more information on the possible init fields of Livefyre, please visit: <a href="http://docs.livefyre.com/developers/reference/livefyre-js/#conv-config-object">http://docs.livefyre.com/developers/reference/livefyre-js/#conv-config-object</a></p>
 <p>For more information on auth tokens, please visit: <a href="http://docs.livefyre.com/developers/user-auth/remote-profiles/">http://docs.livefyre.com/developers/user-auth/remote-profiles/</a> and <a href="http://docs.livefyre.com/developers/getting-started/tokens/auth/">http://docs.livefyre.com/developers/getting-started/tokens/auth/</a></p>
 <p>For more information on user settings, please visit: <a href="http://docs.livefyre.com/product/features/user-options/email-notifications/#UserEmailOptions">http://docs.livefyre.com/product/features/user-options/email-notifications/#UserEmailOptions</a> and <a href="http://docs.livefyre.com/developers/user-auth/remote-profiles/#ping-for-pull">http://docs.livefyre.com/developers/user-auth/remote-profiles/#ping-for-pull</a></p>
-<h3 id="getauth">getAuth</h3>
+<h3 id="api-getauth">api.getAuth</h3>
 <p>This method gets the authentication data and user settings. This data is needed for actions that require the user to be authenticated.</p>
 <h5 id="configuration">Configuration</h5>
 <h6 id="optional-fields-">Optional fields:</h6>
@@ -181,7 +181,7 @@
        + getSession: function which returns the user&#39;s session if he&#39;s logged in</code></pre>
 <h5 id="example">Example</h5>
 <p>Without cache:</p>
-<pre><code class="lang-javascript">oCommentsData.getAuth(function (err, data) {
+<pre><code class="lang-javascript">oCommentsData.api.getAuth(function (err, data) {
     if (err) {
         throw err;
     }
@@ -189,7 +189,7 @@
     // do something with the data
 });</code></pre>
 <p>With cache:</p>
-<pre><code class="lang-javascript">oCommentsData.getAuth({
+<pre><code class="lang-javascript">oCommentsData.api.getAuth({
     cache: true,
     user: {
         isLoggedIn: function () {
@@ -207,7 +207,7 @@ function (err, data) {
 
     // do something with the data
 });</code></pre>
-<h5 id="sample-return">Sample return</h5>
+<h5 id="sample-response">Sample response</h5>
 <pre><code class="lang-javascript">{
     &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI&quot;,
     &quot;expires&quot;: 1401810274263,
@@ -220,7 +220,7 @@ function (err, data) {
         &quot;emailautofollow&quot;: &quot;off&quot;
     }
 }</code></pre>
-<h3 id="updateuser">updateUser</h3>
+<h3 id="api-updateuser">api.updateUser</h3>
 <p>Updates the user&#39;s details in both Livefyre and FT Membership systems (DAM).</p>
 <h5 id="data-needed">Data needed</h5>
 <pre><code>- pseudonym: user&#39;s display name. This name is displayed on each comment the user posts.
@@ -229,7 +229,7 @@ function (err, data) {
 <p>For more details on the email options visit <a href="http://answers.livefyre.com/product/features/user-options/email-notifications/#UserEmailOptions">http://answers.livefyre.com/product/features/user-options/email-notifications/#UserEmailOptions</a></p>
 <p>All fields are optional, but there should be provided at least one.</p>
 <h5 id="example">Example</h5>
-<pre><code class="lang-javascript">oCommentsData.updateUser({
+<pre><code class="lang-javascript">oCommentsData.api.updateUser({
     pseudonym: &#39;my name&#39;,
     emailcomments: &#39;hourly&#39;,
     emailreplies: &#39;immediately&#39;,
@@ -246,7 +246,7 @@ function (err, data) {
 <pre><code class="lang-javascript">{
     status: &quot;ok&quot;
 }</code></pre>
-<h3 id="getcomments">getComments</h3>
+<h3 id="api-getcomments">api.getComments</h3>
 <p>Gets the comments of an article together with collection ID, max event ID (used in Livefyre&#39;s system when streaming new data) and authentication data.</p>
 <h5 id="configuration">Configuration</h5>
 <h6 id="mandatory-fields-">Mandatory fields:</h6>
@@ -262,7 +262,7 @@ function (err, data) {
        + getSession: function which returns the user&#39;s session if he&#39;s logged in</code></pre>
 <p>Please note that only the authentication part is cached.</p>
 <h5 id="example">Example</h5>
-<pre><code class="lang-javascript">oCommentsData.getComments({
+<pre><code class="lang-javascript">oCommentsData.api.getComments({
     articleId: &#39;art15123&#39;,
     url: &#39;http://example.com/article/art15123&#39;,
     title: &#39;Article title&#39;,
@@ -282,22 +282,26 @@ function (err, data) {
 
     // do something with the data
 });</code></pre>
-<h5 id="sample-return">Sample return</h5>
+<h5 id="sample-response">Sample response</h5>
 <pre><code class="lang-javascript">{
-    &quot;collectionId&quot;: 12512,
-    &quot;maxEventId&quot;: 51612321,
-    &quot;comments&quot;: [
-        {
-            author: &quot;author name 1&quot;,
-            content: &quot;This is a comment.&quot;
-            timestamp: 1405687488230
-        },
-        {
-            author: &quot;author name 2&quot;,
-            content: &quot;This is another comment.&quot;
-            timestamp: 1405625288230
-        }
-    ],
+    &quot;collection&quot;: {
+        &quot;collectionId&quot;: 12512,
+        &quot;maxEventId&quot;: 51612321,
+        &quot;comments&quot;: [
+            {
+                id: 125123,
+                author: &quot;author name 1&quot;,
+                content: &quot;This is a comment.&quot;
+                timestamp: 1405687488230
+            },
+            {
+                id: 6234123,
+                author: &quot;author name 2&quot;,
+                content: &quot;This is another comment.&quot;
+                timestamp: 1405625288230
+            }
+        ]
+    },
     &quot;auth&quot;: {
         &quot;token&quot;: &quot;eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI&quot;,
         &quot;expires&quot;: 1401810274263,
@@ -311,14 +315,14 @@ function (err, data) {
         }
     }
 }</code></pre>
-<h3 id="postcomment">postComment</h3>
+<h3 id="api-postcomment">api.postComment</h3>
 <p>This is a method with which a comment can be posted to an article&#39;s collection.</p>
 <h5 id="configuration">Configuration</h5>
 <h6 id="mandatory-fields">Mandatory fields</h6>
 <pre><code>- collectionId: ID of the collection. It can be obtained using the getComments function.
 - token: a valid user token.
 - content: Content of the comment.</code></pre>
-<pre><code class="lang-javascript">oCommentsData.getComments({
+<pre><code class="lang-javascript">oCommentsData.api.getComments({
     collectionId: 1525234,
     token: &quot;eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI&quot;,
     content: &quot;This is a comment&quot;
@@ -346,7 +350,7 @@ function (err, data) {
 - removeInit: function (articleId)</code></pre>
 <hr>
 <p><strong>The methods which are meant to configure the module are the following:</strong></p>
-<h3 id="changeconfiguration">changeConfiguration</h3>
+<h3 id="init">init</h3>
 <p>This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified.</p>
 <h3 id="enablelogging">enableLogging</h3>
 <p>This method enables logging of the module. It logs using the global &#39;console&#39; if available (if not, nothing happens).</p>

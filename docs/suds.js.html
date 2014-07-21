@@ -84,7 +84,7 @@
             <ul class="nav nav-list bs-docs-sidenav affix-top">
               <li><a href="#livefyre"><i class="alert alert-success"></i><span>livefyre</span></a>
               </li>
-              <li><a href="#init"><i class="alert alert-info"></i><span>init</span></a>
+              <li><a href="#getInitConfig"><i class="alert alert-info"></i><span>getInitConfig</span></a>
               </li>
               <li><a href="#user"><i class="alert alert-success"></i><span>user</span></a>
               </li>
@@ -107,11 +107,11 @@
           </section>
           <div class="description"><p>Livefyre related SUDS endpoints.</p> </div>
           <pre><code class="language-javascript">var livefyre = {};</code></pre>
-          <section id="init">
-            <h1>init</h1>
+          <section id="getInitConfig">
+            <h1>getInitConfig</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>livefyre.init()</span>
+              <div class="label label-info radius ctx-type">method</div><span>livefyre.getInitConfig()</span>
             </p>
           </section>
           <div class="description"><p>Uses SUDS.livefyre.init endpoint, but it also embeds an optional caching layer.</p>
@@ -134,7 +134,7 @@
 </code></pre>
 
 <p>If cache is set to true, a new field should be added as well:<br />       - user: User object which has the following utilities:<br />           + isLoggedIn: function which returns true or false based on the user's logged in status<br />           + getSession: function which returns the user's session if he's logged in</p> </div>
-          <pre><code class="language-javascript">livefyre.init = function (conf, callback) {
+          <pre><code class="language-javascript">livefyre.getInitConfig = function (conf, callback) {
     &quot;use strict&quot;;
 
     if (typeof callback !== 'function') {
