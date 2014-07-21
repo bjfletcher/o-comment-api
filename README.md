@@ -28,7 +28,7 @@ var oCommentsData = require('o-comments-data');
 
 ## API
 
-### api.init
+### api.getLivefyreInitConfig
 This method communicates directly with the 'livefyre/init' endpoint of SUDS. It accepts a configuration object and a callback as paramaters. A Livefyre object is passed into the callback (both init and auth fields).
 
 ##### Configuration
