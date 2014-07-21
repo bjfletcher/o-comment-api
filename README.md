@@ -17,7 +17,7 @@ Run `grunt`, then insert the JS found in the dist folder:
 <script src="dist/javascripts/oCommentsData.min.js"></script>
 ```
 
-The module's API can be accessed using 'oCommentsData' in the global scope.
+The module's API can be accessed using `oCommentsData` in the global scope.
 
 ### Bower and browserify
 With bower, simply require the module's:
