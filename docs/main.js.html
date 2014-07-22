@@ -122,7 +122,9 @@
             </p>
           </section>
           <div class="description"><p>Allows access to the cached values.</p> </div>
-          <pre><code class="language-javascript">exports.cache = cache;</code></pre>
+          <pre><code class="language-javascript">exports.cache = {
+    clear: cache.clear
+};</code></pre>
           <section id="enableLogging">
             <h1>enableLogging</h1>
             <h5 class="subheader"></h5>

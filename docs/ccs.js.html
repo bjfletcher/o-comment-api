@@ -105,18 +105,17 @@
 
 <h4>Mandatory fields:</h4>
 
-<pre><code>   - articleId: ID of the article, any string
-   - url: canonical URL of the page
-   - title: Title of the page
-</code></pre>
+<ul>
+<li>articleId: ID of the article, any string</li>
+<li>url: canonical URL of the page</li>
+<li>title: Title of the page</li>
+</ul>
 
 <h4>Optional fields:</h4>
 
-<pre><code>   - cache: if true, cache content is considered and the response is also cached. Default is false.
-   - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
-</code></pre>
-
-<p>If cache is set to true, a new field should be added as well:<br />       - user: User object which has the following utilities:<br />           + isLoggedIn: function which returns true or false based on the user's logged in status<br />           + getSession: function which returns the user's session if he's logged in</p> </div>
+<ul>
+<li>force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.</li>
+</ul> </div>
           <pre><code class="language-javascript">function getComments (conf, callback) {
     &quot;use strict&quot;;
 
@@ -145,7 +144,7 @@
         return;
     }
 
-    var cacheEnabled = utils.validateCacheEnabled(conf);
+    var cacheEnabled = utils.validateCacheEnabled();
 
     var dataToBeSent = {
         title: conf.title,
@@ -170,7 +169,7 @@
             if (data &amp;&amp; data.init) {
                 if (data.init.unclassifiedArticle !== true &amp;&amp; cacheEnabled) {
                     if (data.auth &amp;&amp; data.auth.token) {
-                        cache.cacheAuth(conf.user.getSession(), data.auth);
+                        cache.cacheAuth(envConfig.get('sessionId'), data.auth);
                     }
                 }
 
@@ -215,10 +214,11 @@
 
 <h4>Mandatory fields</h4>
 
-<pre><code>    - collectionId: ID of the collection to post the comment.
-    - content: actual content of the comment.
-    - token: a valid JWT auth token
-</code></pre> </div>
+<ul>
+<li>collectionId: ID of the collection to post the comment.</li>
+<li>content: actual content of the comment.</li>
+<li>token: a valid JWT auth token</li>
+</ul> </div>
           <pre><code class="language-javascript">function postComment (conf, callback) {
     &quot;use strict&quot;;
 

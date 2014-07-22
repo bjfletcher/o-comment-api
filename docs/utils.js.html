@@ -122,18 +122,14 @@
     }
 };
 
-exports.validateCacheEnabled = function (conf) {
+exports.validateCacheEnabled = function () {
     &quot;use strict&quot;;
 
-    if (conf &amp;&amp; typeof conf === 'object' &amp;&amp; conf.cache === true) {
-        if (conf.user &amp;&amp;
-            typeof conf.user === 'object' &amp;&amp;
-            typeof conf.user.getSession === 'function' &amp;&amp;
-            typeof conf.user.isLoggedIn === 'function' &amp;&amp;
-            conf.user.isLoggedIn() === true &amp;&amp;
-            typeof conf.user.getSession() === 'string' &amp;&amp;
-            conf.user.getSession() !== '') {
-                return true;
+    if (envConfig.get('cache') === true) {
+        if (envConfig.get('sessionId')) {
+            return true;
+        } else {
+            throw &quot;Session ID is not provided. When cache is enabled, a user session ID should be provided as well.&quot;;
         }
     }
 

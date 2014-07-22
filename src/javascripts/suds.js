@@ -15,20 +15,14 @@ var livefyre = {};
  * 
  * ### Configuration
  * #### Mandatory fields:
- *        - elId: ID of the HTML element in which the widget should be loaded
- *        - articleId: ID of the article, any string
- *        - url: canonical URL of the page
- *        - title: Title of the page
+ * - elId: ID of the HTML element in which the widget should be loaded
+ * - articleId: ID of the article, any string
+ * - url: canonical URL of the page
+ * - title: Title of the page
  *
  * #### Optional fields:
- *        - stream_type: livecomments, livechat, liveblog
- *        - cache: if true, cache content is considered and the response is also cached. Default is false.
- *        - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
- *
- * If cache is set to true, a new field should be added as well:
- *        - user: User object which has the following utilities:
- *            + isLoggedIn: function which returns true or false based on the user's logged in status
- *            + getSession: function which returns the user's session if he's logged in
+ * - stream_type: livecomments, livechat, liveblog
+ * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
  */
 livefyre.getInitConfig = function (conf, callback) {
     "use strict";
@@ -54,7 +48,10 @@ livefyre.getInitConfig = function (conf, callback) {
     }
 
 
-    var cacheEnabled = utils.validateCacheEnabled(conf);
+    var cacheEnabled = false;
+    if (envConfig.get('cache') === true) {
+        cacheEnabled = true;
+    }
 
 
     // actually make the request to SUDS
@@ -85,7 +82,7 @@ livefyre.getInitConfig = function (conf, callback) {
                         if (data.init.unclassifiedArticle !== true && cacheEnabled) {
                             cache.cacheInit(conf.articleId, data.init);
                             if (data.auth && data.auth.token) {
-                                cache.cacheAuth(conf.user.getSession(), data.auth);
+                                cache.cacheAuth(envConfig.get('sessionId'), data.auth);
                             }
                         }
 
@@ -107,8 +104,8 @@ livefyre.getInitConfig = function (conf, callback) {
         if (conf.force === true || !initCache) {
             makeCall();
         } else {
-            if (conf.user.isLoggedIn()) {
-                authCache = cache.getAuth(conf.user.getSession());
+            if (envConfig.get('sessionId')) {
+                authCache = cache.getAuth(envConfig.get('sessionId'));
 
                 if (authCache && authCache !== "expired") {
                     callback(null, {
@@ -141,13 +138,7 @@ var user = {};
  * 
  * ### Configuration
  * #### Optional fields:
- *        - cache: if true, cache content is considered and the response is also cached. Default is false.
- *        - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
- *
- * If cache is set to true, a new field should be added as well:
- *        - user: User object which has the following utilities:
- *            + isLoggedIn: function which returns true or false based on the user's logged in status
- *            + getSession: function which returns the user's session if he's logged in
+ * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
  *
  * @param  {Object|Function}   confOrCallback Configuration object following the fields from the description, or if it isn't relevant, callback function.
  * @param  {Function}          callback       Callback function if configuration is provided as well.
@@ -164,8 +155,8 @@ user.getAuth = function (confOrCallback, callback) {
     }
 
     var cacheEnabled = false;
-    if (confOrCallback && typeof confOrCallback === 'object') {
-        cacheEnabled = utils.validateCacheEnabled(confOrCallback);
+    if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
+        cacheEnabled = true;
     }
 
     var makeCall = function () {
@@ -181,7 +172,7 @@ user.getAuth = function (confOrCallback, callback) {
                 
                 if (data && data.token) {
                     if (cacheEnabled) {
-                        cache.cacheAuth(confOrCallback.user.getSession(), data);
+                        cache.cacheAuth(envConfig.get('sessionId'), data);
                     }
 
                     callback(null, data);
@@ -196,18 +187,12 @@ user.getAuth = function (confOrCallback, callback) {
     if (!cacheEnabled) {
         makeCall();
     } else {
-        var authCache;
+        var authCache = cache.getAuth(envConfig.get('sessionId'));
 
-        if (confOrCallback.user.isLoggedIn()) {
-            authCache = cache.getAuth(confOrCallback.user.getSession());
-
-            if (!authCache || authCache === "expired" || confOrCallback.force === true) {
-                makeCall();
-            } else {
-                callback(null, authCache);
-            }
+        if (!authCache || confOrCallback.force === true) {
+            makeCall();
         } else {
-            callback(new Error("User is not logged in"), null);
+            callback(null, authCache);
         }
     }
 };

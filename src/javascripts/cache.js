@@ -4,22 +4,21 @@ var storageWrapper = require('js-storage-wrapper'),
 
 /**
  * Verifies if there's a valid auth token (not expired) attached to the session ID provided.
- * @param  {string} sessionId Session ID of the user.
  * @return {string|undefined}
  */
-exports.getAuth = function(sessionId) {
+exports.getAuth = function() {
     "use strict";
 
-    var authCache = storageWrapper.sessionStorage.getItem(envConfig.get().cache.authName);
+    if (!envConfig.get('sessionId')) {
+        throw "Session ID is not set.";
+    }
+
+    var authCache = storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
     if (authCache) {
         if (new Date() < new Date(authCache.expires)) {
-            if (authCache.sessionId === sessionId) {
-                return authCache;
-            }
+            return authCache;
         } else {
-            storageWrapper.sessionStorage.removeItem(envConfig.get().cache.authName);
-
-            return "expired";
+            storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
         }
     }
 
@@ -31,13 +30,17 @@ exports.getAuth = function(sessionId) {
  */
 exports.removeAuth = function () {
     "use strict";
+
+    if (!envConfig.get('sessionId')) {
+        throw "Session ID is not set.";
+    }
     
-    storageWrapper.sessionStorage.removeItem(envConfig.get().cache.authName);
+
+    storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 };
 
 /**
  * Saves the auth token into the local cache.
- * @param  {string} sessionId Session ID of the user.
  * @param  {object} authObject Object which contains the following:
  * - JWT token
  * - displayName
@@ -45,18 +48,20 @@ exports.removeAuth = function () {
  * - expires (timestamp like Date.getTime())
  * @return {boolean} True if successfully saved or false if not.
  */
-exports.cacheAuth = function (sessionId, authObject) {
+exports.cacheAuth = function (authObject) {
     "use strict";
-    
-    if (authObject.token && sessionId) {
-        try {
-            authObject.sessionId = sessionId;
 
-            storageWrapper.sessionStorage.setItem(envConfig.get().cache.authName, authObject);
+    if (!envConfig.get('sessionId')) {
+        throw "Session ID is not set.";
+    }
+    
+    if (authObject.token) {
+        try {
+            storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
 
             return true;
         } catch (e) {
-            logger.debug("Failed to save to the storage.", "authObject:", authObject, "sessionId:", sessionId, "Error:", e);
+            logger.debug("Failed to save to the storage.", "authObject:", authObject, "sessionId:", envConfig.get('sessionId'), "Error:", e);
         }
     }
 
@@ -71,7 +76,7 @@ exports.cacheAuth = function (sessionId, authObject) {
 exports.getInit = function (articleId) {
     "use strict";
     
-    return storageWrapper.sessionStorage.getItem(envConfig.get().cache.initBaseName + articleId);
+    return storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
 /**
@@ -83,7 +88,7 @@ exports.cacheInit = function (articleId, initObj) {
     "use strict";
     
     try {
-        storageWrapper.sessionStorage.setItem(envConfig.get().cache.initBaseName + articleId, initObj);
+        storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
 
         return true;
     } catch (e) {
@@ -100,5 +105,28 @@ exports.cacheInit = function (articleId, initObj) {
 exports.removeInit = function (articleId) {
     "use strict";
     
-    storageWrapper.sessionStorage.removeItem(envConfig.get().cache.initBaseName + articleId);
+    storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
+};
+
+/**
+ * Clears all entries created by the cache.
+ */
+exports.clear = function () {
+    "use strict";
+    
+    if (storageWrapper.sessionStorage.native) {
+        for (var key in storageWrapper.sessionStorage.native) {
+            if (storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+                var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
+                if (matchInit && matchInit.length) {
+                    storageWrapper.sessionStorage.removeItem(key);
+                }
+
+                var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
+                if (matchAuth && matchAuth.length) {
+                    storageWrapper.sessionStorage.removeItem(key);
+                }
+            }
+        }
+    }
 };

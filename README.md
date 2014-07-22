@@ -7,6 +7,8 @@ Web services with which this module communicates:
 - Session User Data Service (SUDS) - A service which provides the authentication and metadata required to create and use Livefyre comment collections.
 - Comment Creation Service (CCS) - A service which allows the creation, and retrieval of comments from the Livefyre APIs
 
+---
+
 ## How to use it
 There are two ways of using this module:
 
@@ -26,6 +28,116 @@ With bower, simply require the module:
 var oCommentsData = require('o-comments-data');
 ```
 
+The module should be built using `browserify` (with `debowerify` transform).
+
+---
+
+## Configuration
+<strong>The methods which are meant to configure the module are the following:</strong>
+
+### init
+This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified (deep merge, primitive type values of the same key will be overwritten).
+
+##### Default configuration
+
+```javascript
+{
+    "livefyre": {
+        "network": "ft.fyre.co"
+    },
+    "suds": {
+        "baseUrl": "http://session-user-data.webservices.ft.com",
+        "endpoints": {
+            "livefyre": {
+                "init": "/v1/livefyre/init",
+            },
+            "user": {
+                "updateUser": "/v1/user/updateuser",
+                "getAuth": "/v1/user/getauth"
+            }
+        }
+    },
+    "ccs": {
+        "baseUrl": "http://comment-creation-service.webservices.ft.com",
+        "endpoints": {
+            "getComments": "/v1/getcomments",
+            "postComment": "/v1/postcomment"
+        }
+    },
+    "cacheConfig": {
+        "authBaseName": "comments-prod-auth-",
+        "initBaseName": "comments-prod-init-"
+    }
+}
+```
+
+
+##### Change the environment
+In order to change to the TEST environment, use the following code:
+
+```javascript
+oCommentsData.init({
+    "livefyre": {
+        "network": "ft-1.fyre.co"
+    },
+    "suds": {
+        "baseUrl": "http://test.session-user-data.webservices.ft.com"
+    },
+    "ccs": {
+        "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
+    },
+    "cacheConfig": {
+        "authBaseName": "comments-test-auth-",
+        "initBaseName": "comments-test-init-"
+    }
+});
+```
+
+---
+
+## Caching
+
+### Enable caching
+In order to enable caching within the module, you should set some module level configuration:
+
+Example:
+
+```javascript
+oCommentsData.init({
+    "cache": true,
+    "sessionId": 15231
+});
+```
+
+Where `sessionId` is a unique identifier of the current user's session (e.g. JSESSIONID for Java systems, PHPSESSID for PHP systems, etc.).
+
+### Clear the cache
+The cache layer uses sessionStorage API to store data. While this is cleared automatically each time the browser is closed, there could be some situations the cache should be cleared explicity.
+
+The cache layer provides a public clear method which will delete all o-comments-data related cache entries from the sessionStorage.
+
+```javascript
+oCommentsData.cache.clear();
+```
+
+---
+
+## Logging
+Logging can be enabled for debugging purposes. It logs using the global 'console' if available (if not, nothing happens and it degrades gracefully).
+By default logging is disabled.
+
+### enableLogging
+This method enables logging of the module.
+
+### disableLogging
+This method disables logging of the module.
+
+### setLoggingLevel
+This method sets the logging level. This could be a number from 0 to 4 (where 0 is debug, 4 is error), or a string from the available methods of 'console' (debug, log, info, warn, error).
+Default is 3 (warn).
+
+---
+
 ## API
 
 ### api.getLivefyreInitConfig
@@ -33,21 +145,16 @@ This method communicates directly with the 'livefyre/init' endpoint of SUDS. It 
 
 ##### Configuration
 ###### Mandatory fields:
-       - elId: ID of the HTML element in which the widget should be loaded
-       - articleId: ID of the article, any string
-       - url: canonical URL of the page
-       - title: Title of the page
+
+- elId: ID of the HTML element in which the widget should be loaded
+- articleId: ID of the article, any string
+- url: canonical URL of the page
+- title: Title of the page
 
 ###### Optional fields:
-       - stream_type: livecomments, livechat, liveblog
-       - cache: if true, cache content is considered and the response is also cached. Default is false.
-       - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
 
-If cache is set to true, a new field should be added as well:
-
-       - user: User object which has the following utilities:
-           + isLoggedIn: function which returns true or false based on the user's logged in status
-           + getSession: function which returns the user's session if he's logged in
+- stream_type: livecomments, livechat, liveblog
+- force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
 
 
 ##### Example
@@ -57,16 +164,7 @@ oCommentsData.api.init({
     elId: 'dom-id',
     articleId: 'art15123',
     url: 'http://example.com/article/art15123',
-    title: 'Article title',
-    cache: true,
-    user: {
-        isLoggedIn: function () {
-            return cookieExists('loggedIn');
-        },
-        getSession: function () {
-            return getCookie('SESSID')
-        }
-    }
+    title: 'Article title'
 }, function (err, data) {
     if (err) {
         throw err;
@@ -77,6 +175,8 @@ oCommentsData.api.init({
 ```
 
 ##### Sample response
+
+Successful request:
 
 ```javascript
 {
@@ -94,7 +194,6 @@ oCommentsData.api.init({
         "expires": 1401810274263,
         "displayName": "pseudonym",
         "settings": {
-            "pseudonym": "Dave",
             "emailcomments": "hourly"
             "emailreplies": "immediately"
             "emaillikes": "never"
@@ -105,6 +204,21 @@ oCommentsData.api.init({
 ```
 
 
+The article based on the articleId and the article's metadata cannot be classified into an internal site (section) of Livefyre:
+
+```javascript
+{
+    "init": {
+        "unclassifiedArticle": true
+    }
+}
+```
+
+
+
+<strong>For examples of the auth object please see the `getUserData` method.</strong>
+
+
 For more information on the possible init fields of Livefyre, please visit: http://docs.livefyre.com/developers/reference/livefyre-js/#conv-config-object
 
 For more information on auth tokens, please visit: http://docs.livefyre.com/developers/user-auth/remote-profiles/ and http://docs.livefyre.com/developers/getting-started/tokens/auth/
@@ -113,24 +227,18 @@ For more information on user settings, please visit: http://docs.livefyre.com/pr
 
 
 
-### api.getAuth
+### api.getUserData
 This method gets the authentication data and user settings. This data is needed for actions that require the user to be authenticated.
 
 ##### Configuration
 ###### Optional fields:
-       - cache: if true, cache content is considered and the response is also cached. Default is false.
-       - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
 
-If cache is set to true, a new field should be added as well:
-
-       - user: User object which has the following utilities:
-           + isLoggedIn: function which returns true or false based on the user's logged in status
-           + getSession: function which returns the user's session if he's logged in
+- force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
 
 
 ##### Example
 
-Without cache:
+Normal access, without forcing:
 
 ```javascript
 oCommentsData.api.getAuth(function (err, data) {
@@ -143,19 +251,11 @@ oCommentsData.api.getAuth(function (err, data) {
 ```
 
 
-With cache:
+With force set to true:
 
 ```javascript
 oCommentsData.api.getAuth({
-    cache: true,
-    user: {
-        isLoggedIn: function () {
-            return cookieExists('loggedIn');
-        },
-        getSession: function () {
-            return getCookie('SESSID')
-        }
-    }
+    force: true
 },
 function (err, data) {
     if (err) {
@@ -169,13 +269,14 @@ function (err, data) {
 
 ##### Sample response
 
+User is logged in, successful request:
+
 ```javascript
 {
     "token": "eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI",
     "expires": 1401810274263,
     "displayName": "pseudonym",
     "settings": {
-        "pseudonym": "Dave",
         "emailcomments": "hourly"
         "emailreplies": "immediately"
         "emaillikes": "never"
@@ -184,14 +285,39 @@ function (err, data) {
 }
 ```
 
+
+User is not logged in or the user's session is expired:
+
+```javascript
+null
+```
+
+
+User is logged in, but doesn't have a pseudonym set:
+
+```javascript
+{
+    pseudonym: false
+}
+```
+
+
+The authentication service that SUDS is using is down:
+
+```javascript
+{
+    serviceUp: false
+}
+```
+
 ### api.updateUser
 Updates the user's details in both Livefyre and FT Membership systems (DAM).
 
 ##### Data needed
 
-    - pseudonym: user's display name. This name is displayed on each comment the user posts.
-    - emailcomments, emailreplies, emaillikes: available values that this service uses: 'never', 'immediately', 'hourly'.
-    - emailautofollow: available values: 'on' and 'off'.
+- pseudonym: user's display name. This name is displayed on each comment the user posts.
+- emailcomments, emailreplies, emaillikes: available values that this service uses: 'never', 'immediately', 'hourly'.
+- emailautofollow: available values: 'on' and 'off'.
 
 For more details on the email options visit http://answers.livefyre.com/product/features/user-options/email-notifications/#UserEmailOptions
 
@@ -218,9 +344,21 @@ function (err, data) {
 
 ##### Sample response
 
+Successful response:
+
 ```javascript
 {
     status: "ok"
+}
+```
+
+
+Response with an error:
+
+```javascript
+{
+    status: "error",
+    error: "Error message."
 }
 ```
 
@@ -229,21 +367,10 @@ Gets the comments of an article together with collection ID, max event ID (used 
 
 ##### Configuration
 ###### Mandatory fields:
-       - articleId: ID of the article, any string
-       - url: canonical URL of the page
-       - title: Title of the page
 
-###### Optional fields:
-       - cache: if true, cache content is considered and the response is also cached. Default is false.
-       - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
-
-If cache is set to true, a new field should be added as well:
-
-       - user: User object which has the following utilities:
-           + isLoggedIn: function which returns true or false based on the user's logged in status
-           + getSession: function which returns the user's session if he's logged in
-
-Please note that only the authentication part is cached.
+- articleId: ID of the article, any string
+- url: canonical URL of the page
+- title: Title of the page
 
 ##### Example
 
@@ -251,16 +378,7 @@ Please note that only the authentication part is cached.
 oCommentsData.api.getComments({
     articleId: 'art15123',
     url: 'http://example.com/article/art15123',
-    title: 'Article title',
-    cache: true,
-    user: {
-        isLoggedIn: function () {
-            return cookieExists('loggedIn');
-        },
-        getSession: function () {
-            return getCookie('SESSID')
-        }
-    }
+    title: 'Article title'
 }, function (err, data) {
     if (err) {
         throw err;
@@ -274,36 +392,22 @@ oCommentsData.api.getComments({
 
 ```javascript
 {
-    "collection": {
-        "collectionId": 12512,
-        "maxEventId": 51612321,
-        "comments": [
-            {
-                id: 125123,
-                author: "author name 1",
-                content: "This is a comment."
-                timestamp: 1405687488230
-            },
-            {
-                id: 6234123,
-                author: "author name 2",
-                content: "This is another comment."
-                timestamp: 1405625288230
-            }
-        ]
-    },
-    "auth": {
-        "token": "eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI",
-        "expires": 1401810274263,
-        "displayName": "pseudonym",
-        "settings": {
-            "pseudonym": "Dave",
-            "emailcomments": "hourly"
-            "emailreplies": "immediately"
-            "emaillikes": "never"
-            "emailautofollow": "off"
+    "collectionId": 12512,
+    "maxEventId": 51612321,
+    "comments": [
+        {
+            id: 125123,
+            author: "author name 1",
+            content: "This is a comment."
+            timestamp: 1405687488230
+        },
+        {
+            id: 6234123,
+            author: "author name 2",
+            content: "This is another comment."
+            timestamp: 1405625288230
         }
-    }
+    ]
 }
 ```
 
@@ -314,13 +418,14 @@ This is a method with which a comment can be posted to an article's collection.
 
 ##### Configuration
 ###### Mandatory fields
-    - collectionId: ID of the collection. It can be obtained using the getComments function.
-    - token: a valid user token.
-    - content: Content of the comment.
+
+- collectionId: ID of the collection. It can be obtained using the getComments function.
+- token: a valid user token.
+- content: Content of the comment.
 
 
 ```javascript
-oCommentsData.api.getComments({
+oCommentsData.api.postComment({
     collectionId: 1525234,
     token: "eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI",
     content: "This is a comment"
@@ -335,6 +440,8 @@ oCommentsData.api.getComments({
 
 ##### Sample response
 
+Successful response:
+
 ```javascript
 {
     status: "ok",
@@ -342,89 +449,11 @@ oCommentsData.api.getComments({
 }
 ```
 
-### cache
-This is a direct entry point to access the caching layer. Using this layer you can obtain auth and init objects if they have a valid entry in the cache and attached to the provided identifier (articleId in case of init, sessionId in case of auth).
-
-The caching layer has several methods:
-    
-    - cacheAuth: function (sessionId, authObject)
-    - getAuth: function(sessionId)
-    - removeAuth
-
-    - cacheInit: function (articleId, initObj)
-    - getInit: function (articleId)
-    - removeInit: function (articleId)
-
-
-
-___
-
-
-<strong>The methods which are meant to configure the module are the following:</strong>
-
-### init
-This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified.
-
-### enableLogging
-This method enables logging of the module. It logs using the global 'console' if available (if not, nothing happens).
-
-### disableLogging
-This method disables logging of the module.
-
-### setLoggingLevel
-This method sets the logging level. This could be a number from 0 to 4 (where 0 is debug, 4 is error), or a string from the available methods of 'console' (debug, log, info, warn, error).
-Default is 3 (warn).
-
-## Default configuration
+Response with an error:
 
 ```javascript
 {
-    "livefyre": {
-        "network": "ft.fyre.co"
-    },
-    "suds": {
-        "baseUrl": "http://session-user-data.webservices.ft.com",
-        "endpoints": {
-            "livefyre": {
-                "init": "/v1/livefyre/init",
-            },
-            "user": {
-                "updateUser": "/v1/user/updateuser",
-                "getAuth": "/v1/user/getauth"
-            }
-        }
-    },
-    "ccs": {
-        "baseUrl": "http://comment-creation-service.webservices.ft.com",
-        "endpoints": {
-            "getComments": "/v1/getcomments",
-            "postComment": "/v1/postcomment"
-        }
-    },
-    "cache": {
-        "authName": "comments-prod-auth",
-        "initBaseName": "comments-prod-init-"
-    }
+    status: "error",
+    error: "Error message."
 }
-```
-
-## Change the environment
-In order to change to the TEST environment, use the following code:
-
-```javascript
-oCommentsData.changeConfiguration({
-    "livefyre": {
-        "network": "ft-1.fyre.co"
-    },
-    "suds": {
-        "baseUrl": "http://test.session-user-data.webservices.ft.com"
-    },
-    "ccs": {
-        "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
-    },
-    "cache": {
-        "authName": "comments-test-auth",
-        "initBaseName": "comments-test-init-"
-    }
-);
 ```

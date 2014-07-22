@@ -120,20 +120,19 @@
 
 <h4>Mandatory fields:</h4>
 
-<pre><code>   - elId: ID of the HTML element in which the widget should be loaded
-   - articleId: ID of the article, any string
-   - url: canonical URL of the page
-   - title: Title of the page
-</code></pre>
+<ul>
+<li>elId: ID of the HTML element in which the widget should be loaded</li>
+<li>articleId: ID of the article, any string</li>
+<li>url: canonical URL of the page</li>
+<li>title: Title of the page</li>
+</ul>
 
 <h4>Optional fields:</h4>
 
-<pre><code>   - stream_type: livecomments, livechat, liveblog
-   - cache: if true, cache content is considered and the response is also cached. Default is false.
-   - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
-</code></pre>
-
-<p>If cache is set to true, a new field should be added as well:<br />       - user: User object which has the following utilities:<br />           + isLoggedIn: function which returns true or false based on the user's logged in status<br />           + getSession: function which returns the user's session if he's logged in</p> </div>
+<ul>
+<li>stream_type: livecomments, livechat, liveblog</li>
+<li>force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.</li>
+</ul> </div>
           <pre><code class="language-javascript">livefyre.getInitConfig = function (conf, callback) {
     &quot;use strict&quot;;
 
@@ -158,7 +157,7 @@
     }
 
 
-    var cacheEnabled = utils.validateCacheEnabled(conf);
+    var cacheEnabled = utils.validateCacheEnabled();
 
 
     // actually make the request to SUDS
@@ -189,7 +188,7 @@
                         if (data.init.unclassifiedArticle !== true &amp;&amp; cacheEnabled) {
                             cache.cacheInit(conf.articleId, data.init);
                             if (data.auth &amp;&amp; data.auth.token) {
-                                cache.cacheAuth(conf.user.getSession(), data.auth);
+                                cache.cacheAuth(envConfig.get('sessionId'), data.auth);
                             }
                         }
 
@@ -212,7 +211,7 @@
             makeCall();
         } else {
             if (conf.user.isLoggedIn()) {
-                authCache = cache.getAuth(conf.user.getSession());
+                authCache = cache.getAuth(envConfig.get('sessionId'));
 
                 if (authCache &amp;&amp; authCache !== &quot;expired&quot;) {
                     callback(null, {
@@ -274,11 +273,9 @@
 
 <h4>Optional fields:</h4>
 
-<pre><code>   - cache: if true, cache content is considered and the response is also cached. Default is false.
-   - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
-</code></pre>
-
-<p>If cache is set to true, a new field should be added as well:<br />       - user: User object which has the following utilities:<br />           + isLoggedIn: function which returns true or false based on the user's logged in status<br />           + getSession: function which returns the user's session if he's logged in</p> </div>
+<ul>
+<li>force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.</li>
+</ul> </div>
           <pre><code class="language-javascript">user.getAuth = function (confOrCallback, callback) {
     &quot;use strict&quot;;
 
@@ -290,10 +287,7 @@
         throw new Error('Callback not provided.');
     }
 
-    var cacheEnabled = false;
-    if (confOrCallback &amp;&amp; typeof confOrCallback === 'object') {
-        cacheEnabled = utils.validateCacheEnabled(confOrCallback);
-    }
+    var cacheEnabled = utils.validateCacheEnabled();
 
     var makeCall = function () {
         jsonp(
@@ -308,7 +302,7 @@
                 
                 if (data &amp;&amp; data.token) {
                     if (cacheEnabled) {
-                        cache.cacheAuth(confOrCallback.user.getSession(), data);
+                        cache.cacheAuth(envConfig.get('sessionId'), data);
                     }
 
                     callback(null, data);
@@ -326,7 +320,7 @@
         var authCache;
 
         if (confOrCallback.user.isLoggedIn()) {
-            authCache = cache.getAuth(confOrCallback.user.getSession());
+            authCache = cache.getAuth(envConfig.get('sessionId'));
 
             if (!authCache || authCache === &quot;expired&quot; || confOrCallback.force === true) {
                 makeCall();
