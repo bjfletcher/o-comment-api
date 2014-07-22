@@ -20,7 +20,7 @@ Run `grunt`, then insert the JS found in the dist folder:
 The module's API can be accessed using `oCommentsData` in the global scope.
 
 ### Bower and browserify
-With bower, simply require the module's:
+With bower, simply require the module:
 
 ```javascript
 var oCommentsData = require('o-comments-data');
