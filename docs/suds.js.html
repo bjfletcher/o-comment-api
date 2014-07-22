@@ -143,21 +143,28 @@
     if (!conf) {
         throw &quot;No configuration parameters provided&quot;;
     }
+
     if (!conf.hasOwnProperty('articleId')) {
-        throw &quot;Article ID not provided&quot;;
+        callback(new Error(&quot;Article ID not provided&quot;));
     }
+
     if (!conf.hasOwnProperty('url')) {
-        throw &quot;Article URL not provided&quot;;
+        callback(new Error(&quot;Article URL not provided&quot;));
     }
+
     if (!conf.hasOwnProperty('elId')) {
-        throw &quot;Element ID not provided&quot;;
+        callback(new Error(&quot;Element ID not provided&quot;));
     }
+
     if (!conf.hasOwnProperty('title')) {
-        throw &quot;Article title not provided&quot;;
+        callback(new Error(&quot;Article title not provided&quot;));
     }
 
 
-    var cacheEnabled = utils.validateCacheEnabled();
+    var cacheEnabled = false;
+    if (envConfig.get('cache') === true) {
+        cacheEnabled = true;
+    }
 
 
     // actually make the request to SUDS
@@ -188,11 +195,11 @@
                         if (data.init.unclassifiedArticle !== true &amp;&amp; cacheEnabled) {
                             cache.cacheInit(conf.articleId, data.init);
                             if (data.auth &amp;&amp; data.auth.token) {
-                                cache.cacheAuth(envConfig.get('sessionId'), data.auth);
+                                cache.cacheAuth(data.auth);
                             }
                         }
 
-                        callback(null, data);
+                        callback(null, data.init);
                     } else {
                         callback(new Error(&quot;No data received from SUDS.&quot;), null);
                     }
@@ -204,29 +211,12 @@
     if (!cacheEnabled) {
         makeCall();
     } else {
-        var initCache = cache.getInit(conf.articleId),
-            authCache;
+        var initCache = cache.getInit(conf.articleId);
 
         if (conf.force === true || !initCache) {
             makeCall();
         } else {
-            if (conf.user.isLoggedIn()) {
-                authCache = cache.getAuth(envConfig.get('sessionId'));
-
-                if (authCache &amp;&amp; authCache !== &quot;expired&quot;) {
-                    callback(null, {
-                        init: initCache,
-                        auth: authCache
-                    });
-                } else {
-                    makeCall();
-                }
-            } else {
-                callback(null, {
-                    init: initCache,
-                    auth: null
-                });
-            }
+            callback(null, initCache);
         }
     }
 };</code></pre>
@@ -287,7 +277,10 @@
         throw new Error('Callback not provided.');
     }
 
-    var cacheEnabled = utils.validateCacheEnabled();
+    var cacheEnabled = false;
+    if (envConfig.get('cache') === true &amp;&amp; envConfig.get('sessionId')) {
+        cacheEnabled = true;
+    }
 
     var makeCall = function () {
         jsonp(
@@ -302,7 +295,7 @@
                 
                 if (data &amp;&amp; data.token) {
                     if (cacheEnabled) {
-                        cache.cacheAuth(envConfig.get('sessionId'), data);
+                        cache.cacheAuth(data);
                     }
 
                     callback(null, data);
@@ -317,18 +310,12 @@
     if (!cacheEnabled) {
         makeCall();
     } else {
-        var authCache;
+        var authCache = cache.getAuth(envConfig.get('sessionId'));
 
-        if (confOrCallback.user.isLoggedIn()) {
-            authCache = cache.getAuth(envConfig.get('sessionId'));
-
-            if (!authCache || authCache === &quot;expired&quot; || confOrCallback.force === true) {
-                makeCall();
-            } else {
-                callback(null, authCache);
-            }
+        if (!authCache || confOrCallback.force === true) {
+            makeCall();
         } else {
-            callback(new Error(&quot;User is not logged in&quot;), null);
+            callback(null, authCache);
         }
     }
 };</code></pre>
@@ -395,7 +382,10 @@
                         callback(null, data);
                     } else {
                         if (data.error) {
-                            callback(data.error, data);
+                            callback({
+                                sudsError: true,
+                                error: data.error
+                            }, null);
                         } else {
                             callback(new Error(&quot;An error occured.&quot;), null);
                         }
@@ -403,9 +393,10 @@
                 }
             });
     } else {
-        callback(new Error(&quot;Pseudonym is blank.&quot;), {
+        callback({
+            sudsError: true,
             error: &quot;Pseudonym is blank.&quot;
-        });
+        }, null);
     }
 };</code></pre>
           <section id="exports">

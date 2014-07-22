@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>cache</title>
+    <link rel="stylesheet" href="../node_modules/gruntmodule-qunit/lib/qunit/qunit.css"/>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+        <!-- HTML to test goes here -->
+    </div>
+
+    <script src="../node_modules/gruntmodule-qunit/lib/qunit/qunit.js"></script>
+    <script src="../node_modules/gruntmodule-qunit/helpers/browserify.js"></script>
+    <script src="../node_modules/gruntmodule-qunit/helpers/mockupReset.js"></script>
+
+    <script>
+        // mockup of modules goes here
+        var base_config = {
+            "sessionId": 1234,
+            "cacheConfig": {
+                "authBaseName": "livefyre-ft-auth-",
+                "initBaseName": "livefyre-ft-init-"
+            }
+        };
+    </script>
+
+    <script src="./mockups/js-storageWrapper.js"></script>
+    
+    <script>
+        // define the require function and register the mockups by path
+        var require = defineRequire({
+            './config.js': {
+                get: function (field) {
+                    if (field) {
+                        return base_config[field];
+                    }
+
+                    return base_config;
+                }
+            },
+            'js-storage-wrapper': storageWrapperMockup.mockup,
+            'js-logger': {
+                debug: function () {
+                    
+                },
+                log: function () {
+
+                }
+            }
+        });
+
+        // define export variables
+        defineExports();
+    </script>
+
+    <!-- Import the script to be tested -->
+    <script src="../src/javascripts/cache.js"></script>
+
+    <script>
+        // restore the browserify variables' original value
+        restoreExports();
+    </script>
+
+    <script>
+        // define modules and tests
+        module("auth", {
+            setup: function () {
+                mockupReset.reset();
+            },
+            teardown: function () {
+                
+            }
+        });
+
+        test("cacheAuth", function () {
+            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
+
+            var authObj = {
+                token: 'tokentest',
+                expires: expires,
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            };
+            nodeExports.cacheAuth(authObj);
+
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.method, "set", "Set operation executed.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
+            deepEqual(storageWrapperMockup.log.sessionStorage.lastOperation.value, {
+                token: 'tokentest',
+                expires: expires,
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            }, "Auth object set correctly, correct session ID is used.");
+        });
+
+        test("cacheAuth - no sessionId", function () {
+            var sessionIdBackup = base_config.sessionId;
+            delete base_config.sessionId;
+
+
+            var errorThrown = false;
+
+            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
+
+            var authObj = {
+                token: 'tokentest',
+                expires: expires,
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            };
+
+            try {
+                nodeExports.cacheAuth(authObj);
+            } catch (e) {
+                errorThrown = true;
+            }
+
+            ok(errorThrown, "Error is thrown because no sessionId is provided.");
+
+            base_config.sessionId = sessionIdBackup;
+        });
+
+        test("getAuth - not exists", function () {
+            storageWrapperMockup.log.sessionStorage.returnValue = undefined;
+
+            var authObj = nodeExports.getAuth(12345);
+            equal(authObj, undefined, "Auth object does not exist");
+        });
+
+        test("getAuth - token expired", function () {
+            storageWrapperMockup.log.sessionStorage.returnValue = {
+                token: "authToken",
+                expires: Math.round(new Date(+new Date() - 10 * 1000).getTime()),
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            };
+
+            var authObj = nodeExports.getAuth();
+            equal(authObj, undefined, "Auth object expired.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.method, "remove", "Existing auth object removed.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
+        });
+
+        test("getAuth - token still valid", function () {
+            storageWrapperMockup.log.sessionStorage.returnValue = {
+                token: "authToken",
+                expires: Math.round(new Date(+new Date() + 10 * 1000).getTime()),
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            };
+
+            var authObject = nodeExports.getAuth();
+            equal(authObject, storageWrapperMockup.log.sessionStorage.returnValue, "Auth object returned correctly.");
+        });
+
+        test("getAuth - no sessionId", function () {
+            var sessionIdBackup = base_config.sessionId;
+            delete base_config.sessionId;
+
+
+            var errorThrown = false;
+
+            storageWrapperMockup.log.sessionStorage.returnValue = {
+                token: "authToken",
+                expires: Math.round(new Date(+new Date() + 10 * 1000).getTime()),
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            };
+
+            try {
+                nodeExports.getAuth();
+            } catch (e) {
+                errorThrown = true;
+            }
+
+            ok(errorThrown, "Error is thrown because no sessionId is provided.");
+
+            base_config.sessionId = sessionIdBackup;
+        });
+
+        test("removeAuth", function () {
+            nodeExports.removeAuth();
+
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.method, "remove", "Existing auth object removed.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
+        });
+
+        test("removeAuth - no sessionId", function () {
+            var sessionIdBackup = base_config.sessionId;
+            delete base_config.sessionId;
+
+
+            var errorThrown = false;
+
+            try {
+                nodeExports.removeAuth();
+            } catch (e) {
+                errorThrown = true;
+            }
+
+            ok(errorThrown, "Error is thrown because no sessionId is provided.");
+
+            base_config.sessionId = sessionIdBackup;
+        });
+
+
+
+
+
+        module("init", {
+            setup: function () {
+
+            },
+            teardown: function () {
+                storageWrapperMockup.log.sessionStorage.returnValue = undefined;
+            }
+        });
+
+        test("cacheInit", function () {
+            var initValue = {
+                key1: "value1",
+                key2: "value2"
+            };
+            nodeExports.cacheInit("123", initValue);
+
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.method, "set", "Set operation executed.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.key, base_config.cacheConfig.initBaseName + "123", "Key to save is correct.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.value, initValue, "Value saved correct.");
+        });
+
+        test("getInit", function () {
+            storageWrapperMockup.log.sessionStorage.returnValue = {
+                key1: "value1",
+                key2: "value2"
+            }
+            var initReturned = nodeExports.getInit("123");
+
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.method, "get", "Storage is read.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.key, base_config.cacheConfig.initBaseName + "123", "Correct key is read.");
+            equal(initReturned, storageWrapperMockup.log.sessionStorage.returnValue, "Correct value is returned.");
+        });
+
+        test("removeInit", function () {
+            nodeExports.removeInit("123");
+
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.method, "remove", "Storage remove executed.");
+            equal(storageWrapperMockup.log.sessionStorage.lastOperation.key, base_config.cacheConfig.initBaseName + "123", "Correct key is used to remove.");
+        });
+    </script>
+</body>
+</html>

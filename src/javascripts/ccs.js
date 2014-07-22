@@ -1,6 +1,5 @@
 var jsonp = require('js-jsonp'),
     envConfig = require('./config.js'),
-    utils = require('./utils.js'),
     cache = require('./cache.js');
 
 /**
@@ -11,9 +10,6 @@ var jsonp = require('js-jsonp'),
  * - articleId: ID of the article, any string
  * - url: canonical URL of the page
  * - title: Title of the page
- *
- * #### Optional fields:
- * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
  */
 function getComments (conf, callback) {
     "use strict";
@@ -67,7 +63,7 @@ function getComments (conf, callback) {
             if (data && data.collection) {
                 if (data.collection.unclassifiedArticle !== true && cacheEnabled) {
                     if (data.auth && data.auth.token) {
-                        cache.cacheAuth(envConfig.get('sessionId'), data.auth);
+                        cache.cacheAuth(data.auth);
                     }
                 }
 
@@ -120,7 +116,6 @@ function postComment (conf, callback) {
 
 
     var dataToBeSent = {
-        network: envConfig.get().livefyre.network,
         collectionId: conf.collectionId,
         lftoken: conf.token,
         body: conf.content
@@ -128,7 +123,7 @@ function postComment (conf, callback) {
 
 
     jsonp({
-        url: envConfig.get().baseUrl + envConfig.get().ccs.endpoints.postComment,
+        url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.postComment,
         data: dataToBeSent
     }, function (err, data) {
         if (err) {

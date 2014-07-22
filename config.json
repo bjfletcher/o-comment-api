@@ -1,7 +1,4 @@
 {
-    "livefyre": {
-        "network": "ft.fyre.co"
-    },
     "suds": {
         "baseUrl": "http://session-user-data.webservices.ft.com",
         "endpoints": {

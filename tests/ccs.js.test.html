@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ccs</title>
+    <link rel="stylesheet" href="../node_modules/gruntmodule-qunit/lib/qunit/qunit.css"/>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+        <!-- HTML to test goes here -->
+    </div>
+
+    <script src="../node_modules/gruntmodule-qunit/lib/qunit/qunit.js"></script>
+    <script src="../node_modules/gruntmodule-qunit/helpers/browserify.js"></script>
+    <script src="../node_modules/gruntmodule-qunit/helpers/mockupReset.js"></script>
+
+    <script>
+        var base_config = {
+            ccs: {
+                "baseUrl": "ccsBaseUrl",
+                "endpoints": {
+                    "getComments": "/v1/getcomments",
+                    "postComment": "/v1/postcomment"
+                }
+            }
+        };
+    </script>
+
+    <script src="./mockups/js-jsonp.js"></script>
+    <script src="./mockups/cache.js"></script>
+
+    <script>
+        // define the require function and register the mockups by path
+        var require = defineRequire({
+            'js-jsonp': jsonpMockup.mockup,
+            './cache.js': cacheMockup.mockup,
+            './config.js': {
+                get: function (field) {
+                    if (field) {
+                        return base_config[field];
+                    }
+
+                    return base_config;
+                }
+            }
+        });
+
+        // define export variables
+        defineExports();
+    </script>
+
+    <!-- Import the script to be tested -->
+    <script src="../src/javascripts/ccs.js"></script>
+
+    <script>
+        // restore the browserify variables' original value
+        restoreExports();
+    </script>
+
+    <script>
+        // define modules and tests
+        module("getComments", {
+            setup: function () {
+                mockupReset.reset();
+            },
+            teardown: function () {
+                
+            }
+        });
+
+        test("without parameters", function () {
+            base_config.cache = false;
+
+            var errorThrown = false;
+
+            try {
+                nodeExports.getComments();
+            } catch (e) {
+                errorThrown = true;
+            }
+
+            equal(errorThrown, true, "Failed as expected.");
+        });
+
+        test("incomplete data", function () {
+            var errorThrown;
+            var testDataMissing = function (missingData) {
+                errorThrown = false;
+                
+                var conf = {
+                    articleId: 'articleId',
+                    url: 'url',
+                    elId: 'elId',
+                    title: 'title'
+                };
+
+                var callbackMiss = function (err) {
+                    if (err) {
+                        errorThrown = true;
+                    }
+                };
+
+                if (missingData === 'callback') {
+                    callbackMiss = undefined;
+
+                    try {
+                        nodeModule.exports.getComments(conf, callbackMiss);
+                    } catch (e) {
+                        errorThrown = true;
+                    }
+                } else {
+                    if (conf.hasOwnProperty(missingData)) {
+                        delete conf[missingData];
+                    }
+
+                    nodeModule.exports.getComments(conf, callbackMiss);
+                }
+                
+            };
+
+            testDataMissing('articleId')
+            ok(errorThrown, "articeId missing - callback called with error.");
+
+            testDataMissing('url')
+            ok(errorThrown, "url missing - callback called with error.");
+
+            testDataMissing('title')
+            ok(errorThrown, "title missing - callback called with error.");
+
+            testDataMissing('callback')
+            ok(errorThrown, "callback missing - exception thrown.");
+        });
+
+        test("with data - error", function () {
+            base_config.cache = false;
+
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                title: "testTitle",
+                url: "testUrl",
+                articleId: "testArticleId"
+            };
+
+            nodeModule.exports.getComments(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.getComments, "Configuration used correctly.");
+            equal(jsonpMockup.log.options.data.title, "testTitle", "Title used correctly.");
+            equal(jsonpMockup.log.options.data.url, "testUrl", "Url used correctly.");
+            equal(jsonpMockup.log.options.data.articleId, "testArticleId", "articleId used correctly.");
+
+            var errorData = new Error("Timeout");
+            jsonpMockup.log.callback(errorData, null);
+            equal(error, true, "Error callback called correctly.");
+            equal(errorValue, errorData, "Data passed correctly to the error callback.");
+        });
+
+        test("with data - success - cache disabled", function () {
+            base_config.cache = false;
+
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                title: "testTitle",
+                url: "testUrl",
+                articleId: "testArticleId"
+            };
+
+            nodeModule.exports.getComments(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.getComments, "Configuration used correctly.");
+            equal(jsonpMockup.log.options.data.title, "testTitle", "Title used correctly.");
+            equal(jsonpMockup.log.options.data.url, "testUrl", "Url used correctly.");
+            equal(jsonpMockup.log.options.data.articleId, "testArticleId", "articleId used correctly.");
+
+            var successData = {
+                collection: {
+                    'collectionKey': 'collectionValue'
+                },
+                auth: {
+                    'authKey': 'authValue',
+                    token: "41asr2"
+                }
+            };
+
+            jsonpMockup.log.callback(null, successData);
+            equal(success, true, "Success callback called correctly.");
+            equal(successValue, successData.collection, "Data passed correctly to the success callback.");
+        });
+
+        test("with data - success - cache enabled: without sessionId", function () {
+            base_config.cache = true;
+            base_config.sessionId = undefined;
+
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                title: "testTitle",
+                url: "testUrl",
+                articleId: "testArticleId"
+            };
+
+            nodeModule.exports.getComments(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            ok(jsonpMockup.log.options, "API called.");
+
+            var successData = {
+                collection: {
+                    'collectionKey': 'collectionValue'
+                },
+                auth: {
+                    'authKey': 'authValue',
+                    token: "41asr2"
+                }
+            };
+
+            jsonpMockup.log.callback(null, successData);
+            equal(success, true, "Success callback called correctly.");
+            equal(successValue, successData.collection, "Data passed correctly to the success callback.");
+
+            ok(!cacheMockup.log.auth.called, "Auth not cached because of the lack of session ID.");
+        });
+
+        test("with data - success - cache enabled: with sessionId", function () {
+            base_config.cache = true;
+            base_config.sessionId = 1234;
+
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                title: "testTitle",
+                url: "testUrl",
+                articleId: "testArticleId"
+            };
+
+            nodeModule.exports.getComments(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            ok(jsonpMockup.log.options, "API called.");
+
+            var successData = {
+                collection: {
+                    'collectionKey': 'collectionValue'
+                },
+                auth: {
+                    'authKey': 'authValue',
+                    token: "41asr2"
+                }
+            };
+
+            jsonpMockup.log.callback(null, successData);
+            equal(success, true, "Success callback called correctly.");
+            equal(successValue, successData.collection, "Data passed correctly to the success callback.");
+
+            ok(cacheMockup.log.auth.called, "Auth cached.");
+            equal(cacheMockup.log.auth.data[0], successData.auth, "Correct auth data is cached.");
+        });
+
+
+
+        module("postComment", {
+            setup: function () {
+                mockupReset.reset();
+            },
+            teardown: function () {
+
+            }
+        });
+
+        test("without parameters", function () {
+            var errorThrown = false;
+
+            try {
+                nodeModule.exports.postComment();
+            } catch (e) {
+                errorThrown = true;
+            }
+
+            equal(errorThrown, true, "Failed as expected.");
+        });
+
+        test("incomplete data", function () {
+            var errorThrown;
+            var testDataMissing = function (missingData) {
+                errorThrown = false;
+                
+                var conf = {
+                    content: 'content',
+                    token: 'token',
+                    collectionId: 'collectionId'
+                };
+
+                var callbackMiss = function (err) {
+                    if (err) {
+                        errorThrown = true;
+                    }
+                };
+
+                if (missingData === 'callback') {
+                    callbackMiss = undefined;
+
+                    try {
+                        nodeModule.exports.postComment(conf, callbackMiss);
+                    } catch (e) {
+                        errorThrown = true;
+                    }
+                } else {
+                    if (conf.hasOwnProperty(missingData)) {
+                        delete conf[missingData];
+                    }
+
+                    nodeModule.exports.postComment(conf, callbackMiss);
+                }
+                
+            };
+
+            testDataMissing('content')
+            ok(errorThrown, "content missing - callback called with error.");
+
+            testDataMissing('collectionId')
+            ok(errorThrown, "collectionId missing - callback called with error.");
+
+            testDataMissing('token')
+            ok(errorThrown, "token missing - callback called with error.");
+
+            testDataMissing('callback')
+            ok(errorThrown, "callback missing - exception thrown.");
+        });
+
+        test("with data - error", function () {
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                collectionId: "testCollectionId",
+                token: "testToken",
+                content: "testContent"
+            };
+
+            nodeModule.exports.postComment(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
+            equal(jsonpMockup.log.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
+            equal(jsonpMockup.log.options.data.lftoken, "testToken", "Token used correctly.");
+            equal(jsonpMockup.log.options.data.body, "testContent", "Content used correctly.");
+
+            var errorData = new Error("Timeout");
+            jsonpMockup.log.callback(errorData, null);
+            equal(error, true, "Error callback called correctly.");
+            equal(errorValue, errorData, "Data passed correctly to the error callback.");
+        });
+
+        test("with data - success", function () {
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                collectionId: "testCollectionId",
+                token: "testToken",
+                content: "testContent"
+            };
+
+            nodeModule.exports.postComment(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
+            equal(jsonpMockup.log.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
+            equal(jsonpMockup.log.options.data.lftoken, "testToken", "Token used correctly.");
+            equal(jsonpMockup.log.options.data.body, "testContent", "Content used correctly.");
+
+            var successData = {
+                commentId: 124123
+            };
+            jsonpMockup.log.callback(null, successData);
+            equal(success, true, "Success callback called correctly.");
+            equal(successValue, successData, "Data passed correctly to the success callback.");
+        });
+    </script>
+</body>
+</html>
