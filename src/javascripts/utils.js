@@ -1,3 +1,5 @@
+var envConfig = require('./config.js');
+
 /**
  * Wrapper and polyfill for String.prototype.trim
  * @param  {string} string The string to be trimmed.
@@ -11,22 +13,4 @@ exports.trim = function (string) {
     } else {
         return string.trim();
     }
-};
-
-exports.validateCacheEnabled = function (conf) {
-    "use strict";
-
-    if (conf && typeof conf === 'object' && conf.cache === true) {
-        if (conf.user &&
-            typeof conf.user === 'object' &&
-            typeof conf.user.getSession === 'function' &&
-            typeof conf.user.isLoggedIn === 'function' &&
-            conf.user.isLoggedIn() === true &&
-            typeof conf.user.getSession() === 'string' &&
-            conf.user.getSession() !== '') {
-                return true;
-        }
-    }
-
-    return false;
 };

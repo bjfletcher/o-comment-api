@@ -21,8 +21,8 @@
             "postComment": "/v1/postcomment"
         }
     },
-    "cache": {
-        "authName": "comments-prod-auth",
+    "cacheConfig": {
+        "authBaseName": "comments-prod-auth-",
         "initBaseName": "comments-prod-init-"
     }
 }

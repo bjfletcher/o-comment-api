@@ -25,7 +25,9 @@ exports.api = {
  * Allows access to the cached values.
  * @type {Object}
  */
-exports.cache = cache;
+exports.cache = {
+    clear: cache.clear
+};
 
 /**
  * Enables logging.

@@ -8,18 +8,12 @@ var jsonp = require('js-jsonp'),
  * 
  * ### Configuration
  * #### Mandatory fields:
- *        - articleId: ID of the article, any string
- *        - url: canonical URL of the page
- *        - title: Title of the page
+ * - articleId: ID of the article, any string
+ * - url: canonical URL of the page
+ * - title: Title of the page
  *
  * #### Optional fields:
- *        - cache: if true, cache content is considered and the response is also cached. Default is false.
- *        - force: has effect in combination with cache set to true. If force set to true, it doesn't read the data from cache (call is forced), but it overwrites the cache that already exists.
- *
- * If cache is set to true, a new field should be added as well:
- *        - user: User object which has the following utilities:
- *            + isLoggedIn: function which returns true or false based on the user's logged in status
- *            + getSession: function which returns the user's session if he's logged in
+ * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
  */
 function getComments (conf, callback) {
     "use strict";
@@ -27,7 +21,6 @@ function getComments (conf, callback) {
     if (typeof callback !== 'function') {
         throw new Error("Callback not provided");
     }
-
 
     if (!conf || typeof conf !== 'object') {
         callback(new Error("Configuration is not provided."));
@@ -49,16 +42,16 @@ function getComments (conf, callback) {
         return;
     }
 
-    var cacheEnabled = utils.validateCacheEnabled(conf);
+    var cacheEnabled = false;
+    if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
+        cacheEnabled = true;
+    }
 
     var dataToBeSent = {
         title: conf.title,
         url: conf.url,
         articleId: conf.articleId
     };
-    if (conf.limit) {
-        dataToBeSent.limit = conf.limit;
-    }
 
     jsonp(
         {
@@ -71,14 +64,14 @@ function getComments (conf, callback) {
                 return;
             }
             
-            if (data && data.init) {
-                if (data.init.unclassifiedArticle !== true && cacheEnabled) {
+            if (data && data.collection) {
+                if (data.collection.unclassifiedArticle !== true && cacheEnabled) {
                     if (data.auth && data.auth.token) {
-                        cache.cacheAuth(conf.user.getSession(), data.auth);
+                        cache.cacheAuth(envConfig.get('sessionId'), data.auth);
                     }
                 }
 
-                callback(null, data);
+                callback(null, data.collection);
             } else {
                 callback(new Error("No data received from CCS."), null);
             }
@@ -91,9 +84,9 @@ function getComments (conf, callback) {
  *
  * ### Configuration
  * #### Mandatory fields
- *         - collectionId: ID of the collection to post the comment.
- *         - content: actual content of the comment.
- *         - token: a valid JWT auth token
+ * - collectionId: ID of the collection to post the comment.
+ * - content: actual content of the comment.
+ * - token: a valid JWT auth token
  * 
  * @param  {Object}   conf     Configuration object
  * @param  {Function} callback function (err, data)
