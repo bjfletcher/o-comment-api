@@ -57,8 +57,8 @@ This method is responsible for changing the default configuration used by this m
     "ccs": {
         "baseUrl": "http://comment-creation-service.webservices.ft.com",
         "endpoints": {
-            "getComments": "/v1/getcomments",
-            "postComment": "/v1/postcomment"
+            "getComments": "/v1/getComments",
+            "postComment": "/v1/postComment"
         }
     },
     "cacheConfig": {

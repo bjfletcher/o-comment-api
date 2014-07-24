@@ -57,9 +57,9 @@ exports.setLoggingLevel = function () {
 };
 
 /**
- * Change configuration method sets additional or overrides current configuration options.
+ * Init method sets additional or overrides current configuration options.
  */
-exports.changeConfiguration = function () {
+exports.init = function () {
     "use strict";
     config.set.apply(this, arguments);
 };
