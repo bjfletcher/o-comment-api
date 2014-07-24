@@ -111,9 +111,6 @@
 <p>This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified (deep merge, primitive type values of the same key will be overwritten).</p>
 <h5 id="default-configuration">Default configuration</h5>
 <pre><code class="lang-javascript">{
-    &quot;livefyre&quot;: {
-        &quot;network&quot;: &quot;ft.fyre.co&quot;
-    },
     &quot;suds&quot;: {
         &quot;baseUrl&quot;: &quot;http://session-user-data.webservices.ft.com&quot;,
         &quot;endpoints&quot;: {
@@ -129,8 +126,8 @@
     &quot;ccs&quot;: {
         &quot;baseUrl&quot;: &quot;http://comment-creation-service.webservices.ft.com&quot;,
         &quot;endpoints&quot;: {
-            &quot;getComments&quot;: &quot;/v1/getcomments&quot;,
-            &quot;postComment&quot;: &quot;/v1/postcomment&quot;
+            &quot;getComments&quot;: &quot;/v1/getComments&quot;,
+            &quot;postComment&quot;: &quot;/v1/postComment&quot;
         }
     },
     &quot;cacheConfig&quot;: {
@@ -141,9 +138,6 @@
 <h5 id="change-the-environment">Change the environment</h5>
 <p>In order to change to the TEST environment, use the following code:</p>
 <pre><code class="lang-javascript">oCommentsData.init({
-    &quot;livefyre&quot;: {
-        &quot;network&quot;: &quot;ft-1.fyre.co&quot;
-    },
     &quot;suds&quot;: {
         &quot;baseUrl&quot;: &quot;http://test.session-user-data.webservices.ft.com&quot;
     },

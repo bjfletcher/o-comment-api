@@ -120,20 +120,6 @@
     } else {
         return string.trim();
     }
-};
-
-exports.validateCacheEnabled = function () {
-    &quot;use strict&quot;;
-
-    if (envConfig.get('cache') === true) {
-        if (envConfig.get('sessionId')) {
-            return true;
-        } else {
-            throw &quot;Session ID is not provided. When cache is enabled, a user session ID should be provided as well.&quot;;
-        }
-    }
-
-    return false;
 };</code></pre>
         </div>
       </div>

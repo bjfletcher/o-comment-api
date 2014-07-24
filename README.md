@@ -42,9 +42,6 @@ This method is responsible for changing the default configuration used by this m
 
 ```javascript
 {
-    "livefyre": {
-        "network": "ft.fyre.co"
-    },
     "suds": {
         "baseUrl": "http://session-user-data.webservices.ft.com",
         "endpoints": {
@@ -60,8 +57,8 @@ This method is responsible for changing the default configuration used by this m
     "ccs": {
         "baseUrl": "http://comment-creation-service.webservices.ft.com",
         "endpoints": {
-            "getComments": "/v1/getcomments",
-            "postComment": "/v1/postcomment"
+            "getComments": "/v1/getComments",
+            "postComment": "/v1/postComment"
         }
     },
     "cacheConfig": {
@@ -77,9 +74,6 @@ In order to change to the TEST environment, use the following code:
 
 ```javascript
 oCommentsData.init({
-    "livefyre": {
-        "network": "ft-1.fyre.co"
-    },
     "suds": {
         "baseUrl": "http://test.session-user-data.webservices.ft.com"
     },

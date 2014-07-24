@@ -1,5 +1,3 @@
-var envConfig = require('./config.js');
-
 /**
  * Wrapper and polyfill for String.prototype.trim
  * @param  {string} string The string to be trimmed.

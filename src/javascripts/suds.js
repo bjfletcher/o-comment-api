@@ -34,17 +34,21 @@ livefyre.getInitConfig = function (conf, callback) {
     if (!conf) {
         throw "No configuration parameters provided";
     }
+
     if (!conf.hasOwnProperty('articleId')) {
-        throw "Article ID not provided";
+        callback(new Error("Article ID not provided"));
     }
+
     if (!conf.hasOwnProperty('url')) {
-        throw "Article URL not provided";
+        callback(new Error("Article URL not provided"));
     }
+
     if (!conf.hasOwnProperty('elId')) {
-        throw "Element ID not provided";
+        callback(new Error("Element ID not provided"));
     }
+
     if (!conf.hasOwnProperty('title')) {
-        throw "Article title not provided";
+        callback(new Error("Article title not provided"));
     }
 
 
@@ -82,11 +86,11 @@ livefyre.getInitConfig = function (conf, callback) {
                         if (data.init.unclassifiedArticle !== true && cacheEnabled) {
                             cache.cacheInit(conf.articleId, data.init);
                             if (data.auth && data.auth.token) {
-                                cache.cacheAuth(envConfig.get('sessionId'), data.auth);
+                                cache.cacheAuth(data.auth);
                             }
                         }
 
-                        callback(null, data);
+                        callback(null, data.init);
                     } else {
                         callback(new Error("No data received from SUDS."), null);
                     }
@@ -98,29 +102,12 @@ livefyre.getInitConfig = function (conf, callback) {
     if (!cacheEnabled) {
         makeCall();
     } else {
-        var initCache = cache.getInit(conf.articleId),
-            authCache;
+        var initCache = cache.getInit(conf.articleId);
 
         if (conf.force === true || !initCache) {
             makeCall();
         } else {
-            if (envConfig.get('sessionId')) {
-                authCache = cache.getAuth(envConfig.get('sessionId'));
-
-                if (authCache && authCache !== "expired") {
-                    callback(null, {
-                        init: initCache,
-                        auth: authCache
-                    });
-                } else {
-                    makeCall();
-                }
-            } else {
-                callback(null, {
-                    init: initCache,
-                    auth: null
-                });
-            }
+            callback(null, initCache);
         }
     }
 };
@@ -172,7 +159,7 @@ user.getAuth = function (confOrCallback, callback) {
                 
                 if (data && data.token) {
                     if (cacheEnabled) {
-                        cache.cacheAuth(envConfig.get('sessionId'), data);
+                        cache.cacheAuth(data);
                     }
 
                     callback(null, data);
@@ -238,7 +225,10 @@ user.updateUser = function (userSettings, callback) {
                         callback(null, data);
                     } else {
                         if (data.error) {
-                            callback(data.error, data);
+                            callback({
+                                sudsError: true,
+                                error: data.error
+                            }, null);
                         } else {
                             callback(new Error("An error occured."), null);
                         }
@@ -246,9 +236,10 @@ user.updateUser = function (userSettings, callback) {
                 }
             });
     } else {
-        callback(new Error("Pseudonym is blank."), {
+        callback({
+            sudsError: true,
             error: "Pseudonym is blank."
-        });
+        }, null);
     }
 };
 

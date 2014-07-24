@@ -92,7 +92,7 @@
               </li>
               <li><a href="#setLoggingLevel"><i class="alert alert-info"></i><span>setLoggingLevel</span></a>
               </li>
-              <li><a href="#changeConfiguration"><i class="alert alert-info"></i><span>changeConfiguration</span></a>
+              <li><a href="#init"><i class="alert alert-info"></i><span>init</span></a>
               </li>
             </ul>
           </div>
@@ -161,15 +161,15 @@
     &quot;use strict&quot;;
     logger.setLevel.apply(this, arguments);
 };</code></pre>
-          <section id="changeConfiguration">
-            <h1>changeConfiguration</h1>
+          <section id="init">
+            <h1>init</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>exports.changeConfiguration()</span>
+              <div class="label label-info radius ctx-type">method</div><span>exports.init()</span>
             </p>
           </section>
-          <div class="description"><p>Change configuration method sets additional or overrides current configuration options.</p> </div>
-          <pre><code class="language-javascript">exports.changeConfiguration = function () {
+          <div class="description"><p>Init method sets additional or overrides current configuration options.</p> </div>
+          <pre><code class="language-javascript">exports.init = function () {
     &quot;use strict&quot;;
     config.set.apply(this, arguments);
 };</code></pre>
