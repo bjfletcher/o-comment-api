@@ -1,11 +1,11 @@
 # o-comments-data
 
-A JavaScript module which provides an API for the various web services that allow commenting for the FT.
+A JavaScript API that provides a simple abstraction of the FT's commenting APIs.
 
-Web services with which this module communicates:
+This modules uses:
 
-- Session User Data Service (SUDS) - A service which provides the authentication and metadata required to create and use Livefyre comment collections.
-- Comment Creation Service (CCS) - A service which allows the creation, and retrieval of comments from the Livefyre APIs
+- Session User Data Service (SUDS) - Provides the authentication and metadata required to create and use Livefyre comment collections. Also allows a user's preferences to be modified
+- Comment Creation Service (CCS) - Allows the creation and retrieval of comments for FT content
 
 ---
 
