@@ -57,6 +57,9 @@ exports.cacheAuth = function (authObject) {
     
     if (authObject.token) {
         try {
+            if (storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
+                storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+            }
             storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
 
             return true;

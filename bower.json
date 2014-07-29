@@ -1,6 +1,6 @@
 {
   "name": "o-comments-data",
-  "version": "0.1.0-pre2",
+  "version": "0.1.0-pre3",
   "main": "main.js",
   "dependencies": {
     "js-jsonp": "git+http://git.svc.ft.com:8080/scm/strat_p/js-jsonp.git#^0.2.0",
