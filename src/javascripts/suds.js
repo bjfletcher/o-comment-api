@@ -157,8 +157,8 @@ user.getAuth = function (confOrCallback, callback) {
                     return;
                 }
                 
-                if (data && data.token) {
-                    if (cacheEnabled) {
+                if (data) {
+                    if (cacheEnabled && data.token) {
                         cache.cacheAuth(data);
                     }
 
