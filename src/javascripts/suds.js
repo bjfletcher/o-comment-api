@@ -157,15 +157,11 @@ user.getAuth = function (confOrCallback, callback) {
                     return;
                 }
                 
-                if (data && data.token) {
-                    if (cacheEnabled) {
-                        cache.cacheAuth(data);
-                    }
-
-                    callback(null, data);
-                } else {
-                    callback(new Error("No data received from SUDS."), null);
+                if (cacheEnabled && data.token) {
+                    cache.cacheAuth(data);
                 }
+
+                callback(null, data);
             }
         );
     };
