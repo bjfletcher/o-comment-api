@@ -4,31 +4,35 @@
 var storageWrapperMockup = {
     reset: function () {
         storageWrapperMockup.log = {
-            sessionStorage: {
-                returnValue: null,
-                lastOperation: null
-            }
+            sessionStorage: {}
+        };
+
+        storageWrapperMockup.returnValue = {
+            sessionStorage: {}
         };
     },
     mockup: {
         sessionStorage: {
+            hasItem: function (key) {
+                return !!storageWrapperMockup.returnValue.sessionStorage[key];
+            },
             getItem: function (key) {
-                storageWrapperMockup.log.sessionStorage.lastOperation = {
-                    method: "get",
+                storageWrapperMockup.log.sessionStorage.getItem = {
+                    called: true,
                     key: key
                 };
-                return storageWrapperMockup.log.sessionStorage.returnValue;
+                return storageWrapperMockup.returnValue.sessionStorage[key];
             },
             setItem: function (key, value) {
-                storageWrapperMockup.log.sessionStorage.lastOperation = {
-                    method: "set",
+                storageWrapperMockup.log.sessionStorage.setItem = {
+                    called: true,
                     key: key,
                     value: value
                 };
             },
             removeItem: function (key) {
-                storageWrapperMockup.log.sessionStorage.lastOperation = {
-                    method: "remove",
+                storageWrapperMockup.log.sessionStorage.removeItem = {
+                    called: true,
                     key: key
                 };
             }
