@@ -1,4 +1,4 @@
-var jsonp = require('js-jsonp'),
+var commentUtilities = require('comment-utilities'),
     envConfig = require('./config.js'),
     cache = require('./cache.js');
 
@@ -49,7 +49,7 @@ function getComments (conf, callback) {
         articleId: conf.articleId
     };
 
-    jsonp(
+    commentUtilities.jsonp(
         {
             url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.getComments,
             data: dataToBeSent
@@ -122,7 +122,7 @@ function postComment (conf, callback) {
     };
 
 
-    jsonp({
+    commentUtilities.jsonp({
         url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.postComment,
         data: dataToBeSent
     }, function (err, data) {

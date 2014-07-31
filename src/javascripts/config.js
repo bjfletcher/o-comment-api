@@ -1,4 +1,4 @@
-var EnvConfig = require('js-env-config');
+var EnvConfig = require('comment-utilities').EnvConfig;
 
 /**
  * Isolated copy of the configuration.

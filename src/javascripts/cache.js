@@ -1,6 +1,5 @@
-var storageWrapper = require('js-storage-wrapper'),
-    envConfig = require('./config.js'),
-    logger = require('js-logger');
+var envConfig = require('./config.js'),
+    commentUtilities = require('comment-utilities');
 
 /**
  * Verifies if there's a valid auth token (not expired) attached to the session ID provided.
@@ -13,12 +12,12 @@ exports.getAuth = function() {
         throw "Session ID is not set.";
     }
 
-    var authCache = storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+    var authCache = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
     if (authCache) {
         if (new Date() < new Date(authCache.expires)) {
             return authCache;
         } else {
-            storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+            commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
         }
     }
 
@@ -36,7 +35,7 @@ exports.removeAuth = function () {
     }
     
 
-    storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+    commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 };
 
 /**
@@ -57,14 +56,14 @@ exports.cacheAuth = function (authObject) {
     
     if (authObject.token) {
         try {
-            if (storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
-                storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+            if (commentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
+                commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
             }
-            storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
+            commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
 
             return true;
         } catch (e) {
-            logger.debug("Failed to save to the storage.", "authObject:", authObject, "sessionId:", envConfig.get('sessionId'), "Error:", e);
+            commentUtilities.logger.debug("Failed to save to the storage.", "authObject:", authObject, "sessionId:", envConfig.get('sessionId'), "Error:", e);
         }
     }
 
@@ -79,7 +78,7 @@ exports.cacheAuth = function (authObject) {
 exports.getInit = function (articleId) {
     "use strict";
     
-    return storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
+    return commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
 /**
@@ -91,11 +90,11 @@ exports.cacheInit = function (articleId, initObj) {
     "use strict";
     
     try {
-        storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
+        commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
 
         return true;
     } catch (e) {
-        logger.debug("Failed to save to the storage.", "articleId:", articleId, "initObj:", initObj, "Error:", e);
+        commentUtilities.logger.debug("Failed to save to the storage.", "articleId:", articleId, "initObj:", initObj, "Error:", e);
     }
 
     return false;
@@ -108,7 +107,7 @@ exports.cacheInit = function (articleId, initObj) {
 exports.removeInit = function (articleId) {
     "use strict";
     
-    storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
+    commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
 /**
@@ -117,17 +116,17 @@ exports.removeInit = function (articleId) {
 exports.clear = function () {
     "use strict";
     
-    if (storageWrapper.sessionStorage.native) {
-        for (var key in storageWrapper.sessionStorage.native) {
-            if (storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+    if (commentUtilities.storageWrapper.sessionStorage.native) {
+        for (var key in commentUtilities.storageWrapper.sessionStorage.native) {
+            if (commentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
                 var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
                 if (matchInit && matchInit.length) {
-                    storageWrapper.sessionStorage.removeItem(key);
+                    commentUtilities.storageWrapper.sessionStorage.removeItem(key);
                 }
 
                 var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
                 if (matchAuth && matchAuth.length) {
-                    storageWrapper.sessionStorage.removeItem(key);
+                    commentUtilities.storageWrapper.sessionStorage.removeItem(key);
                 }
             }
         }

@@ -1,4 +1,4 @@
-# o-comments-data
+# o-comment-data
 
 A JavaScript API that provides a simple abstraction of the FT's commenting APIs.
 

@@ -1,7 +1,7 @@
 var cache = require('./cache.js'),
     utils = require('./utils.js'),
     envConfig = require('./config.js'),
-    jsonp = require('js-jsonp');
+    commentUtilities = require('comment-utilities');
 
 
 /**
@@ -71,7 +71,7 @@ livefyre.getInitConfig = function (conf, callback) {
             }
 
             // makes the actual call to the SUDS service
-            jsonp(
+            commentUtilities.jsonp(
                 {
                     url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.livefyre.init,
                     data: dataToBeSent
@@ -147,7 +147,7 @@ user.getAuth = function (confOrCallback, callback) {
     }
 
     var makeCall = function () {
-        jsonp(
+        commentUtilities.jsonp(
             {
                 url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.getAuth
             },
@@ -204,7 +204,7 @@ user.updateUser = function (userSettings, callback) {
     }
 
     if (!userSettings.hasOwnProperty('pseudonym') || (userSettings.hasOwnProperty('pseudonym') && userSettings.pseudonym)) {
-        jsonp({
+        commentUtilities.jsonp({
                 url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.updateUser,
                 data: userSettings
             },

@@ -26,7 +26,7 @@
         };
     </script>
 
-    <script src="./mockups/js-storageWrapper.js"></script>
+    <script src="./mockups/comment-utilities.js"></script>
     
     <script>
         // define the require function and register the mockups by path
@@ -40,15 +40,7 @@
                     return base_config;
                 }
             },
-            'js-storage-wrapper': storageWrapperMockup.mockup,
-            'js-logger': {
-                debug: function () {
-                    
-                },
-                log: function () {
-
-                }
-            }
+            'comment-utilities': commentUtilitiesMockup.mockup
         });
 
         // define export variables
@@ -76,7 +68,7 @@
 
         test("cacheAuth - empty cache", function () {
             var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
-            storageWrapperMockup.returnValue.sessionStorage[base_config.sessionId] = null;
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.sessionId] = null;
 
             var authObj = {
                 token: 'tokentest',
@@ -88,9 +80,9 @@
             };
             nodeExports.cacheAuth(authObj);
 
-            ok(storageWrapperMockup.log.sessionStorage.setItem.called, "Set operation executed.");
-            equal(storageWrapperMockup.log.sessionStorage.setItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
-            deepEqual(storageWrapperMockup.log.sessionStorage.setItem.value, {
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.called, "Set operation executed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
+            deepEqual(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, {
                 token: 'tokentest',
                 expires: expires,
                 displayName: 'pseudonym',
@@ -102,7 +94,7 @@
 
         test("cacheAuth - an entry already in cache", function () {
             var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
-            storageWrapperMockup.returnValue.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
                 someCache: "value"
             };
 
@@ -116,12 +108,12 @@
             };
             nodeExports.cacheAuth(authObj);
 
-            ok(storageWrapperMockup.log.sessionStorage.removeItem.called, "Remove existing entry called.");
-            equal(storageWrapperMockup.log.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Remove existing entry.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.called, "Remove existing entry called.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Remove existing entry.");
 
-            ok(storageWrapperMockup.log.sessionStorage.setItem.called, "Set operation executed.");
-            equal(storageWrapperMockup.log.sessionStorage.setItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
-            deepEqual(storageWrapperMockup.log.sessionStorage.setItem.value, {
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.called, "Set operation executed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
+            deepEqual(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, {
                 token: 'tokentest',
                 expires: expires,
                 displayName: 'pseudonym',
@@ -161,14 +153,14 @@
         });
 
         test("getAuth - not exists", function () {
-            storageWrapperMockup.returnValue.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = undefined;
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = undefined;
 
             var authObj = nodeExports.getAuth(12345);
             equal(authObj, undefined, "Auth object does not exist");
         });
 
         test("getAuth - token expired", function () {
-            storageWrapperMockup.returnValue.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
                 token: "authToken",
                 expires: Math.round(new Date(+new Date() - 10 * 1000).getTime()),
                 displayName: 'pseudonym',
@@ -179,8 +171,8 @@
 
             var authObj = nodeExports.getAuth();
             equal(authObj, undefined, "Auth object expired.");
-            ok(storageWrapperMockup.log.sessionStorage.removeItem.called, "Existing auth object removed.");
-            equal(storageWrapperMockup.log.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.called, "Existing auth object removed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
         });
 
         test("getAuth - token still valid", function () {
@@ -192,7 +184,7 @@
                     'emailcomments': 'never'
                 }
             };
-            storageWrapperMockup.returnValue.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = cachedValue;
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = cachedValue;
 
             var authObject = nodeExports.getAuth();
             equal(authObject, cachedValue, "Auth object returned correctly.");
@@ -205,7 +197,7 @@
 
             var errorThrown = false;
 
-            storageWrapperMockup.returnValue.sessionStorage[base_config.cacheConfig.authBaseName + sessionIdBackup] = {
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + sessionIdBackup] = {
                 token: "authToken",
                 expires: Math.round(new Date(+new Date() + 10 * 1000).getTime()),
                 displayName: 'pseudonym',
@@ -228,8 +220,8 @@
         test("removeAuth", function () {
             nodeExports.removeAuth();
 
-            ok(storageWrapperMockup.log.sessionStorage.removeItem.called, "Existing auth object removed.");
-            equal(storageWrapperMockup.log.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.called, "Existing auth object removed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
         });
 
         test("removeAuth - no sessionId", function () {
@@ -259,7 +251,7 @@
 
             },
             teardown: function () {
-                storageWrapperMockup.log.sessionStorage.returnValue = undefined;
+                commentUtilitiesMockup.log.storageWrapper.sessionStorage.returnValue = undefined;
             }
         });
 
@@ -270,9 +262,9 @@
             };
             nodeExports.cacheInit("123", initValue);
 
-            ok(storageWrapperMockup.log.sessionStorage.setItem.called, "Set operation executed.");
-            equal(storageWrapperMockup.log.sessionStorage.setItem.key, base_config.cacheConfig.initBaseName + "123", "Key to save is correct.");
-            equal(storageWrapperMockup.log.sessionStorage.setItem.value, initValue, "Value saved correct.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.called, "Set operation executed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.key, base_config.cacheConfig.initBaseName + "123", "Key to save is correct.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, initValue, "Value saved correct.");
         });
 
         test("getInit", function () {
@@ -280,19 +272,19 @@
                 key1: "value1",
                 key2: "value2"
             };
-            storageWrapperMockup.returnValue.sessionStorage[base_config.cacheConfig.initBaseName + "123"] = cachedValue;
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.initBaseName + "123"] = cachedValue;
             var initReturned = nodeExports.getInit("123");
 
-            ok(storageWrapperMockup.log.sessionStorage.getItem.called, "Storage is read.");
-            equal(storageWrapperMockup.log.sessionStorage.getItem.key, base_config.cacheConfig.initBaseName + "123", "Correct key is read.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.getItem.called, "Storage is read.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.getItem.key, base_config.cacheConfig.initBaseName + "123", "Correct key is read.");
             equal(initReturned, cachedValue, "Correct value is returned.");
         });
 
         test("removeInit", function () {
             nodeExports.removeInit("123");
 
-            ok(storageWrapperMockup.log.sessionStorage.removeItem.called, "Storage remove executed.");
-            equal(storageWrapperMockup.log.sessionStorage.removeItem.key, base_config.cacheConfig.initBaseName + "123", "Correct key is used to remove.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.called, "Storage remove executed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.key, base_config.cacheConfig.initBaseName + "123", "Correct key is used to remove.");
         });
     </script>
 </body>

@@ -27,13 +27,13 @@
         };
     </script>
 
-    <script src="./mockups/js-jsonp.js"></script>
+    <script src="./mockups/comment-utilities.js"></script>
     <script src="./mockups/cache.js"></script>
 
     <script>
         // define the require function and register the mockups by path
         var require = defineRequire({
-            'js-jsonp': jsonpMockup.mockup,
+            'comment-utilities': commentUtilitiesMockup.mockup,
             './cache.js': cacheMockup.mockup,
             './config.js': {
                 get: function (field) {
@@ -157,13 +157,13 @@
                 successValue = data;
             });
 
-            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.getComments, "Configuration used correctly.");
-            equal(jsonpMockup.log.options.data.title, "testTitle", "Title used correctly.");
-            equal(jsonpMockup.log.options.data.url, "testUrl", "Url used correctly.");
-            equal(jsonpMockup.log.options.data.articleId, "testArticleId", "articleId used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.getComments, "Configuration used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.title, "testTitle", "Title used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.url, "testUrl", "Url used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.articleId, "testArticleId", "articleId used correctly.");
 
             var errorData = new Error("Timeout");
-            jsonpMockup.log.callback(errorData, null);
+            commentUtilitiesMockup.log.jsonp.callback(errorData, null);
             equal(error, true, "Error callback called correctly.");
             equal(errorValue, errorData, "Data passed correctly to the error callback.");
         });
@@ -193,10 +193,10 @@
                 successValue = data;
             });
 
-            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.getComments, "Configuration used correctly.");
-            equal(jsonpMockup.log.options.data.title, "testTitle", "Title used correctly.");
-            equal(jsonpMockup.log.options.data.url, "testUrl", "Url used correctly.");
-            equal(jsonpMockup.log.options.data.articleId, "testArticleId", "articleId used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.getComments, "Configuration used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.title, "testTitle", "Title used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.url, "testUrl", "Url used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.articleId, "testArticleId", "articleId used correctly.");
 
             var successData = {
                 collection: {
@@ -208,7 +208,7 @@
                 }
             };
 
-            jsonpMockup.log.callback(null, successData);
+            commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
             equal(successValue, successData.collection, "Data passed correctly to the success callback.");
         });
@@ -239,7 +239,7 @@
                 successValue = data;
             });
 
-            ok(jsonpMockup.log.options, "API called.");
+            ok(commentUtilitiesMockup.log.jsonp.options, "API called.");
 
             var successData = {
                 collection: {
@@ -251,7 +251,7 @@
                 }
             };
 
-            jsonpMockup.log.callback(null, successData);
+            commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
             equal(successValue, successData.collection, "Data passed correctly to the success callback.");
 
@@ -284,7 +284,7 @@
                 successValue = data;
             });
 
-            ok(jsonpMockup.log.options, "API called.");
+            ok(commentUtilitiesMockup.log.jsonp.options, "API called.");
 
             var successData = {
                 collection: {
@@ -296,7 +296,7 @@
                 }
             };
 
-            jsonpMockup.log.callback(null, successData);
+            commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
             equal(successValue, successData.collection, "Data passed correctly to the success callback.");
 
@@ -398,13 +398,13 @@
                 successValue = data;
             });
 
-            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
-            equal(jsonpMockup.log.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
-            equal(jsonpMockup.log.options.data.lftoken, "testToken", "Token used correctly.");
-            equal(jsonpMockup.log.options.data.body, "testContent", "Content used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.lftoken, "testToken", "Token used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.body, "testContent", "Content used correctly.");
 
             var errorData = new Error("Timeout");
-            jsonpMockup.log.callback(errorData, null);
+            commentUtilitiesMockup.log.jsonp.callback(errorData, null);
             equal(error, true, "Error callback called correctly.");
             equal(errorValue, errorData, "Data passed correctly to the error callback.");
         });
@@ -432,15 +432,15 @@
                 successValue = data;
             });
 
-            equal(jsonpMockup.log.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
-            equal(jsonpMockup.log.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
-            equal(jsonpMockup.log.options.data.lftoken, "testToken", "Token used correctly.");
-            equal(jsonpMockup.log.options.data.body, "testContent", "Content used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.lftoken, "testToken", "Token used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.body, "testContent", "Content used correctly.");
 
             var successData = {
                 commentId: 124123
             };
-            jsonpMockup.log.callback(null, successData);
+            commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
             equal(successValue, successData, "Data passed correctly to the success callback.");
         });
