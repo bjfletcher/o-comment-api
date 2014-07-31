@@ -180,7 +180,7 @@
             }
 
             // makes the actual call to the SUDS service
-            jsonp(
+            commentUtilities.jsonp(
                 {
                     url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.livefyre.init,
                     data: dataToBeSent
@@ -283,7 +283,7 @@
     }
 
     var makeCall = function () {
-        jsonp(
+        commentUtilities.jsonp(
             {
                 url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.getAuth
             },
@@ -293,15 +293,11 @@
                     return;
                 }
                 
-                if (data &amp;&amp; data.token) {
-                    if (cacheEnabled) {
-                        cache.cacheAuth(data);
-                    }
-
-                    callback(null, data);
-                } else {
-                    callback(new Error(&quot;No data received from SUDS.&quot;), null);
+                if (cacheEnabled &amp;&amp; data &amp;&amp; data.token) {
+                    cache.cacheAuth(data);
                 }
+
+                callback(null, data);
             }
         );
     };
@@ -365,7 +361,7 @@
     }
 
     if (!userSettings.hasOwnProperty('pseudonym') || (userSettings.hasOwnProperty('pseudonym') &amp;&amp; userSettings.pseudonym)) {
-        jsonp({
+        commentUtilities.jsonp({
                 url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.updateUser,
                 data: userSettings
             },

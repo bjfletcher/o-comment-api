@@ -3,7 +3,7 @@ var config = require('./src/javascripts/config.js'),
     ccs = require('./src/javascripts/ccs.js'),
     cache = require('./src/javascripts/cache.js'),
     defaultConfig = require('./config.json'),
-    logger = require('js-logger');
+    commentUtilities = require('comment-utilities');
 
 
 config.set(defaultConfig);
@@ -35,7 +35,7 @@ exports.cache = {
  */
 exports.enableLogging = function () {
     "use strict";
-    logger.enable.apply(this, arguments);
+    commentUtilities.logger.enable.apply(this, arguments);
 };
 
 /**
@@ -44,7 +44,7 @@ exports.enableLogging = function () {
  */
 exports.disableLogging = function () {
     "use strict";
-    logger.disable.apply(this, arguments);
+    commentUtilities.logger.disable.apply(this, arguments);
 };
 
 /**
@@ -53,7 +53,7 @@ exports.disableLogging = function () {
  */
 exports.setLoggingLevel = function () {
     "use strict";
-    logger.setLevel.apply(this, arguments);
+    commentUtilities.logger.setLevel.apply(this, arguments);
 };
 
 /**

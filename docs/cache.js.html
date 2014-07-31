@@ -115,12 +115,12 @@
         throw &quot;Session ID is not set.&quot;;
     }
 
-    var authCache = storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+    var authCache = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
     if (authCache) {
         if (new Date() &lt; new Date(authCache.expires)) {
             return authCache;
         } else {
-            storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+            commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
         }
     }
 
@@ -142,7 +142,7 @@
     }
     
 
-    storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+    commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 };</code></pre>
           <section id="cacheAuth">
             <h1>cacheAuth</h1>
@@ -177,11 +177,14 @@
     
     if (authObject.token) {
         try {
-            storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
+            if (commentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
+                commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+            }
+            commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
 
             return true;
         } catch (e) {
-            logger.debug(&quot;Failed to save to the storage.&quot;, &quot;authObject:&quot;, authObject, &quot;sessionId:&quot;, envConfig.get('sessionId'), &quot;Error:&quot;, e);
+            commentUtilities.logger.debug(&quot;Failed to save to the storage.&quot;, &quot;authObject:&quot;, authObject, &quot;sessionId:&quot;, envConfig.get('sessionId'), &quot;Error:&quot;, e);
         }
     }
 
@@ -214,7 +217,7 @@
           <pre><code class="language-javascript">exports.getInit = function (articleId) {
     &quot;use strict&quot;;
     
-    return storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
+    return commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };</code></pre>
           <section id="cacheInit">
             <h1>cacheInit</h1>
@@ -249,11 +252,11 @@
     &quot;use strict&quot;;
     
     try {
-        storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
+        commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
 
         return true;
     } catch (e) {
-        logger.debug(&quot;Failed to save to the storage.&quot;, &quot;articleId:&quot;, articleId, &quot;initObj:&quot;, initObj, &quot;Error:&quot;, e);
+        commentUtilities.logger.debug(&quot;Failed to save to the storage.&quot;, &quot;articleId:&quot;, articleId, &quot;initObj:&quot;, initObj, &quot;Error:&quot;, e);
     }
 
     return false;
@@ -285,7 +288,7 @@
           <pre><code class="language-javascript">exports.removeInit = function (articleId) {
     &quot;use strict&quot;;
     
-    storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
+    commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };</code></pre>
           <section id="clear">
             <h1>clear</h1>
@@ -298,17 +301,17 @@
           <pre><code class="language-javascript">exports.clear = function () {
     &quot;use strict&quot;;
     
-    if (storageWrapper.sessionStorage.native) {
-        for (var key in storageWrapper.sessionStorage.native) {
-            if (storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+    if (commentUtilities.storageWrapper.sessionStorage.native) {
+        for (var key in commentUtilities.storageWrapper.sessionStorage.native) {
+            if (commentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
                 var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
                 if (matchInit &amp;&amp; matchInit.length) {
-                    storageWrapper.sessionStorage.removeItem(key);
+                    commentUtilities.storageWrapper.sessionStorage.removeItem(key);
                 }
 
                 var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
                 if (matchAuth &amp;&amp; matchAuth.length) {
-                    storageWrapper.sessionStorage.removeItem(key);
+                    commentUtilities.storageWrapper.sessionStorage.removeItem(key);
                 }
             }
         }

@@ -148,7 +148,7 @@
         articleId: conf.articleId
     };
 
-    jsonp(
+    commentUtilities.jsonp(
         {
             url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.getComments,
             data: dataToBeSent
@@ -247,7 +247,7 @@
     };
 
 
-    jsonp({
+    commentUtilities.jsonp({
         url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.postComment,
         data: dataToBeSent
     }, function (err, data) {
