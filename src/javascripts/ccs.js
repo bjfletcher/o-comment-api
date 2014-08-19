@@ -23,17 +23,17 @@ function getComments (conf, callback) {
         return;
     }
 
-    if (!conf.title) {
+    if (!conf.hasOwnProperty('title')) {
         callback(new Error("Article title not provided."));
         return;
     }
 
-    if (!conf.url) {
+    if (!conf.hasOwnProperty('url')) {
         callback(new Error("Article url not provided."));
         return;
     }
 
-    if (!conf.articleId) {
+    if (!conf.hasOwnProperty('articleId')) {
         callback(new Error("Article ID not provided."));
         return;
     }
@@ -62,8 +62,8 @@ function getComments (conf, callback) {
             
             if (data && data.collection) {
                 if (data.collection.unclassifiedArticle !== true && cacheEnabled) {
-                    if (data.auth && data.auth.token) {
-                        cache.cacheAuth(data.auth);
+                    if (data.userDetails && data.userDetails.token) {
+                        cache.cacheAuth(data.userDetails);
                     }
                 }
 
