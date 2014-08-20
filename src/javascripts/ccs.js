@@ -82,7 +82,6 @@ function getComments (conf, callback) {
  * #### Mandatory fields
  * - collectionId: ID of the collection to post the comment.
  * - content: actual content of the comment.
- * - token: a valid JWT auth token
  * 
  * @param  {Object}   conf     Configuration object
  * @param  {Function} callback function (err, data)
@@ -104,11 +103,6 @@ function postComment (conf, callback) {
         return;
     }
 
-    if (!conf.token) {
-        callback(new Error("User token not provided."));
-        return;
-    }
-
     if (!conf.collectionId) {
         callback(new Error("Collection ID not provided."));
         return;
@@ -117,7 +111,6 @@ function postComment (conf, callback) {
 
     var dataToBeSent = {
         collectionId: conf.collectionId,
-        lftoken: conf.token,
         body: conf.content
     };
 
