@@ -202,7 +202,7 @@
                 collection: {
                     'collectionKey': 'collectionValue'
                 },
-                auth: {
+                userDetails: {
                     'authKey': 'authValue',
                     token: "41asr2"
                 }
@@ -245,7 +245,7 @@
                 collection: {
                     'collectionKey': 'collectionValue'
                 },
-                auth: {
+                userDetails: {
                     'authKey': 'authValue',
                     token: "41asr2"
                 }
@@ -290,7 +290,7 @@
                 collection: {
                     'collectionKey': 'collectionValue'
                 },
-                auth: {
+                userDetails: {
                     'authKey': 'authValue',
                     token: "41asr2"
                 }
@@ -301,7 +301,7 @@
             equal(successValue, successData.collection, "Data passed correctly to the success callback.");
 
             ok(cacheMockup.log.auth.called, "Auth cached.");
-            equal(cacheMockup.log.auth.data[0], successData.auth, "Correct auth data is cached.");
+            equal(cacheMockup.log.auth.data[0], successData.userDetails, "Correct auth data is cached.");
         });
 
 
@@ -333,8 +333,7 @@
                 errorThrown = false;
                 
                 var conf = {
-                    content: 'content',
-                    token: 'token',
+                    contentBody: 'content',
                     collectionId: 'collectionId'
                 };
 
@@ -362,14 +361,11 @@
                 
             };
 
-            testDataMissing('content')
-            ok(errorThrown, "content missing - callback called with error.");
+            testDataMissing('contentBody')
+            ok(errorThrown, "contentBody missing - callback called with error.");
 
             testDataMissing('collectionId')
             ok(errorThrown, "collectionId missing - callback called with error.");
-
-            testDataMissing('token')
-            ok(errorThrown, "token missing - callback called with error.");
 
             testDataMissing('callback')
             ok(errorThrown, "callback missing - exception thrown.");
@@ -383,8 +379,7 @@
 
             var configData = {
                 collectionId: "testCollectionId",
-                token: "testToken",
-                content: "testContent"
+                contentBody: "testContent"
             };
 
             nodeModule.exports.postComment(configData, function (err, data) {
@@ -400,8 +395,7 @@
 
             equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
             equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.lftoken, "testToken", "Token used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.body, "testContent", "Content used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.contentBody, "testContent", "Content used correctly.");
 
             var errorData = new Error("Timeout");
             commentUtilitiesMockup.log.jsonp.callback(errorData, null);
@@ -417,8 +411,7 @@
 
             var configData = {
                 collectionId: "testCollectionId",
-                token: "testToken",
-                content: "testContent"
+                contentBody: "testContent"
             };
 
             nodeModule.exports.postComment(configData, function (err, data) {
@@ -434,8 +427,7 @@
 
             equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
             equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.lftoken, "testToken", "Token used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.body, "testContent", "Content used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.contentBody, "testContent", "Content used correctly.");
 
             var successData = {
                 commentId: 124123

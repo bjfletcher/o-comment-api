@@ -122,17 +122,17 @@
         return;
     }
 
-    if (!conf.title) {
+    if (!conf.hasOwnProperty('title')) {
         callback(new Error(&quot;Article title not provided.&quot;));
         return;
     }
 
-    if (!conf.url) {
+    if (!conf.hasOwnProperty('url')) {
         callback(new Error(&quot;Article url not provided.&quot;));
         return;
     }
 
-    if (!conf.articleId) {
+    if (!conf.hasOwnProperty('articleId')) {
         callback(new Error(&quot;Article ID not provided.&quot;));
         return;
     }
@@ -161,8 +161,8 @@
             
             if (data &amp;&amp; data.collection) {
                 if (data.collection.unclassifiedArticle !== true &amp;&amp; cacheEnabled) {
-                    if (data.auth &amp;&amp; data.auth.token) {
-                        cache.cacheAuth(data.auth);
+                    if (data.userDetails &amp;&amp; data.userDetails.token) {
+                        cache.cacheAuth(data.userDetails);
                     }
                 }
 
@@ -209,8 +209,7 @@
 
 <ul>
 <li>collectionId: ID of the collection to post the comment.</li>
-<li>content: actual content of the comment.</li>
-<li>token: a valid JWT auth token</li>
+<li>contentBody: actual content of the comment.</li>
 </ul> </div>
           <pre><code class="language-javascript">function postComment (conf, callback) {
     &quot;use strict&quot;;
@@ -224,13 +223,8 @@
         return;
     }
 
-    if (!conf.content) {
+    if (!conf.contentBody) {
         callback(new Error(&quot;Content not provided.&quot;));
-        return;
-    }
-
-    if (!conf.token) {
-        callback(new Error(&quot;User token not provided.&quot;));
         return;
     }
 
@@ -242,8 +236,7 @@
 
     var dataToBeSent = {
         collectionId: conf.collectionId,
-        lftoken: conf.token,
-        body: conf.content
+        contentBody: conf.contentBody
     };
 
 

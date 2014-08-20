@@ -81,7 +81,7 @@ function getComments (conf, callback) {
  * ### Configuration
  * #### Mandatory fields
  * - collectionId: ID of the collection to post the comment.
- * - content: actual content of the comment.
+ * - contentBody: actual content of the comment.
  * 
  * @param  {Object}   conf     Configuration object
  * @param  {Function} callback function (err, data)
@@ -98,7 +98,7 @@ function postComment (conf, callback) {
         return;
     }
 
-    if (!conf.content) {
+    if (!conf.contentBody) {
         callback(new Error("Content not provided."));
         return;
     }
@@ -111,7 +111,7 @@ function postComment (conf, callback) {
 
     var dataToBeSent = {
         collectionId: conf.collectionId,
-        body: conf.content
+        contentBody: conf.contentBody
     };
 
 
