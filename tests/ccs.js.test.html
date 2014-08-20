@@ -333,7 +333,7 @@
                 errorThrown = false;
                 
                 var conf = {
-                    contentBody: 'content',
+                    commentBody: 'content',
                     collectionId: 'collectionId'
                 };
 
@@ -361,8 +361,8 @@
                 
             };
 
-            testDataMissing('contentBody')
-            ok(errorThrown, "contentBody missing - callback called with error.");
+            testDataMissing('commentBody')
+            ok(errorThrown, "commentBody missing - callback called with error.");
 
             testDataMissing('collectionId')
             ok(errorThrown, "collectionId missing - callback called with error.");
@@ -379,7 +379,7 @@
 
             var configData = {
                 collectionId: "testCollectionId",
-                contentBody: "testContent"
+                commentBody: "testContent"
             };
 
             nodeModule.exports.postComment(configData, function (err, data) {
@@ -395,7 +395,7 @@
 
             equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
             equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.contentBody, "testContent", "Content used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.commentBody, "testContent", "Content used correctly.");
 
             var errorData = new Error("Timeout");
             commentUtilitiesMockup.log.jsonp.callback(errorData, null);
@@ -411,7 +411,7 @@
 
             var configData = {
                 collectionId: "testCollectionId",
-                contentBody: "testContent"
+                commentBody: "testContent"
             };
 
             nodeModule.exports.postComment(configData, function (err, data) {
@@ -427,7 +427,7 @@
 
             equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.postComment, "Configuration used correctly.");
             equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, "testCollectionId", "Collection Id used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.contentBody, "testContent", "Content used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.commentBody, "testContent", "Content used correctly.");
 
             var successData = {
                 commentId: 124123

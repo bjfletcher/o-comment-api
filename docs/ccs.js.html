@@ -209,7 +209,7 @@
 
 <ul>
 <li>collectionId: ID of the collection to post the comment.</li>
-<li>contentBody: actual content of the comment.</li>
+<li>commentBody: actual content of the comment.</li>
 </ul> </div>
           <pre><code class="language-javascript">function postComment (conf, callback) {
     &quot;use strict&quot;;
@@ -223,7 +223,7 @@
         return;
     }
 
-    if (!conf.contentBody) {
+    if (!conf.commentBody) {
         callback(new Error(&quot;Content not provided.&quot;));
         return;
     }
@@ -236,7 +236,7 @@
 
     var dataToBeSent = {
         collectionId: conf.collectionId,
-        contentBody: conf.contentBody
+        commentBody: conf.commentBody
     };
 
 
