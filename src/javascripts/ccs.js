@@ -45,7 +45,7 @@ function getComments (conf, callback) {
 
     var dataToBeSent = {
         title: conf.title,
-        url: conf.url,
+        URL: conf.url,
         articleId: conf.articleId
     };
 
