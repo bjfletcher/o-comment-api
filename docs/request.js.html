@@ -76,52 +76,113 @@
             <li><a href="ccs.js.html">ccs.js</a></li>
             <li><a href="config.js.html">config.js</a></li>
             <li><a href="main.js.html">main.js</a></li>
-            <li><a href="request.js.html">request.js</a></li>
+            <li class="active"><a href="request.js.html">request.js</a></li>
             <li><a href="stream.js.html">stream.js</a></li>
             <li><a href="suds.js.html">suds.js</a></li>
-            <li class="active"><a href="utils.js.html">utils.js</a></li>
+            <li><a href="utils.js.html">utils.js</a></li>
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#trim"><i class="alert alert-info"></i><span>trim</span></a>
+              <li><a href="#get"><i class="alert alert-info"></i><span>get</span></a>
+              </li>
+              <li><a href="#getXhrForUrl"><i class="alert alert-info"></i><span>getXhrForUrl</span></a>
               </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="trim">
-            <h1>trim</h1>
+          <section id="get">
+            <h1>get</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>exports.trim()</span> -><span>string</span>
+              <div class="label label-info radius ctx-type">method</div><span>exports.get()</span>
             </p>
           </section>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th style="width:20%">Option name</th>
-                <th style="width:20%">Type</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>string</td>
-                <td>string</td>
-                <td>The string to be trimmed.</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="description"><p>Wrapper and polyfill for String.prototype.trim</p> </div>
-          <pre><code class="language-javascript">exports.trim = function (string) {
+          <div class="description"><p>global XDomainRequest:false, ActiveXObject:false</p> </div>
+          <pre><code class="language-javascript">exports.get = function (url) {
     &quot;use strict&quot;;
 
-    if (!String.prototype.trim) {
-        return string.replace(/^\s+|\s+$/g, '');
-    } else {
-        return string.trim();
+    var xhr = getXhrForUrl(url);
+
+    if (!xhr) {
+        return;
     }
+
+    xhr.open(&quot;GET&quot;, url, true);
+
+    if (xhr.onload) {
+        xhr.onload = function () {
+            var responseText = xhr.responseText;
+            console.log('responseText:', responseText);
+        };
+
+        xhr.onerror = function () {
+            console.log('xhr error');
+        };
+    } else {
+        xhr.onreadystatechange(function () {
+            console.log('onreadystatechange', arguments);
+        });
+    }
+
+    xhr.send();
 };</code></pre>
+          <section id="getXhrForUrl">
+            <h1>getXhrForUrl</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">function</div><span>getXhrForUrl()</span>
+            </p>
+          </section>
+          <div class="description"><p>Determine XHR.</p> </div>
+          <pre><code class="language-javascript">function getXhrForUrl (requestUrl) {
+    &quot;use strict&quot;;
+
+    var isXDomainRequest = false;
+
+    if (typeof window.location !== 'undefined') {
+        var hostnameMatch = requestUrl.match(/http[s]?:\/\/([^\/]*)/);
+
+        if (hostnameMatch &amp;&amp; hostnameMatch[1] !== window.location.hostname) {
+            isXDomainRequest = true;
+        }
+    }
+
+    if (isXDomainRequest === true) {
+        if (typeof new XMLHttpRequest().withCredentials !== 'undefined') {
+            // Check if the XMLHttpRequest object has a &quot;withCredentials&quot; property.
+            // &quot;withCredentials&quot; only exists on XMLHTTPRequest2 objects.
+
+            return new XMLHttpRequest();
+        } else if (typeof XDomainRequest !== &quot;undefined&quot;) {
+            // Otherwise, check if XDomainRequest.
+            // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+
+            return new XDomainRequest();
+        } else {
+            return false;
+        }
+    } else {
+        if (window.XMLHttpRequest &amp;&amp; ('file:' !== window.location.protocol || !window.ActiveXObject)) {
+            return new XMLHttpRequest();
+        } else {
+            try {
+                return new ActiveXObject('Microsoft.XMLHTTP');
+            } catch (e) {}
+            try {
+                return new ActiveXObject('Msxml2.XMLHTTP.6.0');
+            } catch (e) {}
+            try {
+                return new ActiveXObject('Msxml2.XMLHTTP.3.0');
+            } catch (e) {}
+            try {
+                return new ActiveXObject('Msxml2.XMLHTTP');
+            } catch (e) {}
+        }
+    }
+
+    return false;
+}</code></pre>
         </div>
       </div>
     </div>

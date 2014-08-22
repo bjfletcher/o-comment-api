@@ -1,6 +1,7 @@
-var commentUtilities = require('comment-utilities'),
-    envConfig = require('./config.js'),
-    cache = require('./cache.js');
+var commentUtilities = require('comment-utilities');
+var envConfig = require('./config.js');
+var cache = require('./cache.js');
+var stream = require('./stream.js');
 
 /**
  * Uses CCS.getComments endpoint, but it also embeds an optional caching layer for the authentication info.
@@ -10,6 +11,9 @@ var commentUtilities = require('comment-utilities'),
  * - articleId: ID of the article, any string
  * - url: canonical URL of the page
  * - title: Title of the page
+ *
+ * #### Optional fields:
+ * - stream: enable streaming of new comments
  */
 function getComments (conf, callback) {
     "use strict";
@@ -67,7 +71,13 @@ function getComments (conf, callback) {
                     }
                 }
 
-                callback(null, data.collection);
+                callback(null, {
+                    collection: data.collection
+                });
+
+                if (conf.stream === true) {
+                    stream.init(data.collection.collectionId, data.collection.lastEvent);
+                }
             } else {
                 callback(new Error("No data received from CCS."), null);
             }

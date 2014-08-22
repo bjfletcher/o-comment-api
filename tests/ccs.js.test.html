@@ -210,7 +210,7 @@
 
             commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.collection, "Data passed correctly to the success callback.");
+            deepEqual(successValue, {collection: successData.collection}, "Data passed correctly to the success callback.");
         });
 
         test("with data - success - cache enabled: without sessionId", function () {
@@ -253,7 +253,7 @@
 
             commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.collection, "Data passed correctly to the success callback.");
+            deepEqual(successValue, {collection: successData.collection}, "Data passed correctly to the success callback.");
 
             ok(!cacheMockup.log.auth.called, "Auth not cached because of the lack of session ID.");
         });
@@ -298,7 +298,7 @@
 
             commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.collection, "Data passed correctly to the success callback.");
+            deepEqual(successValue, {collection: successData.collection}, "Data passed correctly to the success callback.");
 
             ok(cacheMockup.log.auth.called, "Auth cached.");
             equal(cacheMockup.log.auth.data[0], successData.userDetails, "Correct auth data is cached.");
@@ -430,7 +430,7 @@
             equal(commentUtilitiesMockup.log.jsonp.options.data.commentBody, "testContent", "Content used correctly.");
 
             var successData = {
-                commentId: 124123
+                success: true
             };
             commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");

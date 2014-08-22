@@ -21,5 +21,8 @@
     "cacheConfig": {
         "authBaseName": "comments-prod-auth-",
         "initBaseName": "comments-prod-init-"
+    },
+    "livefyre": {
+        "network": "ft.fyre.co"
     }
 }

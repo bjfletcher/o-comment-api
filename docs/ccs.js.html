@@ -76,6 +76,7 @@
             <li class="active"><a href="ccs.js.html">ccs.js</a></li>
             <li><a href="config.js.html">config.js</a></li>
             <li><a href="main.js.html">main.js</a></li>
+            <li><a href="request.js.html">request.js</a></li>
             <li><a href="stream.js.html">stream.js</a></li>
             <li><a href="suds.js.html">suds.js</a></li>
             <li><a href="utils.js.html">utils.js</a></li>
@@ -109,6 +110,12 @@
 <li>articleId: ID of the article, any string</li>
 <li>url: canonical URL of the page</li>
 <li>title: Title of the page</li>
+</ul>
+
+<h4>Optional fields:</h4>
+
+<ul>
+<li>stream: enable streaming of new comments</li>
 </ul> </div>
           <pre><code class="language-javascript">function getComments (conf, callback) {
     &quot;use strict&quot;;
@@ -166,7 +173,13 @@
                     }
                 }
 
-                callback(null, data.collection);
+                callback(null, {
+                    collection: data.collection
+                });
+
+                if (conf.stream === true) {
+                    stream.init(data.collection.collectionId, data.collection.lastEvent);
+                }
             } else {
                 callback(new Error(&quot;No data received from CCS.&quot;), null);
             }
