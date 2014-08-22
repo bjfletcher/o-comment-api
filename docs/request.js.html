@@ -83,7 +83,7 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#get"><i class="alert alert-info"></i><span>get</span></a>
+              <li><a href="#commentUtilities"><i class="alert alert-success"></i><span>commentUtilities</span></a>
               </li>
               <li><a href="#getXhrForUrl"><i class="alert alert-info"></i><span>getXhrForUrl</span></a>
               </li>
@@ -91,15 +91,17 @@
           </div>
         </div>
         <div class="span9">
-          <section id="get">
-            <h1>get</h1>
+          <section id="commentUtilities">
+            <h1>commentUtilities</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>exports.get()</span>
+              <div class="label label-success radius ctx-type">declaration</div><span>commentUtilities</span>
             </p>
           </section>
           <div class="description"><p>global XDomainRequest:false, ActiveXObject:false</p> </div>
-          <pre><code class="language-javascript">exports.get = function (url, callback) {
+          <pre><code class="language-javascript">var commentUtilities = require('comment-utilities');
+
+exports.get = function (url, callback) {
     &quot;use strict&quot;;
 
     var xhr = getXhrForUrl(url);
@@ -117,17 +119,17 @@
                 responseText = JSON.parse(responseText);
             } catch (e) {}
 
-            console.log('xhr onload', 'responseText:', responseText);
+            commentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
             callback.success(responseText);
         };
 
         xhr.onerror = function () {
-            console.log('xhr onerror', 'xhr error');
+            commentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
             callback.error();
         };
 
         xhr.ontimeout = function () {
-            console.log('xhr ontimeout', 'xhr timeout');
+            commentUtilities.logger.debug('stream', 'xhr ontimeout', 'xhr timeout');
             callback.error();
         };
     } else {
@@ -139,10 +141,10 @@
                         responseText = JSON.parse(responseText);
                     } catch (e) {}
 
-                    console.log('xhr onreadystatechange', 'responseText:', responseText);
+                    commentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'responseText:', responseText);
                     callback.success(responseText);
                 } else {
-                    console.log('xhr onreadystatechange', 'xhr error');
+                    commentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'xhr error');
                     callback.error();
                 }
             }

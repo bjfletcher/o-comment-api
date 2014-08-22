@@ -1,5 +1,7 @@
 /* global XDomainRequest:false, ActiveXObject:false */
 
+var commentUtilities = require('comment-utilities');
+
 exports.get = function (url, callback) {
     "use strict";
 
@@ -18,17 +20,17 @@ exports.get = function (url, callback) {
                 responseText = JSON.parse(responseText);
             } catch (e) {}
 
-            console.log('xhr onload', 'responseText:', responseText);
+            commentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
             callback.success(responseText);
         };
 
         xhr.onerror = function () {
-            console.log('xhr onerror', 'xhr error');
+            commentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
             callback.error();
         };
 
         xhr.ontimeout = function () {
-            console.log('xhr ontimeout', 'xhr timeout');
+            commentUtilities.logger.debug('stream', 'xhr ontimeout', 'xhr timeout');
             callback.error();
         };
     } else {
@@ -40,10 +42,10 @@ exports.get = function (url, callback) {
                         responseText = JSON.parse(responseText);
                     } catch (e) {}
 
-                    console.log('xhr onreadystatechange', 'responseText:', responseText);
+                    commentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'responseText:', responseText);
                     callback.success(responseText);
                 } else {
-                    console.log('xhr onreadystatechange', 'xhr error');
+                    commentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'xhr error');
                     callback.error();
                 }
             }
