@@ -103,7 +103,7 @@ var envConfig = require('./config.js');
 exports.init = function (collectionId, lastEventId) {
     &quot;use strict&quot;;
 
-    var lfStreamUrl = &quot;https://&quot;+ envConfig.livefyre.network +&quot;.stream1.fyre.co/v3.0/collection/&quot;+ collectionId +&quot;/&quot;+ lastEventId +&quot;/&quot;;
+    var lfStreamUrl = &quot;https://&quot;+ envConfig.get().livefyre.network +&quot;.stream1.fyre.co/v3.0/collection/&quot;+ collectionId +&quot;/&quot;+ lastEventId +&quot;/&quot;;
 
     request.get(lfStreamUrl);
 };</code></pre>
