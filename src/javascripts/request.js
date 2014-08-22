@@ -1,6 +1,6 @@
 /* global XDomainRequest:false, ActiveXObject:false */
 
-exports.get = function (url) {
+exports.get = function (url, callback) {
     "use strict";
 
     var xhr = getXhrForUrl(url);
@@ -11,19 +11,43 @@ exports.get = function (url) {
 
     xhr.open("GET", url, true);
 
-    if (xhr.onload) {
+    if (xhr.hasOwnProperty('onload')) {
         xhr.onload = function () {
             var responseText = xhr.responseText;
-            console.log('responseText:', responseText);
+            try {
+                responseText = JSON.parse(responseText);
+            } catch (e) {}
+
+            console.log('xhr onload', 'responseText:', responseText);
+            callback.success(responseText);
         };
 
         xhr.onerror = function () {
-            console.log('xhr error');
+            console.log('xhr onerror', 'xhr error');
+            callback.error();
+        };
+
+        xhr.ontimeout = function () {
+            console.log('xhr ontimeout', 'xhr timeout');
+            callback.error();
         };
     } else {
-        xhr.onreadystatechange(function () {
-            console.log('onreadystatechange', arguments);
-        });
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.responseText) {
+                    var responseText = xhr.responseText;
+                    try {
+                        responseText = JSON.parse(responseText);
+                    } catch (e) {}
+
+                    console.log('xhr onreadystatechange', 'responseText:', responseText);
+                    callback.success(responseText);
+                } else {
+                    console.log('xhr onreadystatechange', 'xhr error');
+                    callback.error();
+                }
+            }
+        };
     }
 
     xhr.send();

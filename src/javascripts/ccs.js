@@ -76,7 +76,11 @@ function getComments (conf, callback) {
                 });
 
                 if (conf.stream === true) {
-                    stream.init(data.collection.collectionId, data.collection.lastEvent);
+                    stream.init(data.collection.collectionId, data.collection.lastEvent, function (comment) {
+                        callback(null, {
+                            comment: comment
+                        });
+                    });
                 }
             } else {
                 callback(new Error("No data received from CCS."), null);

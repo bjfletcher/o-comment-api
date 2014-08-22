@@ -178,7 +178,11 @@
                 });
 
                 if (conf.stream === true) {
-                    stream.init(data.collection.collectionId, data.collection.lastEvent);
+                    stream.init(data.collection.collectionId, data.collection.lastEvent, function (comment) {
+                        callback(null, {
+                            comment: comment
+                        });
+                    });
                 }
             } else {
                 callback(new Error(&quot;No data received from CCS.&quot;), null);
