@@ -13,7 +13,7 @@ exports.get = function (url, callback) {
 
     xhr.open("GET", url, true);
 
-    if (xhr.hasOwnProperty('onload')) {
+    if (xhr.hasOwnProperty('onload') || typeof xhr.onload !== 'undefined') {
         xhr.onload = function () {
             var responseText = xhr.responseText;
             try {
@@ -52,7 +52,9 @@ exports.get = function (url, callback) {
         };
     }
 
-    xhr.send();
+    setTimeout(function () {
+        xhr.send();
+    }, 0);
 };
 
 /**
