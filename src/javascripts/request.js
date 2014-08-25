@@ -6,33 +6,55 @@ exports.get = function (url, callback) {
     "use strict";
 
     var xhr = getXhrForUrl(url);
+    var aborted = false;
 
     if (!xhr) {
         return;
     }
 
-    xhr.open("GET", url, true);
+    if (xhr instanceof XMLHttpRequest) {
+        xhr.open("get", url, true);
+    } else {
+        xhr.open("get", url);
+        if (typeof xhr.hasOwnProperty !== 'function') {
+            xhr.timeout = 9000;
+        }
+    }
 
-    if (xhr.hasOwnProperty('onload') || typeof xhr.onload !== 'undefined') {
+
+    if (xhr.onload !== 'undefined') {
         xhr.onload = function () {
-            var responseText = xhr.responseText;
-            try {
-                responseText = JSON.parse(responseText);
-            } catch (e) {}
+            if (!aborted) {
+                var responseText = xhr.responseText;
+                try {
+                    responseText = JSON.parse(responseText);
+                } catch (e) {}
 
-            commentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
-            callback.success(responseText);
+                commentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
+                callback.success(responseText);
+            }
         };
 
         xhr.onerror = function () {
-            commentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
-            callback.error();
+            if (!aborted) {
+                commentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
+                callback.error();
+            }
         };
 
         xhr.ontimeout = function () {
-            commentUtilities.logger.debug('stream', 'xhr ontimeout', 'xhr timeout');
-            callback.error();
+            if (!aborted) {
+                commentUtilities.logger.debug('stream', 'xhr ontimeout', 'xhr timeout');
+
+                aborted = true;
+                try {
+                    xhr.abort();
+                } catch (e) {}
+                callback.error();
+            }
         };
+
+        xhr.onprogress = function () {}; // do nothing, we are not interested in the progress
     } else {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
