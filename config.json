@@ -23,6 +23,6 @@
         "initBaseName": "comments-prod-init-"
     },
     "livefyre": {
-        "network": "ft.fyre.co"
+        "networkName": "ft.fyre.co"
     }
 }
