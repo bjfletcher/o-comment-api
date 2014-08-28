@@ -4,14 +4,19 @@ var envConfig = require('./config.js');
 exports.init = function (collectionId, lastEventId, callback) {
     "use strict";
 
+    var lastTime = new Date();
+    var timeToWait = 0;
+
     var lfStreamUrl = "http://"+ envConfig.get().livefyre.networkName +".stream1.fyre.co/v3.0/collection/"+ collectionId +"/"+ lastEventId +"/";
 
     request.get(lfStreamUrl, {
         success: function (response) {
+            timeToWait = 10000 - (new Date() - lastTime);
+
             if (response.timeout === true) {
                 setTimeout(function () {
                     exports.init(collectionId, lastEventId, callback);
-                }, 0);
+                }, (timeToWait < 0 ? 0 : timeToWait));
                 return;
             }
 
@@ -51,9 +56,11 @@ exports.init = function (collectionId, lastEventId, callback) {
             }, 0);
         },
         error: function () {
+            timeToWait = 10000 - (new Date() - lastTime);
+
             setTimeout(function () {
                 exports.init(collectionId, lastEventId, callback);
-            }, 0);
+            }, (timeToWait < 0 ? 0 : timeToWait));
         }
     });
 };

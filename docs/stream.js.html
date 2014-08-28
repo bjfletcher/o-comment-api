@@ -100,17 +100,24 @@
           <pre><code class="language-javascript">var request = require('./request.js');
 var envConfig = require('./config.js');
 
+var lastTime = null;
+var timeToWait = 0;
+
 exports.init = function (collectionId, lastEventId, callback) {
     &quot;use strict&quot;;
 
-    var lfStreamUrl = &quot;https://&quot;+ envConfig.get().livefyre.networkName +&quot;.stream1.fyre.co/v3.0/collection/&quot;+ collectionId +&quot;/&quot;+ lastEventId +&quot;/&quot;;
+    lastTime = new Date();
+
+    var lfStreamUrl = &quot;http://&quot;+ envConfig.get().livefyre.networkName +&quot;.stream1.fyre.co/v3.0/collection/&quot;+ collectionId +&quot;/&quot;+ lastEventId +&quot;/&quot;;
 
     request.get(lfStreamUrl, {
         success: function (response) {
+            timeToWait = 10000 - (new Date() - lastTime);
+
             if (response.timeout === true) {
                 setTimeout(function () {
                     exports.init(collectionId, lastEventId, callback);
-                }, 0);
+                }, (timeToWait &lt; 0 ? 0 : timeToWait));
                 return;
             }
 
@@ -147,12 +154,14 @@ exports.init = function (collectionId, lastEventId, callback) {
 
             setTimeout(function () {
                 exports.init(collectionId, response.data &amp;&amp; response.data.maxEventId ? response.data.maxEventId : lastEventId, callback);
-            }, 0);
+            }, (timeToWait &lt; 0 ? 0 : timeToWait));
         },
         error: function () {
+            timeToWait = 10000 - (new Date() - lastTime);
+            
             setTimeout(function () {
                 exports.init(collectionId, lastEventId, callback);
-            }, 0);
+            }, (timeToWait &lt; 0 ? 0 : timeToWait));
         }
     });
 };</code></pre>
