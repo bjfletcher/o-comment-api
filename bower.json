@@ -1,6 +1,6 @@
 {
   "name": "o-comments-data",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "main": "main.js",
   "dependencies": {
     "comment-utilities": "git+http://git.svc.ft.com:8080/scm/strat_p/comment-utilities.git#^0.1.0"

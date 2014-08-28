@@ -3,7 +3,7 @@
         "baseUrl": "http://session-user-data.webservices.ft.com",
         "endpoints": {
             "livefyre": {
-                "init": "/v1/livefyre/init",
+                "init": "/v1/livefyre/init"
             },
             "user": {
                 "updateUser": "/v1/user/updateuser",
