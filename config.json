@@ -12,7 +12,7 @@
         }
     },
     "ccs": {
-        "baseUrl": "http://comment-creation-service.webservices.ft.com",
+        "baseUrl": "http://comment-creation.webservices.ft.com",
         "endpoints": {
             "getComments": "/v1/getComments",
             "postComment": "/v1/postComment"
