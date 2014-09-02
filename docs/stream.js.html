@@ -100,13 +100,11 @@
           <pre><code class="language-javascript">var request = require('./request.js');
 var envConfig = require('./config.js');
 
-var lastTime = null;
-var timeToWait = 0;
-
 exports.init = function (collectionId, lastEventId, callback) {
     &quot;use strict&quot;;
 
-    lastTime = new Date();
+    var lastTime = new Date();
+    var timeToWait = 0;
 
     var lfStreamUrl = &quot;http://&quot;+ envConfig.get().livefyre.networkName +&quot;.stream1.fyre.co/v3.0/collection/&quot;+ collectionId +&quot;/&quot;+ lastEventId +&quot;/&quot;;
 
@@ -154,11 +152,11 @@ exports.init = function (collectionId, lastEventId, callback) {
 
             setTimeout(function () {
                 exports.init(collectionId, response.data &amp;&amp; response.data.maxEventId ? response.data.maxEventId : lastEventId, callback);
-            }, (timeToWait &lt; 0 ? 0 : timeToWait));
+            }, 0);
         },
         error: function () {
             timeToWait = 10000 - (new Date() - lastTime);
-            
+
             setTimeout(function () {
                 exports.init(collectionId, lastEventId, callback);
             }, (timeToWait &lt; 0 ? 0 : timeToWait));

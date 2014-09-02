@@ -2,6 +2,50 @@ var commentUtilities = require('comment-utilities');
 var envConfig = require('./config.js');
 var cache = require('./cache.js');
 var stream = require('./stream.js');
+var request = require('./request.js');
+
+
+
+var pageUrlPerArticleId = {};
+function getCommentsByPage (url, page, callback) {
+    "use strict";
+
+    request.get(url, {
+        success: function (response) {
+            if (response && response.content) {
+                var listOfComments = [];
+                var item;
+                var authorData;
+                var i;
+
+                for (i = 0; i < response.content.length; i++) {
+                    item = response.content[i];
+                    authorData = response.authors[item.content.authorId];
+
+                    if (item.vis === 1 && item.type === 0) {
+                        listOfComments.push({
+                            parentId: item.content.parentId,
+                            author: {
+                                displayName: authorData.displayName,
+                                tags: authorData.tags,
+                                type: authorData.type
+                            },
+                            content: item.content.bodyHtml,
+                            timestamp: item.content.createdAt,
+                            commentId: item.content.id,
+                            visibility: item.vis
+                        });
+                    }
+                }
+
+                callback(null, listOfComments);
+            }
+        },
+        error: function () {
+            callback(new Error("Error loading comments."));
+        }
+    });
+}
 
 /**
  * Uses CCS.getComments endpoint, but it also embeds an optional caching layer for the authentication info.
@@ -14,6 +58,7 @@ var stream = require('./stream.js');
  *
  * #### Optional fields:
  * - stream: enable streaming of new comments
+ * - page: the page number to be fetched. By default it is 0.
  */
 function getComments (conf, callback) {
     "use strict";
@@ -27,6 +72,19 @@ function getComments (conf, callback) {
         return;
     }
 
+
+    if (!conf.hasOwnProperty('articleId')) {
+        callback(new Error("Article ID not provided."));
+        return;
+    }
+
+    if (conf.page > 0 && pageUrlPerArticleId[conf.articleId]) {
+        getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
+
+        return;
+    }
+
+
     if (!conf.hasOwnProperty('title')) {
         callback(new Error("Article title not provided."));
         return;
@@ -34,11 +92,6 @@ function getComments (conf, callback) {
 
     if (!conf.hasOwnProperty('url')) {
         callback(new Error("Article url not provided."));
-        return;
-    }
-
-    if (!conf.hasOwnProperty('articleId')) {
-        callback(new Error("Article ID not provided."));
         return;
     }
 
@@ -69,6 +122,17 @@ function getComments (conf, callback) {
                     if (data.userDetails && data.userDetails.token) {
                         cache.cacheAuth(data.userDetails);
                     }
+                }
+
+                if (data.collection.bootStrapUrl) {
+                    pageUrlPerArticleId[conf.articleId] = "http://"+ envConfig.get().livefyre.networkName +".bootstrap.fyre.co/bs3" + data.collection.bootStrapUrl.replace('head.json', '');
+                }
+
+
+                if (conf.page > 0) {
+                    getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
+
+                    return;
                 }
 
                 callback(null, {

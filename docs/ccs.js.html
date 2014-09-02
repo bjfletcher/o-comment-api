@@ -116,6 +116,7 @@
 
 <ul>
 <li>stream: enable streaming of new comments</li>
+<li>page: the page number to be fetched. By default it is 0.</li>
 </ul> </div>
           <pre><code class="language-javascript">function getComments (conf, callback) {
     &quot;use strict&quot;;
@@ -129,6 +130,19 @@
         return;
     }
 
+
+    if (!conf.hasOwnProperty('articleId')) {
+        callback(new Error(&quot;Article ID not provided.&quot;));
+        return;
+    }
+
+    if (conf.page &gt; 0 &amp;&amp; pageUrlPerArticleId[conf.articleId]) {
+        getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
+
+        return;
+    }
+
+
     if (!conf.hasOwnProperty('title')) {
         callback(new Error(&quot;Article title not provided.&quot;));
         return;
@@ -136,11 +150,6 @@
 
     if (!conf.hasOwnProperty('url')) {
         callback(new Error(&quot;Article url not provided.&quot;));
-        return;
-    }
-
-    if (!conf.hasOwnProperty('articleId')) {
-        callback(new Error(&quot;Article ID not provided.&quot;));
         return;
     }
 
@@ -171,6 +180,17 @@
                     if (data.userDetails &amp;&amp; data.userDetails.token) {
                         cache.cacheAuth(data.userDetails);
                     }
+                }
+
+                if (data.collection.bootStrapUrl) {
+                    pageUrlPerArticleId[conf.articleId] = &quot;http://&quot;+ envConfig.get().livefyre.networkName +&quot;.bootstrap.fyre.co/bs3&quot; + data.collection.bootStrapUrl.replace('head.json', '');
+                }
+
+
+                if (conf.page &gt; 0) {
+                    getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
+
+                    return;
                 }
 
                 callback(null, {
