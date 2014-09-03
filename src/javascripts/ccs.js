@@ -10,7 +10,7 @@ var pageUrlPerArticleId = {};
 function getCommentsByPage (url, page, callback) {
     "use strict";
 
-    request.get(url, {
+    request.get(url + page + ".json", {
         success: function (response) {
             if (response && response.content) {
                 var listOfComments = [];
