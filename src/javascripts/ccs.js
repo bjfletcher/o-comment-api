@@ -39,10 +39,12 @@ function getCommentsByPage (url, page, callback) {
                 }
 
                 callback(null, listOfComments);
+            } else {
+                callback(new Error("No more page available."));
             }
         },
         error: function () {
-            callback(new Error("Error loading comments."));
+            callback(new Error("No more page available."));
         }
     });
 }
