@@ -136,13 +136,6 @@
         return;
     }
 
-    if (conf.page &gt; 0 &amp;&amp; pageUrlPerArticleId[conf.articleId]) {
-        getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
-
-        return;
-    }
-
-
     if (!conf.hasOwnProperty('title')) {
         callback(new Error(&quot;Article title not provided.&quot;));
         return;
@@ -163,6 +156,9 @@
         url: conf.url,
         articleId: conf.articleId
     };
+    if (typeof conf.page === 'number') {
+        dataToBeSent.page = conf.page;
+    }
 
     commentUtilities.jsonp(
         {
@@ -182,22 +178,11 @@
                     }
                 }
 
-                if (data.collection.bootStrapUrl) {
-                    pageUrlPerArticleId[conf.articleId] = &quot;http://&quot;+ envConfig.get().livefyre.networkName +&quot;.bootstrap.fyre.co/bs3&quot; + data.collection.bootStrapUrl.replace('head.json', '');
-                }
-
-
-                if (conf.page &gt; 0) {
-                    getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
-
-                    return;
-                }
-
                 callback(null, {
                     collection: data.collection
                 });
 
-                if (conf.stream === true) {
+                if (conf.stream === true &amp;&amp; typeof conf.page === 'undefined') {
                     stream.init(data.collection.collectionId, data.collection.lastEvent, function (comment) {
                         callback(null, {
                             comment: comment

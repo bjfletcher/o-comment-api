@@ -2,52 +2,6 @@ var commentUtilities = require('comment-utilities');
 var envConfig = require('./config.js');
 var cache = require('./cache.js');
 var stream = require('./stream.js');
-var request = require('./request.js');
-
-
-
-var pageUrlPerArticleId = {};
-function getCommentsByPage (url, page, callback) {
-    "use strict";
-
-    request.get(url + page + ".json", {
-        success: function (response) {
-            if (response && response.content) {
-                var listOfComments = [];
-                var item;
-                var authorData;
-                var i;
-
-                for (i = 0; i < response.content.length; i++) {
-                    item = response.content[i];
-                    authorData = response.authors[item.content.authorId];
-
-                    if (item.vis === 1 && item.type === 0) {
-                        listOfComments.push({
-                            parentId: item.content.parentId,
-                            author: {
-                                displayName: authorData.displayName,
-                                tags: authorData.tags,
-                                type: authorData.type
-                            },
-                            content: item.content.bodyHtml,
-                            timestamp: item.content.createdAt,
-                            commentId: item.content.id,
-                            visibility: item.vis
-                        });
-                    }
-                }
-
-                callback(null, listOfComments);
-            } else {
-                callback(new Error("No more page available."));
-            }
-        },
-        error: function () {
-            callback(new Error("No more page available."));
-        }
-    });
-}
 
 /**
  * Uses CCS.getComments endpoint, but it also embeds an optional caching layer for the authentication info.
@@ -80,13 +34,6 @@ function getComments (conf, callback) {
         return;
     }
 
-    if (conf.page > 0 && pageUrlPerArticleId[conf.articleId]) {
-        getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
-
-        return;
-    }
-
-
     if (!conf.hasOwnProperty('title')) {
         callback(new Error("Article title not provided."));
         return;
@@ -107,6 +54,9 @@ function getComments (conf, callback) {
         url: conf.url,
         articleId: conf.articleId
     };
+    if (typeof conf.page === 'number') {
+        dataToBeSent.page = conf.page;
+    }
 
     commentUtilities.jsonp(
         {
@@ -126,22 +76,11 @@ function getComments (conf, callback) {
                     }
                 }
 
-                if (data.collection.bootStrapUrl) {
-                    pageUrlPerArticleId[conf.articleId] = "http://"+ envConfig.get().livefyre.networkName +".bootstrap.fyre.co/bs3" + data.collection.bootStrapUrl.replace('head.json', '');
-                }
-
-
-                if (conf.page > 0) {
-                    getCommentsByPage(pageUrlPerArticleId[conf.articleId], conf.page, callback);
-
-                    return;
-                }
-
                 callback(null, {
                     collection: data.collection
                 });
 
-                if (conf.stream === true) {
+                if (conf.stream === true && typeof conf.page === 'undefined') {
                     stream.init(data.collection.collectionId, data.collection.lastEvent, function (comment) {
                         callback(null, {
                             comment: comment
