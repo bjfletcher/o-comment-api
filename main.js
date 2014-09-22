@@ -18,7 +18,8 @@ exports.api = {
     updateUser: suds.user.updateUser,
 
     getComments: ccs.getComments,
-    postComment: ccs.postComment
+    postComment: ccs.postComment,
+    deleteComment: ccs.deleteComment
 };
 
 /**

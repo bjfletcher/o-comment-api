@@ -367,13 +367,11 @@ function (err, data) {
 <h6 id="mandatory-fields">Mandatory fields</h6>
 <ul>
 <li>collectionId: ID of the collection. It can be obtained using the getComments function.</li>
-<li>token: a valid user token.</li>
-<li>content: Content of the comment.</li>
+<li>commentBody: Content of the comment.</li>
 </ul>
 <pre><code class="lang-javascript">oCommentsData.api.postComment({
     collectionId: 1525234,
-    token: &quot;eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI&quot;,
-    content: &quot;This is a comment&quot;
+    commentBody: &quot;This is a comment&quot;
 }, function (err, data) {
     if (err) {
         throw err;
@@ -384,13 +382,56 @@ function (err, data) {
 <h5 id="sample-response">Sample response</h5>
 <p>Successful response:</p>
 <pre><code class="lang-javascript">{
-    status: &quot;ok&quot;,
-    commentId: 51251232
+    &quot;success&quot;: true,
+    &quot;status&quot;: &quot;ok&quot;,
+    &quot;code&quot;: &quot;200&quot;,
+    &quot;invalidSession&quot;: false,
+    &quot;errorMessage&quot;: null,
+    &quot;bodyHtml&quot;: &quot;&lt;p&gt;post comment&lt;/p&gt;&quot;,
+    &quot;commentId&quot;: &quot;215819761&quot;,
+    &quot;createdAt&quot;: 1411370210
 }</code></pre>
 <p>Response with an error:</p>
 <pre><code class="lang-javascript">{
-    status: &quot;error&quot;,
-    error: &quot;Error message.&quot;
+    &quot;success&quot;: false,
+    &quot;status&quot;: null,
+    &quot;code&quot;: null,
+    &quot;invalidSession&quot;: false,
+    &quot;errorMessage&quot;: &quot;As good as it may be, you can&#39;t post the same comment twice.&quot;,
+    &quot;bodyHtml&quot;: null,
+    &quot;commentId&quot;: null,
+    &quot;createdAt&quot;: 0
+}</code></pre>
+<h3 id="api-deletecomment">api.deleteComment</h3>
+<p>This is a method with which a comment can be posted to an article&#39;s collection.</p>
+<h5 id="configuration">Configuration</h5>
+<h6 id="mandatory-fields">Mandatory fields</h6>
+<ul>
+<li>collectionId: ID of the collection. It can be obtained using the getComments function.</li>
+<li>commentId: ID of the comment.</li>
+</ul>
+<pre><code class="lang-javascript">oCommentsData.api.postComment({
+    collectionId: 1525234,
+    commentId: 16482
+}, function (err, data) {
+    if (err) {
+        throw err;
+    }
+
+    // do something with the data
+});</code></pre>
+<h5 id="sample-response">Sample response</h5>
+<p>Successful response:</p>
+<pre><code class="lang-javascript">{
+    &quot;success&quot;: true,
+    &quot;invalidSession&quot;: false,
+    &quot;errorMessage&quot;: null
+}</code></pre>
+<p>Response with an error:</p>
+<pre><code class="lang-javascript">{
+    &quot;success&quot;: false,
+    &quot;invalidSession&quot;: false,
+    &quot;errorMessage&quot;: &quot;You don&#39;t have permission to delete this comment.&quot;
 }</code></pre>
 </section>
         </div>

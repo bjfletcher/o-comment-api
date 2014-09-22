@@ -273,6 +273,58 @@
 
         callback(null, data);
     });
+}
+
+function deleteComment (conf, callback) {
+    &quot;use strict&quot;;
+
+    if (typeof callback !== 'function') {
+        throw new Error(&quot;Callback not provided&quot;);
+    }
+
+    if (!conf || typeof conf !== 'object') {
+        callback(new Error(&quot;Configuration is not provided.&quot;));
+        return;
+    }
+
+    if (!conf.collectionId) {
+        callback(new Error(&quot;Collection ID not provided.&quot;));
+        return;
+    }
+
+    if (!conf.commentId) {
+        callback(new Error(&quot;Comment ID not provided.&quot;));
+        return;
+    }
+
+
+    var dataToBeSent = {
+        collectionId: conf.collectionId,
+        commentId: conf.commentId
+    };
+
+
+    commentUtilities.jsonp({
+        url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.deleteComment,
+        data: dataToBeSent
+    }, function (err, data) {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        if (data) {
+            if (data.success === true) {
+                callback();
+                return;
+            } else if (data.error) {
+                callback(data.error);
+                return;
+            }
+        }
+
+        callback(new Error(&quot;An error occurred.&quot;));
+    });
 }</code></pre>
           <section id="exports">
             <h1>exports</h1>
@@ -284,7 +336,8 @@
           <div class="description"><p>Export all endpoints.</p> </div>
           <pre><code class="language-javascript">module.exports = {
     getComments: getComments,
-    postComment: postComment
+    postComment: postComment,
+    deleteComment: deleteComment
 };</code></pre>
         </div>
       </div>

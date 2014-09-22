@@ -15,7 +15,8 @@
         "baseUrl": "http://comment-creation.webservices.ft.com",
         "endpoints": {
             "getComments": "/v1/getComments",
-            "postComment": "/v1/postComment"
+            "postComment": "/v1/postComment",
+            "deleteComment": "/v1/deleteComment"
         }
     },
     "cacheConfig": {

@@ -20,8 +20,9 @@
             ccs: {
                 "baseUrl": "ccsBaseUrl",
                 "endpoints": {
-                    "getComments": "/v1/getcomments",
-                    "postComment": "/v1/postcomment"
+                    "getComments": "/v1/getComments",
+                    "postComment": "/v1/postComment",
+                    "deleteComment": "/v1/deleteComment"
                 }
             }
         };
@@ -435,6 +436,137 @@
             commentUtilitiesMockup.log.jsonp.callback(null, successData);
             equal(success, true, "Success callback called correctly.");
             equal(successValue, successData, "Data passed correctly to the success callback.");
+        });
+
+
+
+        module("deleteComment", {
+            setup: function () {
+                mockupReset.reset();
+            },
+            teardown: function () {
+
+            }
+        });
+
+        test("without parameters", function () {
+            var errorThrown = false;
+
+            try {
+                nodeModule.exports.deleteComment();
+            } catch (e) {
+                errorThrown = true;
+            }
+
+            equal(errorThrown, true, "Failed as expected.");
+        });
+
+        test("incomplete data", function () {
+            var errorThrown;
+            var testDataMissing = function (missingData) {
+                errorThrown = false;
+                
+                var conf = {
+                    collectionId: 61231,
+                    commentId: 151232
+                };
+
+                var callbackMiss = function (err) {
+                    if (err) {
+                        errorThrown = true;
+                    }
+                };
+
+                if (missingData === 'callback') {
+                    callbackMiss = undefined;
+
+                    try {
+                        nodeModule.exports.deleteComment(conf, callbackMiss);
+                    } catch (e) {
+                        errorThrown = true;
+                    }
+                } else {
+                    if (conf.hasOwnProperty(missingData)) {
+                        delete conf[missingData];
+                    }
+
+                    nodeModule.exports.deleteComment(conf, callbackMiss);
+                }
+            };
+
+            testDataMissing('collectionId')
+            ok(errorThrown, "collectionId missing - callback called with error.");
+
+            testDataMissing('commentId')
+            ok(errorThrown, "commentId missing - callback called with error.");
+
+            testDataMissing('callback')
+            ok(errorThrown, "callback missing - exception thrown.");
+        });
+
+        test("with data - error", function () {
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                collectionId: 61231,
+                commentId: 151232
+            };
+
+            nodeModule.exports.deleteComment(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.deleteComment, "Configuration used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, configData.collectionId, "Collection Id used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.commentId, configData.commentId, "Comment Id used correctly.");
+
+            var errorData = new Error("Timeout");
+            commentUtilitiesMockup.log.jsonp.callback(errorData, null);
+            equal(error, true, "Error callback called correctly.");
+            equal(errorValue, errorData, "Data passed correctly to the error callback.");
+        });
+
+        test("with data - success", function () {
+            var success = false,
+                successValue,
+                error = false,
+                errorValue;
+
+            var configData = {
+                collectionId: 61231,
+                commentId: 151232
+            };
+
+            nodeModule.exports.deleteComment(configData, function (err, data) {
+                if (err) {
+                    error = true;
+                    errorValue = err;
+                    return;
+                }
+
+                success = true;
+                successValue = data;
+            });
+
+            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.ccs.baseUrl + base_config.ccs.endpoints.deleteComment, "Configuration used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.collectionId, configData.collectionId, "Collection Id used correctly.");
+            equal(commentUtilitiesMockup.log.jsonp.options.data.commentId, configData.commentId, "Comment Id used correctly.");
+
+            var successData = {
+                success: true
+            };
+            commentUtilitiesMockup.log.jsonp.callback(null, successData);
+            equal(success, true, "Success callback called correctly.");
         });
     </script>
 </body>

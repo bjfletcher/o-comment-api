@@ -147,11 +147,64 @@ function postComment (conf, callback) {
     });
 }
 
+function deleteComment (conf, callback) {
+    "use strict";
+
+    if (typeof callback !== 'function') {
+        throw new Error("Callback not provided");
+    }
+
+    if (!conf || typeof conf !== 'object') {
+        callback(new Error("Configuration is not provided."));
+        return;
+    }
+
+    if (!conf.collectionId) {
+        callback(new Error("Collection ID not provided."));
+        return;
+    }
+
+    if (!conf.commentId) {
+        callback(new Error("Comment ID not provided."));
+        return;
+    }
+
+
+    var dataToBeSent = {
+        collectionId: conf.collectionId,
+        commentId: conf.commentId
+    };
+
+
+    commentUtilities.jsonp({
+        url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.deleteComment,
+        data: dataToBeSent
+    }, function (err, data) {
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        if (data) {
+            if (data.success === true) {
+                callback();
+                return;
+            } else if (data.error) {
+                callback(data.error);
+                return;
+            }
+        }
+
+        callback(new Error("An error occurred."));
+    });
+}
+
 /**
  * Export all endpoints.
  * @type {Object}
  */
 module.exports = {
     getComments: getComments,
-    postComment: postComment
+    postComment: postComment,
+    deleteComment: deleteComment
 };

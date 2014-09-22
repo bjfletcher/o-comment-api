@@ -414,15 +414,13 @@ This is a method with which a comment can be posted to an article's collection.
 ###### Mandatory fields
 
 - collectionId: ID of the collection. It can be obtained using the getComments function.
-- token: a valid user token.
-- content: Content of the comment.
+- commentBody: Content of the comment.
 
 
 ```javascript
 oCommentsData.api.postComment({
     collectionId: 1525234,
-    token: "eyJhbGciOiJIUzI1NiJ9.eyJkb21haW4iOiJmdC1pbnQtMC5meXJlLmNvIiwiZXhwaXJlcyI6MTQwMTgxMDI3NDI2MywidXNlcl9pZCI6Ijg5NDg3NDM5IiwiZGlzcGxheV9uYW1lIjoicm9saSJ9.u2ko_UkQkkFwL20RvfMnGmi9ZPXxsnUuxWH5MnAoeyI",
-    content: "This is a comment"
+    commentBody: "This is a comment"
 }, function (err, data) {
     if (err) {
         throw err;
@@ -438,8 +436,14 @@ Successful response:
 
 ```javascript
 {
-    status: "ok",
-    commentId: 51251232
+    "success": true,
+    "status": "ok",
+    "code": "200",
+    "invalidSession": false,
+    "errorMessage": null,
+    "bodyHtml": "<p>post comment</p>",
+    "commentId": "215819761",
+    "createdAt": 1411370210
 }
 ```
 
@@ -447,7 +451,60 @@ Response with an error:
 
 ```javascript
 {
-    status: "error",
-    error: "Error message."
+    "success": false,
+    "status": null,
+    "code": null,
+    "invalidSession": false,
+    "errorMessage": "As good as it may be, you can't post the same comment twice.",
+    "bodyHtml": null,
+    "commentId": null,
+    "createdAt": 0
+}
+```
+
+
+### api.deleteComment
+
+This is a method with which a comment can be posted to an article's collection.
+
+##### Configuration
+###### Mandatory fields
+
+- collectionId: ID of the collection. It can be obtained using the getComments function.
+- commentId: ID of the comment.
+
+
+```javascript
+oCommentsData.api.postComment({
+    collectionId: 1525234,
+    commentId: 16482
+}, function (err, data) {
+    if (err) {
+        throw err;
+    }
+
+    // do something with the data
+});
+```
+
+##### Sample response
+
+Successful response:
+
+```javascript
+{
+    "success": true,
+    "invalidSession": false,
+    "errorMessage": null
+}
+```
+
+Response with an error:
+
+```javascript
+{
+    "success": false,
+    "invalidSession": false,
+    "errorMessage": "You don't have permission to delete this comment."
 }
 ```
