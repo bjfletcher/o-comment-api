@@ -178,10 +178,13 @@
     
     if (authObject.token) {
         try {
+            var oldObj = {};
             if (commentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
-                commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+                oldObj = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
             }
-            commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
+
+            var mergedObj = merge({}, oldObj, authObject);
+            commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), mergedObj);
 
             return true;
         } catch (e) {

@@ -27,6 +27,7 @@
     </script>
 
     <script src="./mockups/comment-utilities.js"></script>
+    <script src="./mockups/js-merge.js"></script>
     
     <script>
         // define the require function and register the mockups by path
@@ -40,7 +41,8 @@
                     return base_config;
                 }
             },
-            'comment-utilities': commentUtilitiesMockup.mockup
+            'comment-utilities': commentUtilitiesMockup.mockup,
+            'js-merge': mergeMockup.mockup
         });
 
         // define export variables
@@ -82,14 +84,18 @@
 
             ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.called, "Set operation executed.");
             equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
-            deepEqual(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, {
-                token: 'tokentest',
-                expires: expires,
-                displayName: 'pseudonym',
-                settings: {
-                    'emailcomments': 'never'
+            deepEqual(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, [
+                {},
+                {},
+                {
+                    token: 'tokentest',
+                    expires: expires,
+                    displayName: 'pseudonym',
+                    settings: {
+                        'emailcomments': 'never'
+                    }
                 }
-            }, "Auth object set correctly, correct session ID is used.");
+            ], "Auth object set correctly with the merged object, correct session ID is used.");
         });
 
         test("cacheAuth - an entry already in cache", function () {
@@ -108,19 +114,20 @@
             };
             nodeExports.cacheAuth(authObj);
 
-            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.called, "Remove existing entry called.");
-            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Remove existing entry.");
-
             ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.called, "Set operation executed.");
             equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "Correct key used.");
-            deepEqual(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, {
-                token: 'tokentest',
-                expires: expires,
-                displayName: 'pseudonym',
-                settings: {
-                    'emailcomments': 'never'
+            deepEqual(commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem.value, [
+                {},
+                commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId],
+                {
+                    token: 'tokentest',
+                    expires: expires,
+                    displayName: 'pseudonym',
+                    settings: {
+                        'emailcomments': 'never'
+                    }
                 }
-            }, "Auth object set correctly, correct session ID is used.");
+            ], "Auth object set correctly with the merged object, correct session ID is used.");
         });
 
         test("cacheAuth - no sessionId", function () {

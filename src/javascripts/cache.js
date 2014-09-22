@@ -1,5 +1,6 @@
 var envConfig = require('./config.js'),
-    commentUtilities = require('comment-utilities');
+    commentUtilities = require('comment-utilities'),
+    merge = require('js-merge');
 
 /**
  * Verifies if there's a valid auth token (not expired) attached to the session ID provided.
@@ -56,10 +57,13 @@ exports.cacheAuth = function (authObject) {
     
     if (authObject.token) {
         try {
+            var oldObj = {};
             if (commentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
-                commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+                oldObj = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
             }
-            commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), authObject);
+
+            var mergedObj = merge({}, oldObj, authObject);
+            commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), mergedObj);
 
             return true;
         } catch (e) {
