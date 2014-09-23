@@ -16,16 +16,16 @@ There are two ways of using this module:
 Run `grunt`, then insert the JS found in the dist folder:
 
 ```javascript
-<script src="dist/javascripts/oCommentsData.min.js"></script>
+<script src="dist/javascripts/oCommentData.min.js"></script>
 ```
 
-The module's API can be accessed using `oCommentsData` in the global scope.
+The module's API can be accessed using `oCommentData` in the global scope.
 
 ### Bower and browserify
 With bower, simply require the module:
 
 ```javascript
-var oCommentsData = require('o-comments-data');
+var oCommentData = require('o-comment-data');
 ```
 
 The module should be built using `browserify` (with `debowerify` transform).
