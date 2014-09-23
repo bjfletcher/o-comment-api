@@ -185,17 +185,7 @@ function deleteComment (conf, callback) {
             return;
         }
 
-        if (data) {
-            if (data.success === true) {
-                callback();
-                return;
-            } else if (data.error) {
-                callback(data.error);
-                return;
-            }
-        }
-
-        callback(new Error("An error occurred."));
+        callback(null, data);
     });
 }
 
