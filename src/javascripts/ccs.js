@@ -55,7 +55,7 @@ function getComments (conf, callback) {
         articleId: conf.articleId
     };
     if (typeof conf.page === 'number') {
-        dataToBeSent.page = conf.page;
+        dataToBeSent.pageNumber = conf.page;
     }
 
     commentUtilities.jsonp(

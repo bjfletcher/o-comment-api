@@ -157,7 +157,7 @@
         articleId: conf.articleId
     };
     if (typeof conf.page === 'number') {
-        dataToBeSent.page = conf.page;
+        dataToBeSent.pageNumber = conf.page;
     }
 
     commentUtilities.jsonp(
@@ -313,17 +313,7 @@ function deleteComment (conf, callback) {
             return;
         }
 
-        if (data) {
-            if (data.success === true) {
-                callback();
-                return;
-            } else if (data.error) {
-                callback(data.error);
-                return;
-            }
-        }
-
-        callback(new Error(&quot;An error occurred.&quot;));
+        callback(null, data);
     });
 }</code></pre>
           <section id="exports">

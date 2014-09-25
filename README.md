@@ -386,28 +386,29 @@ oCommentsData.api.getComments({
 
 ```javascript
 {
-    "collectionId": 12512,
-    "maxEventId": 51612321,
-    "comments": [
-        {
-            id: 125123,
-            author: "author name 1",
-            content: "This is a comment."
-            timestamp: 1405687488230
-        },
-        {
-            id: 6234123,
-            author: "author name 2",
-            content: "This is another comment."
-            timestamp: 1405625288230
-        }
-    ]
+    "collection": {
+        "unclassified": false,
+        "collectionId": "91440735",
+        "lastEvent": 1411541039265900,
+        "comments": [{
+            "parentId": "",
+            "author": {
+                "displayName": "roli main",
+                "tags": ["FT"],
+                "type": 1
+            },
+            "content": "<p>comment</p>",
+            "timestamp": 1411541039,
+            "commentId": "216743299",
+            "visibility": 1
+        }],
+        "totalPages": "6"
+    }
 }
 ```
 
 
 ### api.postComment
-
 This is a method with which a comment can be posted to an article's collection.
 
 ##### Configuration

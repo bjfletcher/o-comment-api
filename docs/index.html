@@ -99,11 +99,11 @@
 <p>There are two ways of using this module:</p>
 <h3 id="standalone">Standalone</h3>
 <p>Run <code>grunt</code>, then insert the JS found in the dist folder:</p>
-<pre><code class="lang-javascript">&lt;script src=&quot;dist/javascripts/oCommentsData.min.js&quot;&gt;&lt;/script&gt;</code></pre>
-<p>The module&#39;s API can be accessed using <code>oCommentsData</code> in the global scope.</p>
+<pre><code class="lang-javascript">&lt;script src=&quot;dist/javascripts/oCommentData.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+<p>The module&#39;s API can be accessed using <code>oCommentData</code> in the global scope.</p>
 <h3 id="bower-and-browserify">Bower and browserify</h3>
 <p>With bower, simply require the module:</p>
-<pre><code class="lang-javascript">var oCommentsData = require(&#39;o-comments-data&#39;);</code></pre>
+<pre><code class="lang-javascript">var oCommentData = require(&#39;o-comment-data&#39;);</code></pre>
 <p>The module should be built using <code>browserify</code> (with <code>debowerify</code> transform).</p>
 <hr>
 <h2 id="configuration">Configuration</h2>
@@ -344,22 +344,24 @@ function (err, data) {
 });</code></pre>
 <h5 id="sample-response">Sample response</h5>
 <pre><code class="lang-javascript">{
-    &quot;collectionId&quot;: 12512,
-    &quot;maxEventId&quot;: 51612321,
-    &quot;comments&quot;: [
-        {
-            id: 125123,
-            author: &quot;author name 1&quot;,
-            content: &quot;This is a comment.&quot;
-            timestamp: 1405687488230
-        },
-        {
-            id: 6234123,
-            author: &quot;author name 2&quot;,
-            content: &quot;This is another comment.&quot;
-            timestamp: 1405625288230
-        }
-    ]
+    &quot;collection&quot;: {
+        &quot;unclassified&quot;: false,
+        &quot;collectionId&quot;: &quot;91440735&quot;,
+        &quot;lastEvent&quot;: 1411541039265900,
+        &quot;comments&quot;: [{
+            &quot;parentId&quot;: &quot;&quot;,
+            &quot;author&quot;: {
+                &quot;displayName&quot;: &quot;roli main&quot;,
+                &quot;tags&quot;: [&quot;FT&quot;],
+                &quot;type&quot;: 1
+            },
+            &quot;content&quot;: &quot;&lt;p&gt;comment&lt;/p&gt;&quot;,
+            &quot;timestamp&quot;: 1411541039,
+            &quot;commentId&quot;: &quot;216743299&quot;,
+            &quot;visibility&quot;: 1
+        }],
+        &quot;totalPages&quot;: &quot;6&quot;
+    }
 }</code></pre>
 <h3 id="api-postcomment">api.postComment</h3>
 <p>This is a method with which a comment can be posted to an article&#39;s collection.</p>
