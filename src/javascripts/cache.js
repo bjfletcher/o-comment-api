@@ -15,7 +15,7 @@ exports.getAuth = function() {
 
     var authCache = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
     if (authCache) {
-        if (new Date() < new Date(authCache.expires)) {
+        if (new Date() < commentUtilities.toDateObject(authCache.expires)) {
             return authCache;
         } else {
             commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
