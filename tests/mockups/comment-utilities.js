@@ -58,6 +58,36 @@ var commentUtilitiesMockup = {
             log: function () {
 
             }
+        },
+        dateHelper: {
+            toTimestamp: function (timestampOrDate) {
+                if (timestampOrDate instanceof Date) {
+                    return timestampOrDate.getTime();
+                }
+
+                if (typeof timestampOrDate === "string") {
+                    return new Date(timestampOrDate).getTime();
+                }
+
+                if (typeof timestampOrDate === "number" && parseInt(timestampOrDate, 10).toString().length < 13) {
+                    return timestampOrDate * 1000;
+                }
+
+                return timestampOrDate;
+            },
+
+            /**
+             * Converts a date in any format to a JS Date Object.
+             * @param  {Date|String|Number} timestampOrDate Can be Date, string which is compatible with the constructor of Date, or a timestamp.
+             * @return {Date} Date object
+             */
+            toDateObject: function (timestampOrDate) {
+                if (timestampOrDate instanceof Date) {
+                    return timestampOrDate;
+                }
+
+                return new Date(commentUtilitiesMockup.mockup.dateHelper.toTimestamp(timestampOrDate));
+            }
         }
     }
 };

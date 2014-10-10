@@ -69,7 +69,7 @@
         });
 
         test("cacheAuth - empty cache", function () {
-            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
+            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime() / 1000);
             commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.sessionId] = null;
 
             var authObj = {
@@ -99,7 +99,7 @@
         });
 
         test("cacheAuth - an entry already in cache", function () {
-            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
+            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime() / 1000);
             commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
                 someCache: "value"
             };
@@ -137,7 +137,7 @@
 
             var errorThrown = false;
 
-            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime());
+            var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime() / 1000);
 
             var authObj = {
                 token: 'tokentest',
@@ -166,7 +166,23 @@
             equal(authObj, undefined, "Auth object does not exist");
         });
 
-        test("getAuth - token expired", function () {
+        test("getAuth - token expired - expiry date in seconds", function () {
+            commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
+                token: "authToken",
+                expires: Math.round(new Date(+new Date() - 10 * 1000).getTime() / 1000),
+                displayName: 'pseudonym',
+                settings: {
+                    'emailcomments': 'never'
+                }
+            };
+
+            var authObj = nodeExports.getAuth();
+            equal(authObj, undefined, "Auth object expired.");
+            ok(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.called, "Existing auth object removed.");
+            equal(commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem.key, base_config.cacheConfig.authBaseName + base_config.sessionId, "The correct key is used to remove from storage.");
+        });
+
+        test("getAuth - token expired - expiry date in milliseconds", function () {
             commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + base_config.sessionId] = {
                 token: "authToken",
                 expires: Math.round(new Date(+new Date() - 10 * 1000).getTime()),
@@ -185,7 +201,7 @@
         test("getAuth - token still valid", function () {
             var cachedValue = {
                 token: "authToken",
-                expires: Math.round(new Date(+new Date() + 10 * 1000).getTime()),
+                expires: Math.round(new Date(+new Date() + 10 * 1000).getTime() / 1000),
                 displayName: 'pseudonym',
                 settings: {
                     'emailcomments': 'never'
@@ -206,7 +222,7 @@
 
             commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + sessionIdBackup] = {
                 token: "authToken",
-                expires: Math.round(new Date(+new Date() + 10 * 1000).getTime()),
+                expires: Math.round(new Date(+new Date() + 10 * 1000).getTime() / 1000),
                 displayName: 'pseudonym',
                 settings: {
                     'emailcomments': 'never'
