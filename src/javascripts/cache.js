@@ -10,7 +10,7 @@ exports.getAuth = function() {
     "use strict";
 
     if (!envConfig.get('sessionId')) {
-        throw "Session ID is not set.";
+        return undefined;
     }
 
     var authCache = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
@@ -32,7 +32,7 @@ exports.removeAuth = function () {
     "use strict";
 
     if (!envConfig.get('sessionId')) {
-        throw "Session ID is not set.";
+        return;
     }
     
 
@@ -52,7 +52,7 @@ exports.cacheAuth = function (authObject) {
     "use strict";
 
     if (!envConfig.get('sessionId')) {
-        throw "Session ID is not set.";
+        return false;
     }
     
     if (authObject.token) {
