@@ -113,7 +113,7 @@
     &quot;use strict&quot;;
 
     if (!envConfig.get('sessionId')) {
-        throw &quot;Session ID is not set.&quot;;
+        return undefined;
     }
 
     var authCache = commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
@@ -139,7 +139,7 @@
     &quot;use strict&quot;;
 
     if (!envConfig.get('sessionId')) {
-        throw &quot;Session ID is not set.&quot;;
+        return;
     }
     
 
@@ -173,7 +173,7 @@
     &quot;use strict&quot;;
 
     if (!envConfig.get('sessionId')) {
-        throw &quot;Session ID is not set.&quot;;
+        return false;
     }
     
     if (authObject.token) {

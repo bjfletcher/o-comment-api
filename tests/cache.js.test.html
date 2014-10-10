@@ -134,9 +134,6 @@
             var sessionIdBackup = base_config.sessionId;
             delete base_config.sessionId;
 
-
-            var errorThrown = false;
-
             var expires = Math.round(new Date(+new Date() + 60 * 1000).getTime() / 1000);
 
             var authObj = {
@@ -148,13 +145,10 @@
                 }
             };
 
-            try {
-                nodeExports.cacheAuth(authObj);
-            } catch (e) {
-                errorThrown = true;
-            }
+            var returnValue = nodeExports.cacheAuth(authObj);
+            ok(!returnValue, "False returned without session ID.");
 
-            ok(errorThrown, "Error is thrown because no sessionId is provided.");
+            ok(!commentUtilitiesMockup.log.storageWrapper.sessionStorage.setItem, "setItem of session storage not called.");
 
             base_config.sessionId = sessionIdBackup;
         });
@@ -217,9 +211,6 @@
             var sessionIdBackup = base_config.sessionId;
             delete base_config.sessionId;
 
-
-            var errorThrown = false;
-
             commentUtilitiesMockup.returnValue.storageWrapper.sessionStorage[base_config.cacheConfig.authBaseName + sessionIdBackup] = {
                 token: "authToken",
                 expires: Math.round(new Date(+new Date() + 10 * 1000).getTime() / 1000),
@@ -229,13 +220,10 @@
                 }
             };
 
-            try {
-                nodeExports.getAuth();
-            } catch (e) {
-                errorThrown = true;
-            }
+            var returnValue = nodeExports.getAuth();
+            equal(returnValue, undefined, "Undefined is returned if no session ID is provided.");
 
-            ok(errorThrown, "Error is thrown because no sessionId is provided.");
+            ok(!commentUtilitiesMockup.log.storageWrapper.sessionStorage.getItem, "getItem of session storage not called.");
 
             base_config.sessionId = sessionIdBackup;
         });
@@ -259,8 +247,8 @@
             } catch (e) {
                 errorThrown = true;
             }
-
-            ok(errorThrown, "Error is thrown because no sessionId is provided.");
+            ok(!commentUtilitiesMockup.log.storageWrapper.sessionStorage.removeItem, "RemoveItem of session storage not called.");
+            ok(!errorThrown, "No error thrown.");
 
             base_config.sessionId = sessionIdBackup;
         });
