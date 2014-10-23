@@ -1,3 +1,5 @@
+"use strict";
+
 var envConfig = require('./config.js'),
     commentUtilities = require('comment-utilities'),
     merge = require('js-merge');
@@ -7,8 +9,6 @@ var envConfig = require('./config.js'),
  * @return {string|undefined}
  */
 exports.getAuth = function() {
-    "use strict";
-
     if (!envConfig.get('sessionId')) {
         return undefined;
     }
@@ -29,8 +29,6 @@ exports.getAuth = function() {
  * Removes the auth token from the local cache.
  */
 exports.removeAuth = function () {
-    "use strict";
-
     if (!envConfig.get('sessionId')) {
         return;
     }
@@ -49,8 +47,6 @@ exports.removeAuth = function () {
  * @return {boolean} True if successfully saved or false if not.
  */
 exports.cacheAuth = function (authObject) {
-    "use strict";
-
     if (!envConfig.get('sessionId')) {
         return false;
     }
@@ -80,8 +76,6 @@ exports.cacheAuth = function (authObject) {
  * @return {object|undefined}
  */
 exports.getInit = function (articleId) {
-    "use strict";
-    
     return commentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
@@ -91,8 +85,6 @@ exports.getInit = function (articleId) {
  * @param  {object} initObj SUDS init
  */
 exports.cacheInit = function (articleId, initObj) {
-    "use strict";
-    
     try {
         commentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
 
@@ -109,8 +101,6 @@ exports.cacheInit = function (articleId, initObj) {
  * @param  {string|number} articleId The ID of the article
  */
 exports.removeInit = function (articleId) {
-    "use strict";
-    
     commentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
@@ -118,8 +108,6 @@ exports.removeInit = function (articleId) {
  * Clears all entries created by the cache.
  */
 exports.clear = function () {
-    "use strict";
-    
     if (commentUtilities.storageWrapper.sessionStorage.native) {
         for (var key in commentUtilities.storageWrapper.sessionStorage.native) {
             if (commentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {

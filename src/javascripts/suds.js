@@ -1,3 +1,5 @@
+"use strict";
+
 var cache = require('./cache.js'),
     utils = require('./utils.js'),
     envConfig = require('./config.js'),
@@ -25,8 +27,6 @@ var livefyre = {};
  * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
  */
 livefyre.getInitConfig = function (conf, callback) {
-    "use strict";
-
     if (typeof callback !== 'function') {
         throw "Callbacks not provided";
     }
@@ -131,8 +131,6 @@ var user = {};
  * @param  {Function}          callback       Callback function if configuration is provided as well.
  */
 user.getAuth = function (confOrCallback, callback) {
-    "use strict";
-
     if (typeof confOrCallback === 'function') {
         callback = confOrCallback;
     }
@@ -188,8 +186,6 @@ user.getAuth = function (confOrCallback, callback) {
  * @param {Function} callback function (err, data)
  */
 user.updateUser = function (userSettings, callback) {
-    "use strict";
-
     if (typeof callback !== 'function') {
         throw new Error("Callback not provided.");
     }

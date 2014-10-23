@@ -1,9 +1,9 @@
+"use strict";
+
 var request = require('./request.js');
 var envConfig = require('./config.js');
 
 exports.init = function (collectionId, lastEventId, callback) {
-    "use strict";
-
     var lastTime = new Date();
     var timeToWait = 0;
 

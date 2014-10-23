@@ -1,10 +1,10 @@
+"use strict";
+
 /* global XDomainRequest:false, ActiveXObject:false */
 
 var commentUtilities = require('comment-utilities');
 
 exports.get = function (url, callback) {
-    "use strict";
-
     var xhr = getXhrForUrl(url);
     var aborted = false;
 
@@ -84,8 +84,6 @@ exports.get = function (url, callback) {
  */
 
 function getXhrForUrl (requestUrl) {
-    "use strict";
-
     var isXDomainRequest = false;
 
     if (typeof window.location !== 'undefined') {

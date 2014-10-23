@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require('./src/javascripts/config.js'),
     suds = require('./src/javascripts/suds.js'),
     ccs = require('./src/javascripts/ccs.js'),
@@ -35,7 +37,6 @@ exports.cache = {
  * @type {function}
  */
 exports.enableLogging = function () {
-    "use strict";
     commentUtilities.logger.enable.apply(this, arguments);
 };
 
@@ -44,7 +45,6 @@ exports.enableLogging = function () {
  * @type {function}
  */
 exports.disableLogging = function () {
-    "use strict";
     commentUtilities.logger.disable.apply(this, arguments);
 };
 
@@ -53,7 +53,6 @@ exports.disableLogging = function () {
  * @type {number|string}
  */
 exports.setLoggingLevel = function () {
-    "use strict";
     commentUtilities.logger.setLevel.apply(this, arguments);
 };
 
@@ -61,6 +60,5 @@ exports.setLoggingLevel = function () {
  * Init method sets additional or overrides current configuration options.
  */
 exports.init = function () {
-    "use strict";
     config.set.apply(this, arguments);
 };

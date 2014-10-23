@@ -1,3 +1,5 @@
+"use strict";
+
 var commentUtilities = require('comment-utilities');
 var envConfig = require('./config.js');
 var cache = require('./cache.js');
@@ -17,8 +19,6 @@ var stream = require('./stream.js');
  * - page: the page number to be fetched. By default it is 0.
  */
 function getComments (conf, callback) {
-    "use strict";
-
     if (typeof callback !== 'function') {
         throw new Error("Callback not provided");
     }
@@ -106,8 +106,6 @@ function getComments (conf, callback) {
  * @param  {Function} callback function (err, data)
  */
 function postComment (conf, callback) {
-    "use strict";
-
     if (typeof callback !== 'function') {
         throw new Error("Callback not provided");
     }
@@ -148,8 +146,6 @@ function postComment (conf, callback) {
 }
 
 function deleteComment (conf, callback) {
-    "use strict";
-
     if (typeof callback !== 'function') {
         throw new Error("Callback not provided");
     }
