@@ -2,7 +2,7 @@
 
 /* global XDomainRequest:false, ActiveXObject:false */
 
-var commentUtilities = require('comment-utilities');
+var oCommentUtilities = require('o-comment-utilities');
 
 exports.get = function (url, callback) {
     var xhr = getXhrForUrl(url);
@@ -30,21 +30,21 @@ exports.get = function (url, callback) {
                     responseText = JSON.parse(responseText);
                 } catch (e) {}
 
-                commentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
+                oCommentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
                 callback.success(responseText);
             }
         };
 
         xhr.onerror = function () {
             if (!aborted) {
-                commentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
+                oCommentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
                 callback.error();
             }
         };
 
         xhr.ontimeout = function () {
             if (!aborted) {
-                commentUtilities.logger.debug('stream', 'xhr ontimeout', 'xhr timeout');
+                oCommentUtilities.logger.debug('stream', 'xhr ontimeout', 'xhr timeout');
 
                 aborted = true;
                 try {
@@ -64,10 +64,10 @@ exports.get = function (url, callback) {
                         responseText = JSON.parse(responseText);
                     } catch (e) {}
 
-                    commentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'responseText:', responseText);
+                    oCommentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'responseText:', responseText);
                     callback.success(responseText);
                 } else {
-                    commentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'xhr error');
+                    oCommentUtilities.logger.debug('stream', 'xhr onreadystatechange', 'xhr error');
                     callback.error();
                 }
             }

@@ -1,6 +1,5 @@
 {
   "name": "o-comments-data",
-  "version": "0.6.7",
   "private": true,
   "dependencies": {},
   "devDependencies": {

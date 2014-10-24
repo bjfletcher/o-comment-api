@@ -1,6 +1,6 @@
 "use strict";
 
-var commentUtilities = require('comment-utilities');
+var oCommentUtilities = require('o-comment-utilities');
 var envConfig = require('./config.js');
 var cache = require('./cache.js');
 var stream = require('./stream.js');
@@ -58,7 +58,7 @@ function getComments (conf, callback) {
         dataToBeSent.pageNumber = conf.page;
     }
 
-    commentUtilities.jsonp(
+    oCommentUtilities.jsonp(
         {
             url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.getComments,
             data: dataToBeSent
@@ -132,7 +132,7 @@ function postComment (conf, callback) {
     };
 
 
-    commentUtilities.jsonp({
+    oCommentUtilities.jsonp({
         url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.postComment,
         data: dataToBeSent
     }, function (err, data) {
@@ -172,7 +172,7 @@ function deleteComment (conf, callback) {
     };
 
 
-    commentUtilities.jsonp({
+    oCommentUtilities.jsonp({
         url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.deleteComment,
         data: dataToBeSent
     }, function (err, data) {

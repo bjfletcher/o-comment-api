@@ -5,7 +5,7 @@ var config = require('./src/javascripts/config.js'),
     ccs = require('./src/javascripts/ccs.js'),
     cache = require('./src/javascripts/cache.js'),
     defaultConfig = require('./config.json'),
-    commentUtilities = require('comment-utilities');
+    oCommentUtilities = require('o-comment-utilities');
 
 
 config.set(defaultConfig);
@@ -37,7 +37,7 @@ exports.cache = {
  * @type {function}
  */
 exports.enableLogging = function () {
-    commentUtilities.logger.enable.apply(this, arguments);
+    oCommentUtilities.logger.enable.apply(this, arguments);
 };
 
 /**
@@ -45,7 +45,7 @@ exports.enableLogging = function () {
  * @type {function}
  */
 exports.disableLogging = function () {
-    commentUtilities.logger.disable.apply(this, arguments);
+    oCommentUtilities.logger.disable.apply(this, arguments);
 };
 
 /**
@@ -53,7 +53,7 @@ exports.disableLogging = function () {
  * @type {number|string}
  */
 exports.setLoggingLevel = function () {
-    commentUtilities.logger.setLevel.apply(this, arguments);
+    oCommentUtilities.logger.setLevel.apply(this, arguments);
 };
 
 /**

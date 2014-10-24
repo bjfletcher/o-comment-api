@@ -1,6 +1,6 @@
 "use strict";
 
-var EnvConfig = require('comment-utilities').EnvConfig;
+var EnvConfig = require('o-comment-utilities').EnvConfig;
 
 /**
  * Isolated copy of the configuration.
