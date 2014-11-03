@@ -20,43 +20,66 @@ exports.init = function (collectionId, lastEventId, callback) {
                 return;
             }
 
-            if (response.data && response.data.states) {
-                var eventCollection = response.data.states;
+            if (response.data) {
+                if (response.data.states) {
+                    var eventCollection = response.data.states;
 
-                for (var key in eventCollection) {
-                    if (eventCollection.hasOwnProperty(key)) {
-                        var item = eventCollection[key];
+                    for (var key in eventCollection) {
+                        if (eventCollection.hasOwnProperty(key)) {
+                            var item = eventCollection[key];
 
-                        // type: comment
-                        if (item.type === 0) {
-                            if (item.vis === 1) {
-                                // new comment
-                                
-                                var comment = {};
-                                var authorData = response.data.authors[item.content.authorId];
+                            // type: comment
+                            if (item.type === 0) {
+                                if (item.vis === 1) {
+                                    // new comment
+                                    
+                                    var comment = {};
+                                    var authorData = response.data.authors[item.content.authorId];
 
-                                comment = {
-                                    parentId: item.content.parentId,
-                                    author: {
-                                        displayName: authorData.displayName,
-                                        tags: authorData.tags,
-                                        type: authorData.type
-                                    },
-                                    content: item.content.bodyHtml,
-                                    timestamp: item.content.createdAt,
-                                    commentId: item.content.id,
-                                    visibility: item.vis
-                                };
+                                    comment = {
+                                        parentId: item.content.parentId,
+                                        author: {
+                                            displayName: authorData.displayName,
+                                            tags: authorData.tags,
+                                            type: authorData.type
+                                        },
+                                        content: item.content.bodyHtml,
+                                        timestamp: item.content.createdAt,
+                                        commentId: item.content.id,
+                                        visibility: item.vis
+                                    };
 
-                                callback(comment);
-                            } else if (item.vis === 0) {
-                                // comment deleted
-                                
-                                callback({
-                                    deleted: true,
-                                    commentId: item.content.id
-                                });
+                                    callback({
+                                        comment: comment
+                                    });
+                                } else if (item.vis === 0) {
+                                    // comment deleted
+                                    
+                                    callback({
+                                        comment: {
+                                            deleted: true,
+                                            commentId: item.content.id
+                                        }
+                                    });
+                                }
                             }
+                        }
+                    }
+                }
+
+                if (response.data.settings && response.data.settings.length) {
+                    var i = 0;
+                    var setting;
+
+                    for (i = 0; i < response.data.settings.length; i++) {
+                        setting = response.data.settings[i];
+
+                        if (setting.name === 'commentsEnabled') {
+                            callback({
+                                collection: {
+                                    commentsEnabled: setting.value
+                                }
+                            });
                         }
                     }
                 }
