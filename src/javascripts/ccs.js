@@ -82,7 +82,9 @@ function getComments (conf, callback) {
 
                 if (conf.stream === true && typeof conf.page === 'undefined') {
                     stream.init(data.collection.collectionId, data.collection.lastEvent, function (eventData) {
-                        callback(null, eventData);
+                        callback(null, {
+                            stream: eventData
+                        });
                     });
                 }
             } else {
