@@ -31,27 +31,39 @@ exports.init = function (collectionId, lastEventId, callback) {
                             // type: comment
                             if (item.type === 0) {
                                 if (item.vis === 1) {
-                                    // new comment
-                                    
-                                    var comment = {};
-                                    var authorData = response.data.authors[item.content.authorId];
+                                    if (item.content.updatedBy) {
+                                        // update
+                                        
+                                        callback({
+                                            comment: {
+                                                updated: true,
+                                                commentId: item.content.id,
+                                                content: item.content.bodyHtml
+                                            }
+                                        });
+                                    } else {
+                                        // new comment
+                                        
+                                        var comment = {};
+                                        var authorData = response.data.authors[item.content.authorId];
 
-                                    comment = {
-                                        parentId: item.content.parentId,
-                                        author: {
-                                            displayName: authorData.displayName,
-                                            tags: authorData.tags,
-                                            type: authorData.type
-                                        },
-                                        content: item.content.bodyHtml,
-                                        timestamp: item.content.createdAt,
-                                        commentId: item.content.id,
-                                        visibility: item.vis
-                                    };
+                                        comment = {
+                                            parentId: item.content.parentId,
+                                            author: {
+                                                displayName: authorData.displayName,
+                                                tags: authorData.tags,
+                                                type: authorData.type
+                                            },
+                                            content: item.content.bodyHtml,
+                                            timestamp: item.content.createdAt,
+                                            commentId: item.content.id,
+                                            visibility: item.vis
+                                        };
 
-                                    callback({
-                                        comment: comment
-                                    });
+                                        callback({
+                                            comment: comment
+                                        });
+                                    }
                                 } else if (item.vis === 0) {
                                     // comment deleted
                                     
