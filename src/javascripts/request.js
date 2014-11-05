@@ -12,6 +12,13 @@ exports.get = function (url, callback) {
         return;
     }
 
+    var timestamp = new Date().getTime();
+    if (url.indexOf('?')) {
+        url += '&_=' + timestamp;
+    } else {
+        url += '?_=' + timestamp;
+    }
+
     if (xhr instanceof XMLHttpRequest) {
         xhr.open("get", url, true);
     } else {
