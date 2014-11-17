@@ -1,4 +1,4 @@
-# o-comment-data
+# o-comment-api
 
 A JavaScript API that provides a simple abstraction of the FT's commenting APIs.
 
@@ -16,16 +16,16 @@ There are two ways of using this module:
 Run `grunt`, then insert the JS found in the dist folder:
 
 ```javascript
-<script src="dist/javascripts/oCommentData.min.js"></script>
+<script src="dist/javascripts/oCommentApi.min.js"></script>
 ```
 
-The module's API can be accessed using `oCommentData` in the global scope.
+The module's API can be accessed using `oCommentApi` in the global scope.
 
 ### Bower and browserify
 With bower, simply require the module:
 
 ```javascript
-var oCommentData = require('o-comment-data');
+var oCommentApi = require('o-comment-api');
 ```
 
 The module should be built using `browserify` (with `debowerify` transform).
