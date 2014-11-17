@@ -1,11 +1,11 @@
 "use strict";
 
 var config = require('./src/javascripts/config.js'),
-    suds = require('./src/javascripts/suds.js'),
-    ccs = require('./src/javascripts/ccs.js'),
-    cache = require('./src/javascripts/cache.js'),
-    defaultConfig = require('./config.json'),
-    oCommentUtilities = require('o-comment-utilities');
+	suds = require('./src/javascripts/suds.js'),
+	ccs = require('./src/javascripts/ccs.js'),
+	cache = require('./src/javascripts/cache.js'),
+	defaultConfig = require('./config.json'),
+	oCommentUtilities = require('o-comment-utilities');
 
 
 config.set(defaultConfig);
@@ -15,13 +15,13 @@ config.set(defaultConfig);
  * @type {Object}
  */
 exports.api = {
-    getLivefyreInitConfig: suds.livefyre.getInitConfig,
-    getAuth: suds.user.getAuth,
-    updateUser: suds.user.updateUser,
+	getLivefyreInitConfig: suds.livefyre.getInitConfig,
+	getAuth: suds.user.getAuth,
+	updateUser: suds.user.updateUser,
 
-    getComments: ccs.getComments,
-    postComment: ccs.postComment,
-    deleteComment: ccs.deleteComment
+	getComments: ccs.getComments,
+	postComment: ccs.postComment,
+	deleteComment: ccs.deleteComment
 };
 
 /**
@@ -29,7 +29,7 @@ exports.api = {
  * @type {Object}
  */
 exports.cache = {
-    clear: cache.clear
+	clear: cache.clear
 };
 
 /**
@@ -37,7 +37,7 @@ exports.cache = {
  * @type {function}
  */
 exports.enableLogging = function () {
-    oCommentUtilities.logger.enable.apply(this, arguments);
+	oCommentUtilities.logger.enable.apply(this, arguments);
 };
 
 /**
@@ -45,7 +45,7 @@ exports.enableLogging = function () {
  * @type {function}
  */
 exports.disableLogging = function () {
-    oCommentUtilities.logger.disable.apply(this, arguments);
+	oCommentUtilities.logger.disable.apply(this, arguments);
 };
 
 /**
@@ -53,12 +53,12 @@ exports.disableLogging = function () {
  * @type {number|string}
  */
 exports.setLoggingLevel = function () {
-    oCommentUtilities.logger.setLevel.apply(this, arguments);
+	oCommentUtilities.logger.setLevel.apply(this, arguments);
 };
 
 /**
  * Init method sets additional or overrides current configuration options.
  */
 exports.init = function () {
-    config.set.apply(this, arguments);
+	config.set.apply(this, arguments);
 };

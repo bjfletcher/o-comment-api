@@ -6,9 +6,9 @@
  * @return {string} The trimmed string.
  */
 exports.trim = function (string) {
-    if (!String.prototype.trim) {
-        return string.replace(/^\s+|\s+$/g, '');
-    } else {
-        return string.trim();
-    }
+	if (!String.prototype.trim) {
+		return string.replace(/^\s+|\s+$/g, '');
+	} else {
+		return string.trim();
+	}
 };

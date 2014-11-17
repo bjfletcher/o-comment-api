@@ -1,791 +1,791 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>suds</title>
-    <link rel="stylesheet" href="../node_modules/gruntmodule-qunit/lib/qunit/qunit.css"/>
+	<meta charset="utf-8">
+	<title>suds</title>
+	<link rel="stylesheet" href="../node_modules/gruntmodule-qunit/lib/qunit/qunit.css"/>
 </head>
 <body>
-    <div id="qunit"></div>
-    <div id="qunit-fixture"></div>
-
-    <script src="../node_modules/gruntmodule-qunit/lib/qunit/qunit.js"></script>
-    <script src="../node_modules/gruntmodule-qunit/helpers/browserify.js"></script>
-    <script src="../node_modules/gruntmodule-qunit/helpers/mockupReset.js"></script>
-
-    <script>
-        var base_config = {
-            suds: {
-                baseUrl: 'suds',
-                endpoints: {
-                    livefyre: {
-                        "init": "/v1/livefyre/init"
-                    },
-                    user: {
-                        "updateUser": "/v1/user/updateuser",
-                        "getAuth": "/v1/user/getauth"
-                    }
-                }
-            }
-        };
-    </script>
-
-    <script src="./mockups/comment-utilities.js"></script>
-    <script src="./mockups/utils.js"></script>
-    <script src="./mockups/cache.js"></script>
-
-    <script>
-        var require = defineRequire({
-            'comment-utilities': commentUtilitiesMockup.mockup,
-            './utils.js': utilsMockup.mockup,
-            './cache.js': cacheMockup.mockup,
-            './config.js': {
-                get: function (field) {
-                    if (field) {
-                        return base_config[field];
-                    }
-
-                    return base_config;
-                }
-            }
-        });
-
-        defineExports();
-    </script>
-    <script src="../src/javascripts/suds.js"></script>
-
-    <script>
-        restoreExports();
-    </script>
-
-    <script>
-        module("livefyre.getInitConfig", {
-            setup: function () {
-                mockupReset.reset();
-            },
-            teardown: function () {
-
-            }
-        });
-
-        test("without parameters", function () {
-            base_config.cache = false;
-
-            var errorThrown = false;
-
-            try {
-                nodeModule.exports.livefyre.getInitConfig();
-            } catch (e) {
-                errorThrown = true;
-            }
-
-            equal(errorThrown, true, "Init failed as expected.");
-        });
-
-        test("incomplete data", function () {
-            var errorThrown;
-            var testDataMissing = function (missingData) {
-                errorThrown = false;
-                
-                var conf = {
-                    articleId: 'articleId',
-                    url: 'url',
-                    elId: 'elId',
-                    title: 'title'
-                };
-
-                var callbackMiss = function (err) {
-                    if (err) {
-                        errorThrown = true;
-                    }
-                };
-
-                if (missingData === 'callback') {
-                    callbackMiss = undefined;
-
-                    try {
-                        nodeModule.exports.livefyre.getInitConfig(conf, callbackMiss);
-                    } catch (e) {
-                        errorThrown = true;
-                    }
-                } else {
-                    if (conf.hasOwnProperty(missingData)) {
-                        delete conf[missingData];
-                    }
-
-                    nodeModule.exports.livefyre.getInitConfig(conf, callbackMiss);
-                }
-                
-            };
-
-            testDataMissing('articleId')
-            ok(errorThrown, "articleId missing - callback called with error.");
-
-            testDataMissing('url')
-            ok(errorThrown, "url missing - callback called with error.");
-
-            testDataMissing('elId')
-            ok(errorThrown, "elId missing - callback called with error.");
-
-            testDataMissing('title')
-            ok(errorThrown, "title missing - callback called with error.");
-
-            testDataMissing('callback')
-            ok(errorThrown, "callback missing - exception thrown.");
-        });
-
-        test("with data - error", function () {
-            base_config.cache = false;
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            var initData = {
-                title: "testTitle",
-                url: "testUrl",
-                articleId: "testArticleId",
-                elId: "testEl"
-            };
-
-            nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "Configuration used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.title, "testTitle", "Title used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.url, "testUrl", "Url used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.articleId, "testArticleId", "articleId used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.el, "testEl", "El used correctly.");
-
-            var errorData = new Error("Timeout");
-            commentUtilitiesMockup.log.jsonp.callback(errorData, null);
-            equal(error, true, "Error callback called correctly.");
-            equal(errorValue, errorData, "Data passed correctly to the error callback.");
-        });
-
-        
-        test("with data - success - cache disabled", function () {
-            base_config.cache = false;
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            var initData = {
-                title: "testTitle",
-                url: "testUrl",
-                articleId: "testArticleId",
-                elId: "testEl"
-            };
-
-            nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "Configuration used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.title, "testTitle", "Title used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.url, "testUrl", "Url used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.articleId, "testArticleId", "articleId used correctly.");
-            equal(commentUtilitiesMockup.log.jsonp.options.data.el, "testEl", "El used correctly.");
-
-
-            var successData = {
-                init: {
-                    'initKey': 'initValue'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.init, "Data passed correctly to the success callback.");
-        });
-
-        
-        test("with data - success - cache enabled: without sessionId, cache empty", function () {
-            base_config.cache = true;
-            base_config.sessionId = undefined;
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            var initData = {
-                title: "testTitle",
-                url: "testUrl",
-                articleId: "testArticleId",
-                elId: "testEl"
-            };
-
-            nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "API called.");
-
-            var successData = {
-                init: {
-                    'initKey': 'initValue'
-                },
-                auth: {
-                    'authKey': 'authValue'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.init, "Data passed correctly to the success callback.");
-
-            ok(cacheMockup.log.init.called, "Init cache called.");
-            equal(cacheMockup.log.init.data[0], initData.articleId, "Correct article ID is used to cache.");
-            equal(cacheMockup.log.init.data[1], successData.init, "Correct init data is cached.");
-
-            ok(!cacheMockup.log.auth.called, "Auth not cached because of the lack of session ID.");
-        });
-
-        test("with data - success - cache enabled: with sessionId, cache empty", function () {
-            base_config.cache = true;
-            base_config.sessionId = 1234;
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            var initData = {
-                title: "testTitle",
-                url: "testUrl",
-                articleId: "testArticleId",
-                elId: "testEl"
-            };
-
-            nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "API called.");
-
-            var successData = {
-                init: {
-                    'initKey': 'initValue'
-                },
-                auth: {
-                    'authKey': 'authValue',
-                    token: 'asf'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.init, "Data passed correctly to the success callback.");
-
-            ok(cacheMockup.log.init.called, "Init cache called.");
-            equal(cacheMockup.log.init.data[0], initData.articleId, "Correct article ID is used to cache.");
-            equal(cacheMockup.log.init.data[1], successData.init, "Correct init data is cached.");
-
-            ok(cacheMockup.log.auth.called, "Auth cached.");
-            equal(cacheMockup.log.auth.data[0], successData.auth, "Correct auth data is cached.");
-        });
-
-        test("with data - success - cache enabled: in cache", function () {
-            base_config.cache = true;
-
-            cacheMockup.returnValue.init = {
-                'initKey': 'initValue'
-            };
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            var initData = {
-                title: "testTitle",
-                url: "testUrl",
-                articleId: "testArticleId",
-                elId: "testEl"
-            };
-
-            nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            ok(!commentUtilitiesMockup.log.jsonp.options, "API not called.");
-
-            equal(successValue, cacheMockup.returnValue.init, "Correct data is returned from cache.");
-        });
-
-        test("with data - success - cache enabled: in cache, forced", function () {
-            base_config.cache = true;
-            base_config.sessionId = 1234;
-
-            cacheMockup.returnValue.init = {
-                'initKey': 'initValue'
-            };
-            cacheMockup.returnValue.auth = {
-                'authKey': 'authValue',
-                token: 'asgas'
-            };
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            var initData = {
-                title: "testTitle",
-                url: "testUrl",
-                articleId: "testArticleId",
-                elId: "testEl",
-                force: true
-            };
-
-            nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "API called.");
-
-            var successData = {
-                init: {
-                    'initKey': 'initValue'
-                },
-                auth: {
-                    'authKey': 'authValue',
-                    token: 'asf'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData.init, "Data passed correctly to the success callback.");
-
-            ok(cacheMockup.log.init.called, "Init cache called.");
-            equal(cacheMockup.log.init.data[0], initData.articleId, "Correct article ID is used to cache.");
-            equal(cacheMockup.log.init.data[1], successData.init, "Correct init data is cached.");
-
-            ok(cacheMockup.log.auth.called, "Auth cached.");
-            equal(cacheMockup.log.auth.data[0], successData.auth, "Correct auth data is cached.");
-        });
-
-
-
-
-        module("user.updateUser", {
-            setup: function () {
-                mockupReset.reset();
-            },
-            teardown: function () {
-
-            }
-        });
-
-        test("without parameters", function () {
-            var errorThrown = false;
-
-            try {
-                nodeModule.exports.user.updateUser();
-            } catch (e) {
-                errorThrown = true;
-            }
-
-            equal(errorThrown, true, "updateUser failed as expected.");
-        });
-
-        test("without data", function () {
-            var errorThrown = false;
-
-            nodeModule.exports.user.updateUser(null, function (err, data) {
-                errorThrown = true;
-            });
-
-            equal(errorThrown, true, "updateUser failed as expected.");
-        });
-
-        test("with data - success", function () {
-            var success = false,
-                successValue,
-                error = false,
-                errorValue,
-                dataValue;
-
-            var dataToSend = {
-                pseudonym: "test pseudonym",
-                emailcomments: "never",
-                emailreplies: "immediately",
-                emaillikes: "hourly",
-                emailautofollow: "off"
-            };
-
-            nodeModule.exports.user.updateUser(dataToSend, function (err, data) {
-                dataValue = data;
-
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.updateUser, "Configuration used correctly.");
-            deepEqual(commentUtilitiesMockup.log.jsonp.options.data, dataToSend, "Data values used correctly.");
-
-
-            var successData = {status: 'ok'};
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(dataValue, successData, "Data passed correctly to the success callback.");
-        });
-
-
-        test("with data - network error", function () {
-            var success = false,
-                successValue,
-                error = false,
-                errorValue,
-                dataValue;
-
-            var dataToSend = {
-                pseudonym: "test pseudonym",
-                emailcomments: "never",
-                emailreplies: "immediately",
-                emaillikes: "hourly",
-                emailautofollow: "off"
-            };
-
-            nodeModule.exports.user.updateUser(dataToSend, function (err, data) {
-                dataValue = data;
-
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.updateUser, "Configuration used correctly.");
-            deepEqual(commentUtilitiesMockup.log.jsonp.options.data, dataToSend, "Data values used correctly.");
-
-
-            var errorData = new Error("Timeout");
-            commentUtilitiesMockup.log.jsonp.callback(errorData, null);
-            equal(error, true, "Error callback called correctly.");
-            equal(errorValue, errorData, "Data passed correctly to the error callback.");
-        });
-
-
-        test("with data - suds error", function () {
-            var success = false,
-                successValue,
-                error = false,
-                errorValue,
-                dataValue;
-
-            var dataToSend = {
-                pseudonym: "test pseudonym",
-                emailcomments: "never",
-                emailreplies: "immediately",
-                emaillikes: "hourly",
-                emailautofollow: "off"
-            };
-
-            nodeModule.exports.user.updateUser(dataToSend, function (err, data) {
-                dataValue = data;
-
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.updateUser, "Configuration used correctly.");
-            deepEqual(commentUtilitiesMockup.log.jsonp.options.data, dataToSend, "Data values used correctly.");
-
-            var sudsErrorButCallSuccess = {
-                error: "Suds error check"
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, sudsErrorButCallSuccess);
-            equal(error, true, "Error callback called correctly.");
-            deepEqual(errorValue, {
-                sudsError: true,
-                error: sudsErrorButCallSuccess.error
-            }, "Suds error forwarded.");
-        });
-
-
-        module("user.getAuth", {
-            setup: function () {
-                mockupReset.reset();
-            },
-            teardown: function () {
-
-            }
-        });
-
-        test("without callback", function () {
-            var errorThrown = false;
-
-            try {
-                nodeModule.exports.user.getAuth();
-            } catch (e) {
-                errorThrown = true;
-            }
-
-            equal(errorThrown, true, "getAuth failed as expected.");
-        });
-
-        test("error", function () {
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            nodeModule.exports.user.getAuth(function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "Configuration used correctly.");
-
-            var errorData = new Error("Timeout");
-            commentUtilitiesMockup.log.jsonp.callback(errorData, null);
-            equal(error, true, "Error callback called correctly.");
-            equal(errorValue, errorData, "Data passed correctly to the error callback.");
-        });
-
-        test("success - cache disabled", function () {
-            base_config.cache = false;
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            nodeModule.exports.user.getAuth(function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "Configuration used correctly.");
-
-            var successData = {
-                token: 'testtoken',
-                settings: {
-                    'emailcomments': 'never'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData, "Data passed correctly to the success callback.");
-        });
-
-        test("success - cache enabled, not in cache", function () {
-            base_config.cache = true;
-            base_config.sessionId = 1234;
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            nodeModule.exports.user.getAuth(function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "API called.");
-
-            var successData = {
-                token: 'testtoken',
-                settings: {
-                    'emailcomments': 'never'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData, "Data passed correctly to the success callback.");
-
-            ok(cacheMockup.log.auth.called, "Auth cached.");
-            equal(cacheMockup.log.auth.data[0], successData, "Correct auth data is cached.");
-        });
-
-        test("success - cache enabled, in cache, with sessionId", function () {
-            base_config.cache = true;
-            base_config.sessionId = 1234;
-
-            cacheMockup.returnValue.auth = {
-                'authKey': 'authValue',
-                token: 'asgas'
-            };
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            nodeModule.exports.user.getAuth(function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            ok(!commentUtilitiesMockup.log.jsonp.options, "API not called.");
-
-            equal(successValue, cacheMockup.returnValue.auth, "Correct value is loaded from cache.");
-        });
-
-        test("success - cache enabled, in cache, without sessionId", function () {
-            base_config.cache = true;
-            base_config.sessionId = undefined;
-
-            cacheMockup.returnValue.auth = {
-                'authKey': 'authValue',
-                token: 'asgas'
-            };
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            nodeModule.exports.user.getAuth(function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "API called.");
-
-            var successData = {
-                token: 'testtoken',
-                settings: {
-                    'emailcomments': 'never'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData, "Data passed correctly to the success callback.");
-        });
-
-
-        test("success - cache enabled, in cache, forced", function () {
-            base_config.cache = true;
-            base_config.sessionId = 1234;
-
-            cacheMockup.returnValue.auth = {
-                'authKey': 'authValue',
-                token: 'asgas'
-            };
-
-            var success = false,
-                successValue,
-                error = false,
-                errorValue;
-
-            nodeModule.exports.user.getAuth({
-                force: true
-            }, function (err, data) {
-                if (err) {
-                    error = true;
-                    errorValue = err;
-                    return;
-                }
-
-                success = true;
-                successValue = data;
-            });
-
-            equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "Configuration used correctly.");
-
-            var successData = {
-                token: 'testtoken',
-                settings: {
-                    'emailcomments': 'never'
-                }
-            };
-            commentUtilitiesMockup.log.jsonp.callback(null, successData);
-            equal(success, true, "Success callback called correctly.");
-            equal(successValue, successData, "Data passed correctly to the success callback.");
-
-            ok(cacheMockup.log.auth.called, "Auth cached.");
-            equal(cacheMockup.log.auth.data[0], successData, "Correct auth data is cached.");
-        });
-    </script>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+
+	<script src="../node_modules/gruntmodule-qunit/lib/qunit/qunit.js"></script>
+	<script src="../node_modules/gruntmodule-qunit/helpers/browserify.js"></script>
+	<script src="../node_modules/gruntmodule-qunit/helpers/mockupReset.js"></script>
+
+	<script>
+		var base_config = {
+			suds: {
+				baseUrl: 'suds',
+				endpoints: {
+					livefyre: {
+						"init": "/v1/livefyre/init"
+					},
+					user: {
+						"updateUser": "/v1/user/updateuser",
+						"getAuth": "/v1/user/getauth"
+					}
+				}
+			}
+		};
+	</script>
+
+	<script src="./mockups/comment-utilities.js"></script>
+	<script src="./mockups/utils.js"></script>
+	<script src="./mockups/cache.js"></script>
+
+	<script>
+		var require = defineRequire({
+			'comment-utilities': commentUtilitiesMockup.mockup,
+			'./utils.js': utilsMockup.mockup,
+			'./cache.js': cacheMockup.mockup,
+			'./config.js': {
+				get: function (field) {
+					if (field) {
+						return base_config[field];
+					}
+
+					return base_config;
+				}
+			}
+		});
+
+		defineExports();
+	</script>
+	<script src="../src/javascripts/suds.js"></script>
+
+	<script>
+		restoreExports();
+	</script>
+
+	<script>
+		module("livefyre.getInitConfig", {
+			setup: function () {
+				mockupReset.reset();
+			},
+			teardown: function () {
+
+			}
+		});
+
+		test("without parameters", function () {
+			base_config.cache = false;
+
+			var errorThrown = false;
+
+			try {
+				nodeModule.exports.livefyre.getInitConfig();
+			} catch (e) {
+				errorThrown = true;
+			}
+
+			equal(errorThrown, true, "Init failed as expected.");
+		});
+
+		test("incomplete data", function () {
+			var errorThrown;
+			var testDataMissing = function (missingData) {
+				errorThrown = false;
+				
+				var conf = {
+					articleId: 'articleId',
+					url: 'url',
+					elId: 'elId',
+					title: 'title'
+				};
+
+				var callbackMiss = function (err) {
+					if (err) {
+						errorThrown = true;
+					}
+				};
+
+				if (missingData === 'callback') {
+					callbackMiss = undefined;
+
+					try {
+						nodeModule.exports.livefyre.getInitConfig(conf, callbackMiss);
+					} catch (e) {
+						errorThrown = true;
+					}
+				} else {
+					if (conf.hasOwnProperty(missingData)) {
+						delete conf[missingData];
+					}
+
+					nodeModule.exports.livefyre.getInitConfig(conf, callbackMiss);
+				}
+				
+			};
+
+			testDataMissing('articleId')
+			ok(errorThrown, "articleId missing - callback called with error.");
+
+			testDataMissing('url')
+			ok(errorThrown, "url missing - callback called with error.");
+
+			testDataMissing('elId')
+			ok(errorThrown, "elId missing - callback called with error.");
+
+			testDataMissing('title')
+			ok(errorThrown, "title missing - callback called with error.");
+
+			testDataMissing('callback')
+			ok(errorThrown, "callback missing - exception thrown.");
+		});
+
+		test("with data - error", function () {
+			base_config.cache = false;
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			var initData = {
+				title: "testTitle",
+				url: "testUrl",
+				articleId: "testArticleId",
+				elId: "testEl"
+			};
+
+			nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "Configuration used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.title, "testTitle", "Title used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.url, "testUrl", "Url used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.articleId, "testArticleId", "articleId used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.el, "testEl", "El used correctly.");
+
+			var errorData = new Error("Timeout");
+			commentUtilitiesMockup.log.jsonp.callback(errorData, null);
+			equal(error, true, "Error callback called correctly.");
+			equal(errorValue, errorData, "Data passed correctly to the error callback.");
+		});
+
+		
+		test("with data - success - cache disabled", function () {
+			base_config.cache = false;
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			var initData = {
+				title: "testTitle",
+				url: "testUrl",
+				articleId: "testArticleId",
+				elId: "testEl"
+			};
+
+			nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "Configuration used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.title, "testTitle", "Title used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.url, "testUrl", "Url used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.articleId, "testArticleId", "articleId used correctly.");
+			equal(commentUtilitiesMockup.log.jsonp.options.data.el, "testEl", "El used correctly.");
+
+
+			var successData = {
+				init: {
+					'initKey': 'initValue'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData.init, "Data passed correctly to the success callback.");
+		});
+
+		
+		test("with data - success - cache enabled: without sessionId, cache empty", function () {
+			base_config.cache = true;
+			base_config.sessionId = undefined;
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			var initData = {
+				title: "testTitle",
+				url: "testUrl",
+				articleId: "testArticleId",
+				elId: "testEl"
+			};
+
+			nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "API called.");
+
+			var successData = {
+				init: {
+					'initKey': 'initValue'
+				},
+				auth: {
+					'authKey': 'authValue'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData.init, "Data passed correctly to the success callback.");
+
+			ok(cacheMockup.log.init.called, "Init cache called.");
+			equal(cacheMockup.log.init.data[0], initData.articleId, "Correct article ID is used to cache.");
+			equal(cacheMockup.log.init.data[1], successData.init, "Correct init data is cached.");
+
+			ok(!cacheMockup.log.auth.called, "Auth not cached because of the lack of session ID.");
+		});
+
+		test("with data - success - cache enabled: with sessionId, cache empty", function () {
+			base_config.cache = true;
+			base_config.sessionId = 1234;
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			var initData = {
+				title: "testTitle",
+				url: "testUrl",
+				articleId: "testArticleId",
+				elId: "testEl"
+			};
+
+			nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "API called.");
+
+			var successData = {
+				init: {
+					'initKey': 'initValue'
+				},
+				auth: {
+					'authKey': 'authValue',
+					token: 'asf'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData.init, "Data passed correctly to the success callback.");
+
+			ok(cacheMockup.log.init.called, "Init cache called.");
+			equal(cacheMockup.log.init.data[0], initData.articleId, "Correct article ID is used to cache.");
+			equal(cacheMockup.log.init.data[1], successData.init, "Correct init data is cached.");
+
+			ok(cacheMockup.log.auth.called, "Auth cached.");
+			equal(cacheMockup.log.auth.data[0], successData.auth, "Correct auth data is cached.");
+		});
+
+		test("with data - success - cache enabled: in cache", function () {
+			base_config.cache = true;
+
+			cacheMockup.returnValue.init = {
+				'initKey': 'initValue'
+			};
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			var initData = {
+				title: "testTitle",
+				url: "testUrl",
+				articleId: "testArticleId",
+				elId: "testEl"
+			};
+
+			nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			ok(!commentUtilitiesMockup.log.jsonp.options, "API not called.");
+
+			equal(successValue, cacheMockup.returnValue.init, "Correct data is returned from cache.");
+		});
+
+		test("with data - success - cache enabled: in cache, forced", function () {
+			base_config.cache = true;
+			base_config.sessionId = 1234;
+
+			cacheMockup.returnValue.init = {
+				'initKey': 'initValue'
+			};
+			cacheMockup.returnValue.auth = {
+				'authKey': 'authValue',
+				token: 'asgas'
+			};
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			var initData = {
+				title: "testTitle",
+				url: "testUrl",
+				articleId: "testArticleId",
+				elId: "testEl",
+				force: true
+			};
+
+			nodeModule.exports.livefyre.getInitConfig(initData, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.livefyre.init, "API called.");
+
+			var successData = {
+				init: {
+					'initKey': 'initValue'
+				},
+				auth: {
+					'authKey': 'authValue',
+					token: 'asf'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData.init, "Data passed correctly to the success callback.");
+
+			ok(cacheMockup.log.init.called, "Init cache called.");
+			equal(cacheMockup.log.init.data[0], initData.articleId, "Correct article ID is used to cache.");
+			equal(cacheMockup.log.init.data[1], successData.init, "Correct init data is cached.");
+
+			ok(cacheMockup.log.auth.called, "Auth cached.");
+			equal(cacheMockup.log.auth.data[0], successData.auth, "Correct auth data is cached.");
+		});
+
+
+
+
+		module("user.updateUser", {
+			setup: function () {
+				mockupReset.reset();
+			},
+			teardown: function () {
+
+			}
+		});
+
+		test("without parameters", function () {
+			var errorThrown = false;
+
+			try {
+				nodeModule.exports.user.updateUser();
+			} catch (e) {
+				errorThrown = true;
+			}
+
+			equal(errorThrown, true, "updateUser failed as expected.");
+		});
+
+		test("without data", function () {
+			var errorThrown = false;
+
+			nodeModule.exports.user.updateUser(null, function (err, data) {
+				errorThrown = true;
+			});
+
+			equal(errorThrown, true, "updateUser failed as expected.");
+		});
+
+		test("with data - success", function () {
+			var success = false,
+				successValue,
+				error = false,
+				errorValue,
+				dataValue;
+
+			var dataToSend = {
+				pseudonym: "test pseudonym",
+				emailcomments: "never",
+				emailreplies: "immediately",
+				emaillikes: "hourly",
+				emailautofollow: "off"
+			};
+
+			nodeModule.exports.user.updateUser(dataToSend, function (err, data) {
+				dataValue = data;
+
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.updateUser, "Configuration used correctly.");
+			deepEqual(commentUtilitiesMockup.log.jsonp.options.data, dataToSend, "Data values used correctly.");
+
+
+			var successData = {status: 'ok'};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(dataValue, successData, "Data passed correctly to the success callback.");
+		});
+
+
+		test("with data - network error", function () {
+			var success = false,
+				successValue,
+				error = false,
+				errorValue,
+				dataValue;
+
+			var dataToSend = {
+				pseudonym: "test pseudonym",
+				emailcomments: "never",
+				emailreplies: "immediately",
+				emaillikes: "hourly",
+				emailautofollow: "off"
+			};
+
+			nodeModule.exports.user.updateUser(dataToSend, function (err, data) {
+				dataValue = data;
+
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.updateUser, "Configuration used correctly.");
+			deepEqual(commentUtilitiesMockup.log.jsonp.options.data, dataToSend, "Data values used correctly.");
+
+
+			var errorData = new Error("Timeout");
+			commentUtilitiesMockup.log.jsonp.callback(errorData, null);
+			equal(error, true, "Error callback called correctly.");
+			equal(errorValue, errorData, "Data passed correctly to the error callback.");
+		});
+
+
+		test("with data - suds error", function () {
+			var success = false,
+				successValue,
+				error = false,
+				errorValue,
+				dataValue;
+
+			var dataToSend = {
+				pseudonym: "test pseudonym",
+				emailcomments: "never",
+				emailreplies: "immediately",
+				emaillikes: "hourly",
+				emailautofollow: "off"
+			};
+
+			nodeModule.exports.user.updateUser(dataToSend, function (err, data) {
+				dataValue = data;
+
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.updateUser, "Configuration used correctly.");
+			deepEqual(commentUtilitiesMockup.log.jsonp.options.data, dataToSend, "Data values used correctly.");
+
+			var sudsErrorButCallSuccess = {
+				error: "Suds error check"
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, sudsErrorButCallSuccess);
+			equal(error, true, "Error callback called correctly.");
+			deepEqual(errorValue, {
+				sudsError: true,
+				error: sudsErrorButCallSuccess.error
+			}, "Suds error forwarded.");
+		});
+
+
+		module("user.getAuth", {
+			setup: function () {
+				mockupReset.reset();
+			},
+			teardown: function () {
+
+			}
+		});
+
+		test("without callback", function () {
+			var errorThrown = false;
+
+			try {
+				nodeModule.exports.user.getAuth();
+			} catch (e) {
+				errorThrown = true;
+			}
+
+			equal(errorThrown, true, "getAuth failed as expected.");
+		});
+
+		test("error", function () {
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			nodeModule.exports.user.getAuth(function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "Configuration used correctly.");
+
+			var errorData = new Error("Timeout");
+			commentUtilitiesMockup.log.jsonp.callback(errorData, null);
+			equal(error, true, "Error callback called correctly.");
+			equal(errorValue, errorData, "Data passed correctly to the error callback.");
+		});
+
+		test("success - cache disabled", function () {
+			base_config.cache = false;
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			nodeModule.exports.user.getAuth(function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "Configuration used correctly.");
+
+			var successData = {
+				token: 'testtoken',
+				settings: {
+					'emailcomments': 'never'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData, "Data passed correctly to the success callback.");
+		});
+
+		test("success - cache enabled, not in cache", function () {
+			base_config.cache = true;
+			base_config.sessionId = 1234;
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			nodeModule.exports.user.getAuth(function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "API called.");
+
+			var successData = {
+				token: 'testtoken',
+				settings: {
+					'emailcomments': 'never'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData, "Data passed correctly to the success callback.");
+
+			ok(cacheMockup.log.auth.called, "Auth cached.");
+			equal(cacheMockup.log.auth.data[0], successData, "Correct auth data is cached.");
+		});
+
+		test("success - cache enabled, in cache, with sessionId", function () {
+			base_config.cache = true;
+			base_config.sessionId = 1234;
+
+			cacheMockup.returnValue.auth = {
+				'authKey': 'authValue',
+				token: 'asgas'
+			};
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			nodeModule.exports.user.getAuth(function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			ok(!commentUtilitiesMockup.log.jsonp.options, "API not called.");
+
+			equal(successValue, cacheMockup.returnValue.auth, "Correct value is loaded from cache.");
+		});
+
+		test("success - cache enabled, in cache, without sessionId", function () {
+			base_config.cache = true;
+			base_config.sessionId = undefined;
+
+			cacheMockup.returnValue.auth = {
+				'authKey': 'authValue',
+				token: 'asgas'
+			};
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			nodeModule.exports.user.getAuth(function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "API called.");
+
+			var successData = {
+				token: 'testtoken',
+				settings: {
+					'emailcomments': 'never'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData, "Data passed correctly to the success callback.");
+		});
+
+
+		test("success - cache enabled, in cache, forced", function () {
+			base_config.cache = true;
+			base_config.sessionId = 1234;
+
+			cacheMockup.returnValue.auth = {
+				'authKey': 'authValue',
+				token: 'asgas'
+			};
+
+			var success = false,
+				successValue,
+				error = false,
+				errorValue;
+
+			nodeModule.exports.user.getAuth({
+				force: true
+			}, function (err, data) {
+				if (err) {
+					error = true;
+					errorValue = err;
+					return;
+				}
+
+				success = true;
+				successValue = data;
+			});
+
+			equal(commentUtilitiesMockup.log.jsonp.options.url, base_config.suds.baseUrl + base_config.suds.endpoints.user.getAuth, "Configuration used correctly.");
+
+			var successData = {
+				token: 'testtoken',
+				settings: {
+					'emailcomments': 'never'
+				}
+			};
+			commentUtilitiesMockup.log.jsonp.callback(null, successData);
+			equal(success, true, "Success callback called correctly.");
+			equal(successValue, successData, "Data passed correctly to the success callback.");
+
+			ok(cacheMockup.log.auth.called, "Auth cached.");
+			equal(cacheMockup.log.auth.data[0], successData, "Correct auth data is cached.");
+		});
+	</script>
 </body>
 </html>

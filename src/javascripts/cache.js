@@ -1,39 +1,39 @@
 "use strict";
 
 var envConfig = require('./config.js'),
-    oCommentUtilities = require('o-comment-utilities');
+	oCommentUtilities = require('o-comment-utilities');
 
 /**
  * Verifies if there's a valid auth token (not expired) attached to the session ID provided.
  * @return {string|undefined}
  */
 exports.getAuth = function() {
-    if (!envConfig.get('sessionId')) {
-        return undefined;
-    }
+	if (!envConfig.get('sessionId')) {
+		return undefined;
+	}
 
-    var authCache = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
-    if (authCache) {
-        if (new Date() < oCommentUtilities.dateHelper.toDateObject(authCache.expires)) {
-            return authCache;
-        } else {
-            oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
-        }
-    }
+	var authCache = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+	if (authCache) {
+		if (new Date() < oCommentUtilities.dateHelper.toDateObject(authCache.expires)) {
+			return authCache;
+		} else {
+			oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+		}
+	}
 
-    return undefined;
+	return undefined;
 };
 
 /**
  * Removes the auth token from the local cache.
  */
 exports.removeAuth = function () {
-    if (!envConfig.get('sessionId')) {
-        return;
-    }
-    
+	if (!envConfig.get('sessionId')) {
+		return;
+	}
 
-    oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+
+	oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 };
 
 /**
@@ -46,27 +46,27 @@ exports.removeAuth = function () {
  * @return {boolean} True if successfully saved or false if not.
  */
 exports.cacheAuth = function (authObject) {
-    if (!envConfig.get('sessionId')) {
-        return false;
-    }
-    
-    if (authObject.token) {
-        try {
-            var oldObj = {};
-            if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
-                oldObj = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
-            }
+	if (!envConfig.get('sessionId')) {
+		return false;
+	}
 
-            var mergedObj = oCommentUtilities.merge({}, oldObj, authObject);
-            oCommentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), mergedObj);
+	if (authObject.token) {
+		try {
+			var oldObj = {};
+			if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
+				oldObj = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+			}
 
-            return true;
-        } catch (e) {
-            oCommentUtilities.logger.debug("Failed to save to the storage.", "authObject:", authObject, "sessionId:", envConfig.get('sessionId'), "Error:", e);
-        }
-    }
+			var mergedObj = oCommentUtilities.merge({}, oldObj, authObject);
+			oCommentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), mergedObj);
 
-    return false;
+			return true;
+		} catch (e) {
+			oCommentUtilities.logger.debug("Failed to save to the storage.", "authObject:", authObject, "sessionId:", envConfig.get('sessionId'), "Error:", e);
+		}
+	}
+
+	return false;
 };
 
 /**
@@ -75,7 +75,7 @@ exports.cacheAuth = function (authObject) {
  * @return {object|undefined}
  */
 exports.getInit = function (articleId) {
-    return oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
+	return oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
 /**
@@ -84,15 +84,15 @@ exports.getInit = function (articleId) {
  * @param  {object} initObj SUDS init
  */
 exports.cacheInit = function (articleId, initObj) {
-    try {
-        oCommentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
+	try {
+		oCommentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.initBaseName + articleId, initObj);
 
-        return true;
-    } catch (e) {
-        oCommentUtilities.logger.debug("Failed to save to the storage.", "articleId:", articleId, "initObj:", initObj, "Error:", e);
-    }
+		return true;
+	} catch (e) {
+		oCommentUtilities.logger.debug("Failed to save to the storage.", "articleId:", articleId, "initObj:", initObj, "Error:", e);
+	}
 
-    return false;
+	return false;
 };
 
 /**
@@ -100,26 +100,26 @@ exports.cacheInit = function (articleId, initObj) {
  * @param  {string|number} articleId The ID of the article
  */
 exports.removeInit = function (articleId) {
-    oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
+	oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
 /**
  * Clears all entries created by the cache.
  */
 exports.clear = function () {
-    if (oCommentUtilities.storageWrapper.sessionStorage.native) {
-        for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
-            if (oCommentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
-                var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
-                if (matchInit && matchInit.length) {
-                    oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
-                }
+	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
+		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
+			if (oCommentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+				var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
+				if (matchInit && matchInit.length) {
+					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
+				}
 
-                var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
-                if (matchAuth && matchAuth.length) {
-                    oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
-                }
-            }
-        }
-    }
+				var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
+				if (matchAuth && matchAuth.length) {
+					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
+				}
+			}
+		}
+	}
 };

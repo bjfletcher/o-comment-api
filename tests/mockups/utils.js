@@ -2,16 +2,16 @@
 "use strict";
 
 var utilsMockup = {
-    reset: function () {
+	reset: function () {
 
-    },
-    mockup: {
-        trim: function (string) {
-            return string;
-        }
-    }
+	},
+	mockup: {
+		trim: function (string) {
+			return string;
+		}
+	}
 };
 
 if (mockupReset) {
-    mockupReset.add(utilsMockup.reset);
+	mockupReset.add(utilsMockup.reset);
 }
