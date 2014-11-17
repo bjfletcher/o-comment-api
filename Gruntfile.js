@@ -26,7 +26,7 @@ module.exports = function (grunt) {
 
     gruntModuleAggregator.addModule(gruntBower);
     gruntModuleAggregator.addModule(gruntJsDoc);
-    gruntModuleAggregator.addModule(gruntBrowserifyBuild, "oCommentData");
+    gruntModuleAggregator.addModule(gruntBrowserifyBuild, "oCommentApi");
     gruntModuleAggregator.addModule(gruntJsHint);
     gruntModuleAggregator.addModule(gruntQunit);
 
