@@ -1,5 +1,5 @@
 {
-    "description": "JavaScript helper for the communication with the Comments web services. Obtain authentication data, initialize a Livefyre widget, get comments or an article or post a comment.",
+    "description": "An abstraction of FT's commenting APIs, used by o-comments and o-chat",
     "origamiType": "module",
     "origamiVersion": 1,
     "support": "hyperion@ft.com",
