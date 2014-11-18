@@ -5,5 +5,7 @@
     "support": "hyperion@ft.com",
     "supportStatus": "experimental",
     "ci": {},
-    "browserFeatures": {}
+    "browserFeatures": {
+    	"required": "createevent"
+    }
 }

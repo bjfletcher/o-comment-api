@@ -1,13 +1,13 @@
 "use strict";
 
 exports.emit = function (eventName, eventDetails) {
-	eventDetails = eventDetails || {};
+	eventDetails = eventDetails || {
+		eventType: 'info'
+	};
+	
 	try {
 		document.body.dispatchEvent(new CustomEvent('oCommentApi.' + eventName, {
-			detail: {
-				eventType: eventDetails.type || 'info',
-				message: eventDetails.message
-			},
+			detail: eventDetails,
 			bubbles: true
 		}));
 	} catch (e) {

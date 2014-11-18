@@ -9,7 +9,7 @@ exports.get = function (url, callback) {
 	var aborted = false;
 
 	if (!xhr) {
-		callback.error(new Error("No XML Http request"));
+		callback.error(new Error("No XML Http support"));
 		return;
 	}
 
