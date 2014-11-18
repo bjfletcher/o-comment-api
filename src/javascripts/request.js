@@ -9,6 +9,7 @@ exports.get = function (url, callback) {
 	var aborted = false;
 
 	if (!xhr) {
+		callback.error(new Error("No XML Http request"));
 		return;
 	}
 
@@ -32,20 +33,24 @@ exports.get = function (url, callback) {
 	if (xhr.onload !== 'undefined') {
 		xhr.onload = function () {
 			if (!aborted) {
-				var responseText = xhr.responseText;
-				try {
-					responseText = JSON.parse(responseText);
-				} catch (e) {}
+				if (xhr.status === 200) {
+					var responseText = xhr.responseText;
+					try {
+						responseText = JSON.parse(responseText);
+					} catch (e) {}
 
-				oCommentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
-				callback.success(responseText);
+					oCommentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
+					callback.success(responseText);
+				} else {
+					callback.error(new Error(xhr.statusText));
+				}
 			}
 		};
 
-		xhr.onerror = function () {
+		xhr.onerror = function (err) {
 			if (!aborted) {
 				oCommentUtilities.logger.debug('stream', 'xhr onerror', 'xhr error');
-				callback.error();
+				callback.error(err);
 			}
 		};
 
@@ -57,7 +62,7 @@ exports.get = function (url, callback) {
 				try {
 					xhr.abort();
 				} catch (e) {}
-				callback.error();
+				callback.timeout();
 			}
 		};
 
