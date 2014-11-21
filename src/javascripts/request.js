@@ -33,7 +33,7 @@ exports.get = function (url, callback) {
 	if (xhr.onload !== 'undefined') {
 		xhr.onload = function () {
 			if (!aborted) {
-				if (xhr.status === 200) {
+				if ((!xhr.status || xhr.status === 200) && xhr.responseText) {
 					var responseText = xhr.responseText;
 					try {
 						responseText = JSON.parse(responseText);
@@ -42,7 +42,7 @@ exports.get = function (url, callback) {
 					oCommentUtilities.logger.debug('stream', 'xhr onload', 'responseText:', responseText);
 					callback.success(responseText);
 				} else {
-					callback.error(new Error(xhr.statusText));
+					callback.error(new Error(xhr.statusText || "Failed response."));
 				}
 			}
 		};
