@@ -14,7 +14,7 @@ exports.get = function (url, callback) {
 	}
 
 	var timestamp = new Date().getTime();
-	if (url.indexOf('?')) {
+	if (url.indexOf('?') !== -1) {
 		url += '&_=' + timestamp;
 	} else {
 		url += '?_=' + timestamp;

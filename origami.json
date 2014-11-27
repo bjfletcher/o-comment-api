@@ -6,6 +6,6 @@
     "supportStatus": "experimental",
     "ci": {},
     "browserFeatures": {
-    	"required": "createevent"
+    	"required": ["createevent"]
     }
 }
