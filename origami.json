@@ -1,11 +1,11 @@
 {
-    "description": "An abstraction of FT's commenting APIs, used by o-comments and o-chat",
-    "origamiType": "module",
-    "origamiVersion": 1,
-    "support": "hyperion@ft.com",
-    "supportStatus": "experimental",
-    "ci": {},
-    "browserFeatures": {
-    	"required": ["createevent"]
-    }
+	"description": "An abstraction of FT's commenting APIs, used by o-comments and o-chat",
+	"origamiType": "module",
+	"origamiVersion": 1,
+	"support": "hyperion@ft.com",
+	"supportStatus": "experimental",
+	"ci": {},
+	"browserFeatures": {
+		"required": ["createevent", "customevents"]
+	}
 }
