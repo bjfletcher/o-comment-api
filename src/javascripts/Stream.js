@@ -31,7 +31,7 @@ function Stream (collectionId, config) {
 
 		var callCallback = function (currentCallback) {
 			setTimeout(function () {
-				currentCallback.call(this, args);
+				currentCallback.apply(this, args);
 			});
 		};
 
