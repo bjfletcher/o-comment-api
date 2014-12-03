@@ -29,12 +29,14 @@ function Stream (collectionId, config) {
 		var i;
 		var args = arguments;
 
-		var callCallback = function () {
-			callbacks[i].call(this, args);
+		var callCallback = function (currentCallback) {
+			setTimeout(function () {
+				currentCallback.call(this, args);
+			});
 		};
 
 		for (i = 0; i < callbacks.length; i++) {
-			setTimeout(callCallback, 0);
+			callCallback(callbacks[i]);
 		}
 	};
 
