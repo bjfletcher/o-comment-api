@@ -1,6 +1,6 @@
 {
   "name": "o-comment-api",
-  "version": "0.7.10",
+  "version": "0.7.11",
   "main": "main.js",
   "dependencies": {
     "o-comment-utilities": "git+http://git.svc.ft.com:8080/scm/strat_p/o-comment-utilities.git#^0.4.0"

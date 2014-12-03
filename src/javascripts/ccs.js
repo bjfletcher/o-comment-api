@@ -3,8 +3,10 @@
 var oCommentUtilities = require('o-comment-utilities');
 var envConfig = require('./config.js');
 var cache = require('./cache.js');
-var stream = require('./stream.js');
+var Stream = require('./Stream.js');
 
+
+var streamsForCollectionId = {};
 /**
  * Uses CCS.getComments endpoint, but it also embeds an optional caching layer for the authentication info.
  *
@@ -81,11 +83,23 @@ function getComments (conf, callback) {
 				});
 
 				if (conf.stream === true && typeof conf.page === 'undefined') {
-					stream.init(data.collection.collectionId, data.collection.lastEvent, function (eventData) {
-						callback(null, {
-							stream: eventData
+					if (streamsForCollectionId[data.collection.collectionId]) {
+						streamsForCollectionId[data.collection.collectionId].addCallback(function (eventData) {
+							callback(null, {
+								stream: eventData
+							});
 						});
-					});
+					} else {
+						streamsForCollectionId[data.collection.collectionId] = new Stream(data.collection.collectionId, {
+							lastEventId: data.collection.lastEvent,
+							callback: function (eventData) {
+								callback(null, {
+									stream: eventData
+								});
+							}
+						});
+						streamsForCollectionId[data.collection.collectionId].init();
+					}
 				}
 			} else {
 				callback(new Error("No data received from CCS."), null);
