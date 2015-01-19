@@ -29,7 +29,9 @@ exports.api = {
  * @type {Object}
  */
 exports.cache = {
-	clear: cache.clear
+	clear: cache.clear,
+	clearAuth: cache.clearAuth,
+	clearInit: cache.clearInit
 };
 
 /**
