@@ -103,18 +103,12 @@ exports.removeInit = function (articleId) {
 	oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
 };
 
-/**
- * Clears all entries created by the cache.
- */
-exports.clear = function () {
+
+
+exports.clearAuth = function () {
 	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
 		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
 			if (oCommentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
-				var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
-				if (matchInit && matchInit.length) {
-					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
-				}
-
 				var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
 				if (matchAuth && matchAuth.length) {
 					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
@@ -122,4 +116,25 @@ exports.clear = function () {
 			}
 		}
 	}
+};
+
+exports.clearInit = function () {
+	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
+		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
+			if (oCommentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+				var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
+				if (matchInit && matchInit.length) {
+					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
+				}
+			}
+		}
+	}
+};
+
+/**
+ * Clears all entries created by the cache.
+ */
+exports.clear = function () {
+	exports.clearAuth();
+	exports.clearInit();
 };

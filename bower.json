@@ -1,6 +1,6 @@
 {
   "name": "o-comment-api",
-  "version": "0.7.15",
+  "version": "0.7.16",
   "main": "main.js",
   "dependencies": {
     "o-comment-utilities": "^0.4.0"
