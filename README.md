@@ -73,7 +73,7 @@ This method is responsible for changing the default configuration used by this m
 In order to change to the TEST environment, use the following code:
 
 ```javascript
-oCommentsData.init({
+oCommentApi.init({
     "suds": {
         "baseUrl": "http://test.session-user-data.webservices.ft.com"
     },
@@ -97,7 +97,7 @@ In order to enable caching within the module, you should set some module level c
 Example:
 
 ```javascript
-oCommentsData.init({
+oCommentApi.init({
     "cache": true,
     "sessionId": 15231
 });
@@ -111,7 +111,17 @@ The cache layer uses sessionStorage API to store data. While this is cleared aut
 The cache layer provides a public clear method which will delete all o-comments-data related cache entries from the sessionStorage.
 
 ```javascript
-oCommentsData.cache.clear();
+oCommentApi.cache.clear();
+```
+
+There's a possibility to clear just the auth or init cache:
+
+```javascript
+oCommentApi.cache.clearAuth();
+```
+
+```javascript
+oCommentApi.cache.clearInit();
 ```
 
 ---
@@ -154,7 +164,7 @@ This method communicates directly with the 'livefyre/init' endpoint of SUDS. It 
 ##### Example
 
 ```javascript
-oCommentsData.api.init({
+oCommentApi.api.init({
     elId: 'dom-id',
     articleId: 'art15123',
     url: 'http://example.com/article/art15123',
@@ -235,7 +245,7 @@ This method gets the authentication data and user settings. This data is needed 
 Normal access, without forcing:
 
 ```javascript
-oCommentsData.api.getAuth(function (err, data) {
+oCommentApi.api.getAuth(function (err, data) {
     if (err) {
         throw err;
     }
@@ -248,7 +258,7 @@ oCommentsData.api.getAuth(function (err, data) {
 With force set to true:
 
 ```javascript
-oCommentsData.api.getAuth({
+oCommentApi.api.getAuth({
     force: true
 },
 function (err, data) {
@@ -320,7 +330,7 @@ All fields are optional, but there should be provided at least one.
 ##### Example
 
 ```javascript
-oCommentsData.api.updateUser({
+oCommentApi.api.updateUser({
     pseudonym: 'my name',
     emailcomments: 'hourly',
     emailreplies: 'immediately',
@@ -369,7 +379,7 @@ Gets the comments of an article together with collection ID, max event ID (used 
 ##### Example
 
 ```javascript
-oCommentsData.api.getComments({
+oCommentApi.api.getComments({
     articleId: 'art15123',
     url: 'http://example.com/article/art15123',
     title: 'Article title'
@@ -419,7 +429,7 @@ This is a method with which a comment can be posted to an article's collection.
 
 
 ```javascript
-oCommentsData.api.postComment({
+oCommentApi.api.postComment({
     collectionId: 1525234,
     commentBody: "This is a comment"
 }, function (err, data) {
@@ -476,7 +486,7 @@ This is a method with which a comment can be posted to an article's collection.
 
 
 ```javascript
-oCommentsData.api.postComment({
+oCommentApi.api.postComment({
     collectionId: 1525234,
     commentId: 16482
 }, function (err, data) {
