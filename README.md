@@ -1,4 +1,4 @@
-# o-comment-api
+# Introduction
 
 A JavaScript API that provides a simple abstraction of the FT's commenting APIs.
 
@@ -13,10 +13,10 @@ This modules uses:
 There are two ways of using this module:
 
 ### Standalone
-Run `grunt`, then insert the JS found in the dist folder:
+Run `gulp`, then insert the JS found in the build folder:
 
 ```javascript
-<script src="dist/javascripts/oCommentApi.min.js"></script>
+<script src="build/javascripts/main.js"></script>
 ```
 
 The module's API can be accessed using `oCommentApi` in the global scope.
@@ -103,7 +103,7 @@ oCommentApi.init({
 });
 ```
 
-Where `sessionId` is a unique identifier of the current user's session (e.g. JSESSIONID for Java systems, PHPSESSID for PHP systems, etc.).
+Where `sessionId` is a unique identifier of the current user's session (e.g. FTSession for FT Membership).
 
 ### Clear the cache
 The cache layer uses sessionStorage API to store data. While this is cleared automatically each time the browser is closed, there could be some situations the cache should be cleared explicity.
@@ -159,6 +159,8 @@ This method communicates directly with the 'livefyre/init' endpoint of SUDS. It 
 
 - stream_type: livecomments, livechat, liveblog
 - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
+- section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
+- tags: Tags which will be added to the collection in Livefyre
 
 
 ##### Example
@@ -375,6 +377,11 @@ Gets the comments of an article together with collection ID, max event ID (used 
 - articleId: ID of the article, any string
 - url: canonical URL of the page
 - title: Title of the page
+
+###### Optional
+
+- section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
+- tags: Tags which will be added to the collection in Livefyre
 
 ##### Example
 

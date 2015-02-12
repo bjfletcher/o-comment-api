@@ -59,6 +59,12 @@ function getComments (conf, callback) {
 	if (typeof conf.page === 'number') {
 		dataToBeSent.pageNumber = conf.page;
 	}
+	if (typeof conf.section !== 'undefined') {
+		dataToBeSent.section = conf.section;
+	}
+	if (typeof conf.tags !== 'undefined'){
+		dataToBeSent.tags = conf.tags;
+	}
 
 	oCommentUtilities.jsonp(
 		{

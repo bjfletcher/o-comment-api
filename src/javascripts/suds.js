@@ -61,13 +61,19 @@ livefyre.getInitConfig = function (conf, callback) {
 	// actually make the request to SUDS
 	var makeCall = function () {
 			var dataToBeSent = {
-					title: conf.title,
-					url: conf.url,
-					articleId: conf.articleId,
-					el: conf.elId
-				};
-			if (conf.stream_type) {
+				title: conf.title,
+				url: conf.url,
+				articleId: conf.articleId,
+				el: conf.elId
+			};
+			if (typeof conf.stream_type !== 'undefined') {
 				dataToBeSent.stream_type = conf.stream_type;
+			}
+			if (typeof conf.section !== 'undefined') {
+				dataToBeSent.section = conf.section;
+			}
+			if (typeof conf.tags !== 'undefined'){
+				dataToBeSent.tags = conf.tags;
 			}
 
 			// makes the actual call to the SUDS service
