@@ -113,6 +113,7 @@ livefyre.getInitConfig = function (conf, callback) {
 		if (conf.force === true || !initCache) {
 			makeCall();
 		} else {
+			initCache.el = conf.elId;
 			callback(null, initCache);
 		}
 	}
