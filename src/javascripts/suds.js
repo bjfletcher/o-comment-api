@@ -25,6 +25,8 @@ var livefyre = {};
  * #### Optional fields:
  * - stream_type: livecomments, livechat, liveblog
  * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
+ * - section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
+ * - tags: Tags which will be added to the collection in Livefyre
  */
 livefyre.getInitConfig = function (conf, callback) {
 	if (typeof callback !== 'function') {

@@ -19,6 +19,8 @@ var streamsForCollectionId = {};
  * #### Optional fields:
  * - stream: enable streaming of new comments
  * - page: the page number to be fetched. By default it is 0.
+ * - section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
+ * - tags: Tags which will be added to the collection in Livefyre
  */
 function getComments (conf, callback) {
 	if (typeof callback !== 'function') {
