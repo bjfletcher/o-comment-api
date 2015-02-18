@@ -20,7 +20,7 @@ function Stream (collectionId, config) {
 		callbacks.push(config.callback);
 	}
 
-	if (config.lastEventId) {
+	if (typeof config.lastEventId !== 'undefined') {
 		lastEventId = config.lastEventId;
 	}
 
@@ -250,7 +250,7 @@ function Stream (collectionId, config) {
 	};
 
 	this.init = function () {
-		if (!initialized && !destroyed && lastEventId && collectionId && callbacks.length) {
+		if (!initialized && !destroyed && (typeof lastEventId !== 'undefined') && (typeof collectionId !== 'undefined') && callbacks.length) {
 			initialized = true;
 			connect();
 
