@@ -108,7 +108,7 @@ exports.removeInit = function (articleId) {
 exports.clearAuth = function () {
 	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
 		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
-			if (oCommentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+			if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(key)) {
 				var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
 				if (matchAuth && matchAuth.length) {
 					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
@@ -121,7 +121,7 @@ exports.clearAuth = function () {
 exports.clearInit = function () {
 	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
 		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
-			if (oCommentUtilities.storageWrapper.sessionStorage.native.hasOwnProperty(key)) {
+			if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(key)) {
 				var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
 				if (matchInit && matchInit.length) {
 					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
