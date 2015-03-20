@@ -44,15 +44,15 @@ function Stream (collectionId, config) {
 	var handleNewComment = function (data, authorData) {
 		callAllCallbacks({
 			comment: {
-				parentId: data.content.parentId,
-				author: {
+				parentId: data.content.parentId || null,
+				author: authorData ? {
 					displayName: authorData.displayName,
 					tags: authorData.tags,
 					type: authorData.type
-				},
-				content: data.content.bodyHtml,
-				timestamp: data.content.createdAt,
-				commentId: data.content.id,
+				} : null,
+				content: data.content.bodyHtml || null,
+				timestamp: data.content.createdAt || null,
+				commentId: data.content.id || null,
 				visibility: data.vis
 			}
 		});
