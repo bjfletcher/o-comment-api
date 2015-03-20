@@ -285,6 +285,8 @@ function create (collectionId, configOrCallback) {
 
 		if (typeof configOrCallback.callback !== 'function') {
 			return false;
+		} else {
+			callback = configOrCallback.callback;
 		}
 
 		if (configOrCallback.lastEventId) {
