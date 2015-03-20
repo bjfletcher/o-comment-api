@@ -382,6 +382,7 @@ Gets the comments of an article together with collection ID, max event ID (used 
 
 - section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
 - tags: Tags which will be added to the collection in Livefyre
+- stream: if streaming should be initialized automatically
 
 ##### Example
 
@@ -423,6 +424,20 @@ oCommentApi.api.getComments({
     }
 }
 ```
+
+
+##### Automatic streaming
+If `stream: true` is set, the same callback will be used to generate streaming events.
+
+The response will be in the following form:
+
+```javascript
+{
+    "stream": {{streaming object}}
+}
+```
+
+**For more information about the `streaming object` mentioned above, see the `Streaming` section**
 
 
 ### api.postComment
@@ -524,5 +539,78 @@ Response with an error:
     "success": false,
     "invalidSession": false,
     "errorMessage": "You don't have permission to delete this comment."
+}
+```
+
+
+### api.createStream
+If you want to get any changes in real-time, you can create a streaming channel.
+
+In order to do that, you should call the following function:
+
+```javascript
+api.createStream(collectionId, {
+    callback: function (data) {},
+    lastEventId: 5132356345234
+});
+```
+
+Configuration options:
+ - collectionId: ID of the Livefyre collection
+ - callback: this will be called each time something happens (e.g. new comment, a comment is deleted, etc.)
+ - lastEventId: the last event ID from which to fetch new events. This can be obtained by using api.getComments
+
+
+#### Sample responses
+
+##### New comment
+
+```javascript
+{
+    comment: {
+        parentId: "1468854",
+        author: {
+            displayName: "user1",
+            tags: ["FT"],
+            type: 1
+        },
+        content: "<p>this is a test comment</p>",
+        timestamp: 1426860385,
+        commentId: "284661456",
+        visibility: 1
+    }
+}
+```
+
+##### Comment updated
+
+```javascript
+{
+    comment: {
+        updated: true,
+        commentId: "284661456",
+        content: "<p>this is a test comment updated</p>"
+    }
+}
+```
+
+##### Comment deleted
+
+```javascript
+{
+    comment: {
+        deleted: true,
+        commentId: "284661456"
+    }
+}
+```
+
+##### Posting new comments enabled/disabled
+
+```javascript
+{
+    collection: {
+        commentsEnabled: true
+    }
 }
 ```

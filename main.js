@@ -4,6 +4,7 @@ var config = require('./src/javascripts/config.js'),
 	suds = require('./src/javascripts/suds.js'),
 	ccs = require('./src/javascripts/ccs.js'),
 	cache = require('./src/javascripts/cache.js'),
+	stream = require('./src/javascripts/stream.js'),
 	defaultConfig = require('./config.json'),
 	oCommentUtilities = require('o-comment-utilities');
 
@@ -21,7 +22,9 @@ exports.api = {
 
 	getComments: ccs.getComments,
 	postComment: ccs.postComment,
-	deleteComment: ccs.deleteComment
+	deleteComment: ccs.deleteComment,
+
+	createStream: stream.create
 };
 
 /**

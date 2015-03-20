@@ -6,6 +6,7 @@ var request = require('./request.js');
 var envConfig = require('./config.js');
 var logger = require('o-comment-utilities').logger;
 
+
 function Stream (collectionId, config) {
 	var callbacks = [];
 	var lastEventId;
@@ -94,7 +95,7 @@ function Stream (collectionId, config) {
 
 					// type: comment
 					if (item.type === 0) {
-						if (item.vis === 1) {
+						if (item.vis > 1) {
 							if (item.content.updatedBy) {
 								handleUpdateComment(item);
 							} else {
@@ -267,4 +268,45 @@ function Stream (collectionId, config) {
 		destroyed = true;
 	};
 }
-module.exports = Stream;
+
+
+var streamsForCollectionId = {};
+
+function create (collectionId, configOrCallback) {
+	var callback;
+	var lastEventId = 0;
+
+	if (typeof configOrCallback === 'function') {
+		callback = configOrCallback;
+	} else {
+		if (typeof configOrCallback !== 'object') {
+			return false;
+		}
+
+		if (typeof configOrCallback.callback !== 'function') {
+			return false;
+		}
+
+		if (configOrCallback.lastEventId) {
+			lastEventId = configOrCallback.lastEventId;
+		}
+	}
+
+	if (streamsForCollectionId[collectionId]) {
+		streamsForCollectionId[collectionId].addCallback(callback);
+
+		return true;
+	} else {
+		streamsForCollectionId[collectionId] = new Stream(collectionId, {
+			lastEventId: lastEventId,
+			callback: callback
+		});
+		streamsForCollectionId[collectionId].init();
+
+		return true;
+	}
+}
+
+module.exports = {
+	create: create
+};
