@@ -95,11 +95,11 @@ function Stream (collectionId, config) {
 
 					// type: comment
 					if (item.type === 0) {
-						if (item.vis > 1) {
+						if (item.vis >= 1) {
 							if (item.content.updatedBy) {
 								handleUpdateComment(item);
 							} else {
-								handleNewComment(item, data.authors[item.content.authorId]);
+								handleNewComment(item, ((data.authors && item.content.authorId) ? data.authors[item.content.authorId] : null));
 							}
 						} else if (item.vis === 0) {
 							handleDeleteComment(item);
