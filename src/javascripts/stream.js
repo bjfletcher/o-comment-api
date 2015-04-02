@@ -6,10 +6,11 @@ var request = require('./request.js');
 var envConfig = require('./config.js');
 var logger = require('o-comment-utilities').logger;
 
-
 function Stream (collectionId, config) {
 	var callbacks = [];
 	var lastEventId;
+
+	var commentIds = [];
 
 	var initialized = false;
 	var destroyed = false;
@@ -42,6 +43,10 @@ function Stream (collectionId, config) {
 	};
 
 	var handleNewComment = function (data, authorData) {
+		if (commentIds.indexOf(data.content.id) === -1) {
+			commentIds.push(data.content.id);
+		}
+
 		callAllCallbacks({
 			comment: {
 				parentId: data.content.parentId || null,
@@ -96,7 +101,7 @@ function Stream (collectionId, config) {
 					// type: comment
 					if (item.type === 0) {
 						if (item.vis >= 1) {
-							if (item.content.updatedBy) {
+							if (item.content.updatedBy || commentIds.indexOf(data.content.id) !== -1) {
 								handleUpdateComment(item);
 							} else {
 								handleNewComment(item, ((data.authors && item.content.authorId) ? data.authors[item.content.authorId] : null));
