@@ -101,7 +101,7 @@ function Stream (collectionId, config) {
 					// type: comment
 					if (item.type === 0) {
 						if (item.vis >= 1) {
-							if (item.content.updatedBy || commentIds.indexOf(data.content.id) !== -1) {
+							if (item.content.updatedBy || commentIds.indexOf(item.content.id) !== -1) {
 								handleUpdateComment(item);
 							} else {
 								handleNewComment(item, ((data.authors && item.content.authorId) ? data.authors[item.content.authorId] : null));
