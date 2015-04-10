@@ -9,6 +9,9 @@
     "node_modules",
     "tests",
     "gulpfile.js",
-    "docs"
+    "docs",
+    ".editorconfig",
+    ".jshintrc",
+    "package.json"
   ]
 }
