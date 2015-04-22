@@ -64,6 +64,6 @@ exports.setLoggingLevel = function () {
 /**
  * Init method sets additional or overrides current configuration options.
  */
-exports.init = function () {
+exports.setConfig = function () {
 	config.set.apply(this, arguments);
 };

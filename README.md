@@ -35,7 +35,7 @@ The module should be built using `browserify` (with `debowerify` transform).
 ## Configuration
 <strong>The methods which are meant to configure the module are the following:</strong>
 
-### init
+### setConfig
 This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified (deep merge, primitive type values of the same key will be overwritten).
 
 ##### Default configuration
@@ -64,6 +64,9 @@ This method is responsible for changing the default configuration used by this m
     "cacheConfig": {
         "authBaseName": "comments-prod-auth-",
         "initBaseName": "comments-prod-init-"
+    },
+    "livefyre": {
+        "networkName": "ft"
     }
 }
 ```
@@ -73,7 +76,7 @@ This method is responsible for changing the default configuration used by this m
 In order to change to the TEST environment, use the following code:
 
 ```javascript
-oCommentApi.init({
+oCommentApi.setConfig({
     "suds": {
         "baseUrl": "http://test.session-user-data.webservices.ft.com"
     },
@@ -83,6 +86,9 @@ oCommentApi.init({
     "cacheConfig": {
         "authBaseName": "comments-test-auth-",
         "initBaseName": "comments-test-init-"
+    },
+    "livefyre": {
+        "networkName": "ft-1"
     }
 });
 ```
@@ -97,7 +103,7 @@ In order to enable caching within the module, you should set some module level c
 Example:
 
 ```javascript
-oCommentApi.init({
+oCommentApi.setConfig({
     "cache": true,
     "sessionId": 15231
 });
@@ -166,7 +172,7 @@ This method communicates directly with the 'livefyre/init' endpoint of SUDS. It 
 ##### Example
 
 ```javascript
-oCommentApi.api.init({
+oCommentApi.api.getLivefyreInitConfig({
     elId: 'dom-id',
     articleId: 'art15123',
     url: 'http://example.com/article/art15123',
@@ -247,7 +253,7 @@ This method gets the authentication data and user settings. This data is needed 
 Normal access, without forcing:
 
 ```javascript
-oCommentApi.api.getAuth(function (err, data) {
+oCommentApi.api.getUserData(function (err, data) {
     if (err) {
         throw err;
     }
@@ -260,7 +266,7 @@ oCommentApi.api.getAuth(function (err, data) {
 With force set to true:
 
 ```javascript
-oCommentApi.api.getAuth({
+oCommentApi.api.getUserData({
     force: true
 },
 function (err, data) {
@@ -508,7 +514,7 @@ This is a method with which a comment can be posted to an article's collection.
 
 
 ```javascript
-oCommentApi.api.postComment({
+oCommentApi.api.deleteComment({
     collectionId: 1525234,
     commentId: 16482
 }, function (err, data) {
