@@ -16,7 +16,7 @@ There are two ways of using this module:
 Run `gulp`, then insert the JS found in the build folder:
 
 ```javascript
-<script src="build/javascripts/main.js"><\/script>
+<script src="build/javascripts/main.js"></script>
 ```
 
 The module's API can be accessed using `oCommentApi` in the global scope.
@@ -112,7 +112,7 @@ In order to change the configuration, you can add a script tag in your page sour
             "networkName": "ft-1"
         }
     }
-<\/script>
+</script>
 ```
 
 This configuration will be loaded on the `o.DOMContentLoaded` event.
