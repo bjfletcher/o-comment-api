@@ -83,3 +83,4 @@ document.addEventListener('o.DOMContentLoaded', function () {
 	} catch (e) {
 		oCommentUtilities.logger.log('Invalid config in the DOM.', e);
 	}
+});
