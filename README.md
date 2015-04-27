@@ -16,7 +16,7 @@ There are two ways of using this module:
 Run `gulp`, then insert the JS found in the build folder:
 
 ```javascript
-<script src="build/javascripts/main.js"></script>
+<script src="build/javascripts/main.js"><\/script>
 ```
 
 The module's API can be accessed using `oCommentApi` in the global scope.
@@ -32,15 +32,13 @@ The module should be built using `browserify` (with `debowerify` transform).
 
 ---
 
-## Configuration
-<strong>The methods which are meant to configure the module are the following:</strong>
 
-### setConfig
-This method is responsible for changing the default configuration used by this module. Calling this method with an object will merge the default configuration with the object specified (deep merge, primitive type values of the same key will be overwritten).
+## <div id="configuration"></div> Global configuration
+This module uses global configuration. These are related to Livefyre and the connection details to the backend services.
 
-##### Default configuration
+The default configuration is the production one:
 
-```javascript
+```json
 {
     "suds": {
         "baseUrl": "http://session-user-data.webservices.ft.com",
@@ -71,12 +69,62 @@ This method is responsible for changing the default configuration used by this m
 }
 ```
 
+In order to change to the settings of the TEST environment, then this configuration should be used:
 
-##### Change the environment
-In order to change to the TEST environment, use the following code:
+```json
+{
+    "suds": {
+        "baseUrl": "http://test.session-user-data.webservices.ft.com"
+    },
+    "ccs": {
+        "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
+    },
+    "cacheConfig": {
+        "authBaseName": "comments-test-auth-",
+        "initBaseName": "comments-test-init-"
+    },
+    "livefyre": {
+        "networkName": "ft-1"
+    }
+}
+```
+
+
+There are two ways for changing the environment:
+
+### <div id="confdecl"></div> Declaratively
+In order to change the configuration, you can add a script tag in your page source with the format in the example below:
 
 ```javascript
-oCommentApi.setConfig({
+<script data-o-comment-api-config type="application/json">
+    {
+        "suds": {
+            "baseUrl": "http://test.session-user-data.webservices.ft.com"
+        },
+        "ccs": {
+            "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
+        },
+        "cacheConfig": {
+            "authBaseName": "comments-test-auth-",
+            "initBaseName": "comments-test-init-"
+        },
+        "livefyre": {
+            "networkName": "ft-1"
+        }
+    }
+<\/script>
+```
+
+This configuration will be loaded on the `o.DOMContentLoaded` event.
+
+### <div id="confimper"></div> Imperatively
+##### oComments.setConfig(config)
+The configuration can be changed be using the `setConfig` static method. Calling this method with an object will merge the current configuration with the object specified (deep merge, primitive type values of the same key will be overwritten).
+
+Example:
+
+```javascript
+oComments.setConfig({
     "suds": {
         "baseUrl": "http://test.session-user-data.webservices.ft.com"
     },
@@ -92,6 +140,8 @@ oCommentApi.setConfig({
     }
 });
 ```
+
+*As on the event `o.DOMContentLoaded` the widgets declared in the DOM are automatically initialized, it is preferred to call this function **before** the `o.DOMContentLoaded` event is triggered.*
 
 ---
 
