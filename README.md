@@ -566,9 +566,9 @@ Configuration options:
  - lastEventId: the last event ID from which to fetch new events. This can be obtained by using api.getComments
 
 
-#### Sample responses
+##### Sample responses
 
-##### New comment
+###### New comment
 
 ```javascript
 {
@@ -587,7 +587,7 @@ Configuration options:
 }
 ```
 
-##### Comment updated
+###### Comment updated
 
 ```javascript
 {
@@ -599,7 +599,7 @@ Configuration options:
 }
 ```
 
-##### Comment deleted
+###### Comment deleted
 
 ```javascript
 {
@@ -610,7 +610,7 @@ Configuration options:
 }
 ```
 
-##### Posting new comments enabled/disabled
+###### Posting new comments enabled/disabled
 
 ```javascript
 {
