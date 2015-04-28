@@ -145,13 +145,17 @@ oCommentApi.setConfig({
 
 *As on the event `o.DOMContentLoaded` the widgets declared in the DOM are automatically initialized, it is preferred to call this function **before** the `o.DOMContentLoaded` event is triggered.*
 
----
+
 ## <div id="api"></div> API
+
 ### <div id="data"> Data APIs
+
 #### oCommentApi.api.getLivefyreInitConfig
+
 This method communicates directly with the 'livefyre/init' endpoint of SUDS. It accepts a configuration object and a callback as paramaters. A Livefyre object is passed into the callback (both init and auth fields).
 
 ##### Configuration
+
 ###### Mandatory fields:
 
 - elId: ID of the HTML element in which the widget should be loaded
@@ -238,9 +242,11 @@ For more information on user settings, please visit: http://docs.livefyre.com/pr
 
 
 #### api.getUserData
+
 This method gets the authentication data and user settings. This data is needed for actions that require the user to be authenticated.
 
 ##### Configuration
+
 ###### Optional fields:
 
 - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
@@ -321,6 +327,7 @@ The authentication service that SUDS is using is down:
 ```
 
 #### api.updateUser
+
 Updates the user's details in both Livefyre and FT Membership systems (DAM).
 
 ##### Data needed
@@ -376,6 +383,7 @@ Response with an error:
 Gets the comments of an article together with collection ID, max event ID (used in Livefyre's system when streaming new data) and authentication data.
 
 ##### Configuration
+
 ###### Mandatory fields:
 
 - articleId: ID of the article, any string
@@ -431,6 +439,7 @@ oCommentApi.api.getComments({
 
 
 ##### Automatic streaming
+
 If `stream: true` is set, the same callback will be used to generate streaming events.
 
 The response will be in the following form:
@@ -445,9 +454,11 @@ The response will be in the following form:
 
 
 #### api.postComment
+
 This is a method with which a comment can be posted to an article's collection.
 
 ##### Configuration
+
 ###### Mandatory fields
 
 - collectionId: ID of the collection. It can be obtained using the getComments function.
@@ -505,6 +516,7 @@ Response with an error:
 This is a method with which a comment can be posted to an article's collection.
 
 ##### Configuration
+
 ###### Mandatory fields
 
 - collectionId: ID of the collection. It can be obtained using the getComments function.
@@ -548,6 +560,7 @@ Response with an error:
 
 
 #### api.createStream
+
 If you want to get any changes in real-time, you can create a streaming channel.
 
 In order to do that, you should call the following function:
@@ -621,9 +634,11 @@ Configuration options:
 
 
 ### <div id="caching"> Caching
+
 An optional cache is available to store information in the browser, data like article metadata (information which is needed for Livefyre), user authentication details, Livefyre tokens. If the cache is not enabled, these information will be fetched from the backend services on each request.
 
 #### Enable caching
+
 In order to enable caching, you should set some module level configuration (any approach mentioned in the 'Global configuration' chapter works):
 
 Example:
@@ -638,6 +653,7 @@ oCommentApi.setConfig({
 Where `sessionId` is a unique identifier of the current user's session (e.g. FTSession for FT Membership).
 
 #### Clear the cache
+
 The cache layer uses sessionStorage API to store data. While this is cleared automatically each time the browser is closed, there could be some situations the cache should be cleared explicity.
 
 The cache layer provides a public clear method which will delete all o-comments-api related cache entries from the sessionStorage.
@@ -657,6 +673,7 @@ oCommentApi.cache.clearLivefyreInit();
 ```
 
 ### Logging
+
 Logging can be enabled for debugging purposes. It logs using the global 'console' if available (if not, nothing happens and it degrades gracefully).
 By default logging is disabled.
 
