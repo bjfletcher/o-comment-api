@@ -18,7 +18,7 @@ This modules communicates with backend services:
      * <a href="#data">Data</a>
      * <a href="#caching">Caching</a>
      * <a href="#logging">Logging</a>
- * <a href="#messages">Browser support</a>
+ * <a href="#browser">Browser support</a>
  * <a href="#core">Core/enhanced experience</a>
 
 ## <div id="prereq"></div> Prerequisites
