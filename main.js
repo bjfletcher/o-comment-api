@@ -34,7 +34,7 @@ exports.api = {
 exports.cache = {
 	clear: cache.clear,
 	clearAuth: cache.clearAuth,
-	clearInit: cache.clearInit
+	clearLivefyreInit: cache.clearLivefyreInit
 };
 
 /**
