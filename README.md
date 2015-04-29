@@ -10,7 +10,6 @@ This modules communicates with backend services:
 ## Contents
 
  * <a href="#prereq">Prerequisites</a>
- * <a href="#howtouseit">How to use it</a>
  * <a href="#configuration">Global configuration</a>
      * <a href="#confdecl">Declaratively</a>
      * <a href="#confimper">Imperatively</a>
@@ -25,14 +24,6 @@ This modules communicates with backend services:
 
 * Your content must either be available in the Content API or available on a blogs URL in order for commenting to work. (See Moderation for why) 
 * You must be on an FT.com domain or sub-domain for authentication to work
-
-## <div id="howtouseit"></div> How to use it
-
-Javascript:
-
-```javascript
-var oCommentApi = require('o-comment-api');
-```
 
 
 ## <div id="configuration"></div> Global configuration
