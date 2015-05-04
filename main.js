@@ -24,7 +24,10 @@ exports.api = {
 	postComment: ccs.postComment,
 	deleteComment: ccs.deleteComment,
 
-	createStream: stream.create
+	stream: {
+		create: stream.create,
+		destroy: stream.destroy
+	}
 };
 
 /**

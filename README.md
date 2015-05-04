@@ -539,13 +539,13 @@ Response with an error:
 ```
 
 
-#### api.createStream
+#### api.stream.create
 If you want to get any changes in real-time, you can create a streaming channel.
 
 In order to do that, you should call the following function:
 
 ```javascript
-api.createStream(collectionId, {
+api.stream.create(collectionId, {
     callback: function (data) {},
     lastEventId: 5132356345234
 });
@@ -555,6 +555,28 @@ Configuration options:
  - collectionId: ID of the Livefyre collection
  - callback: this will be called each time something happens (e.g. new comment, a comment is deleted, etc.)
  - lastEventId: the last event ID from which to fetch new events. This can be obtained by using api.getComments
+
+*Note: For optimization purposes, if a stream already exists for a given collectionId, that stream will be reused, and the provided callback will be added to the callback list of that stream.*
+
+*Limitation: lastEventId is not considered if a stream already exists for a given collectionId.*
+
+#### api.stream.destroy
+If a stream is not needed anymore, it can be destroyed.
+
+```javascript
+api.stream.destroy(collectionId);
+
+api.stream.destroy(collectionId, {
+    callback: existingCallbackReference
+});
+
+api.stream.destroy(collectionId, existingCallbackReference);
+```
+
+The only mandatory parameter is collectionId.
+There are two possibilities:
+ - a callback is specified: the callback is removed from the existing stream. If there are no more callbacks attached to the stream, the stream is terminated.
+ - a callback is not specified: the stream is terminated with all the callbacks attached to it.
 
 
 ##### Sample responses
