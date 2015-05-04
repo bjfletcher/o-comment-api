@@ -259,7 +259,7 @@ function Stream (collectionId, config) {
 		if (callbacks.length === 0) {
 			this.destroy();
 		}
-	}
+	};
 
 	this.setLastEventId = function (eventId) {
 		lastEventId = eventId;
