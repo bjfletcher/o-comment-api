@@ -88,7 +88,7 @@ There are two ways for changing the environment:
 ### <div id="confdecl"></div> Declaratively
 In order to change the configuration, you can add a script tag in your page source with the format in the example below:
 
-```javascript
+```html
 <script data-o-comment-api-config type="application/json">
     {
         "suds": {
