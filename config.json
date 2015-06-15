@@ -1,6 +1,6 @@
 {
     "suds": {
-        "baseUrl": "http://session-user-data.webservices.ft.com",
+        "baseUrl": "//session-user-data.webservices.ft.com",
         "endpoints": {
             "livefyre": {
                 "init": "/v1/livefyre/init"
