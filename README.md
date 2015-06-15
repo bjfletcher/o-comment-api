@@ -34,7 +34,7 @@ The default configuration is the production one:
 ```json
 {
     "suds": {
-        "baseUrl": "http://session-user-data.webservices.ft.com",
+        "baseUrl": "//session-user-data.webservices.ft.com",
         "endpoints": {
             "livefyre": {
                 "init": "/v1/livefyre/init",
@@ -67,7 +67,7 @@ In order to change to the settings of the TEST environment, then this configurat
 ```json
 {
     "suds": {
-        "baseUrl": "http://test.session-user-data.webservices.ft.com"
+        "baseUrl": "//test.session-user-data.webservices.ft.com"
     },
     "ccs": {
         "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
@@ -92,7 +92,7 @@ In order to change the configuration, you can add a script tag in your page sour
 <script data-o-comment-api-config type="application/json">
     {
         "suds": {
-            "baseUrl": "http://test.session-user-data.webservices.ft.com"
+            "baseUrl": "//test.session-user-data.webservices.ft.com"
         },
         "ccs": {
             "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
@@ -119,7 +119,7 @@ Example:
 ```javascript
 oCommentApi.setConfig({
     "suds": {
-        "baseUrl": "http://test.session-user-data.webservices.ft.com"
+        "baseUrl": "//test.session-user-data.webservices.ft.com"
     },
     "ccs": {
         "baseUrl": "http://test.comment-creation-service.webservices.ft.com"
