@@ -280,8 +280,8 @@ function Stream (collectionId, config) {
 		callbacks = null;
 		lastEventId = null;
 
-		if (streamsForCollectionId.indexOf(collectionId) !== -1) {
-			streamsForCollectionId.splice(streamsForCollectionId.indexOf(collectionId), 1);
+		if (typeof streamsForCollectionId[collectionId] !== 'undefined') {
+			streamsForCollectionId[collectionId] = undefined;
 		}
 
 		destroyed = true;
