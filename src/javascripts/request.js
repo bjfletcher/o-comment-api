@@ -99,9 +99,9 @@ function getXhrForUrl (requestUrl) {
 	var isXDomainRequest = false;
 
 	if (typeof window.location !== 'undefined') {
-		var hostnameMatch = requestUrl.match(/http[s]?:\/\/([^\/]*)/);
+		var hostnameMatch = requestUrl.match(/(http[s]?:)?\/\/([^\/]*)/);
 
-		if (hostnameMatch && hostnameMatch[1] !== window.location.hostname) {
+		if (hostnameMatch && hostnameMatch[2] !== window.location.hostname) {
 			isXDomainRequest = true;
 		}
 	}
