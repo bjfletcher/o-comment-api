@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * Wrapper and polyfill for String.prototype.trim
  * @param  {string} string The string to be trimmed.

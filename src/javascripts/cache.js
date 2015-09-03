@@ -1,18 +1,16 @@
-"use strict";
-
-var envConfig = require('./config.js'),
-	oCommentUtilities = require('o-comment-utilities');
+const envConfig = require('./config.js');
+const oCommentUtilities = require('o-comment-utilities');
 
 /**
  * Verifies if there's a valid auth token (not expired) attached to the session ID provided.
- * @return {string|undefined}
+ * @return {String} Auth token
  */
 exports.getAuth = function() {
 	if (!envConfig.get('sessionId')) {
 		return undefined;
 	}
 
-	var authCache = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
+	const authCache = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 	if (authCache) {
 		if (new Date() < oCommentUtilities.dateHelper.toDateObject(authCache.expires)) {
 			return authCache;
@@ -26,12 +24,12 @@ exports.getAuth = function() {
 
 /**
  * Removes the auth token from the local cache.
+ * @return {undefined}
  */
 exports.removeAuth = function () {
 	if (!envConfig.get('sessionId')) {
 		return;
 	}
-
 
 	oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 };
@@ -52,12 +50,12 @@ exports.cacheAuth = function (authObject) {
 
 	if (authObject.token) {
 		try {
-			var oldObj = {};
+			let oldObj = {};
 			if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'))) {
 				oldObj = oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'));
 			}
 
-			var mergedObj = oCommentUtilities.merge({}, oldObj, authObject);
+			const mergedObj = oCommentUtilities.merge({}, oldObj, authObject);
 			oCommentUtilities.storageWrapper.sessionStorage.setItem(envConfig.get().cacheConfig.authBaseName + envConfig.get('sessionId'), mergedObj);
 
 			return true;
@@ -72,7 +70,7 @@ exports.cacheAuth = function (authObject) {
 /**
  * Returns the SUDS init object saved into the local cache.
  * @param  {string|number} articleId The ID of the article
- * @return {object|undefined}
+ * @return {object} Livefyre init object
  */
 exports.getInit = function (articleId) {
 	return oCommentUtilities.storageWrapper.sessionStorage.getItem(envConfig.get().cacheConfig.initBaseName + articleId);
@@ -82,6 +80,7 @@ exports.getInit = function (articleId) {
  * Saves the SUDS init object into the local cache.
  * @param  {string|number} articleId The ID of the article
  * @param  {object} initObj SUDS init
+ * @return {undefined}
  */
 exports.cacheInit = function (articleId, initObj) {
 	try {
@@ -98,6 +97,7 @@ exports.cacheInit = function (articleId, initObj) {
 /**
  * Removes the SUDS init object from the local cache.
  * @param  {string|number} articleId The ID of the article
+ * @return {undefined}
  */
 exports.removeInit = function (articleId) {
 	oCommentUtilities.storageWrapper.sessionStorage.removeItem(envConfig.get().cacheConfig.initBaseName + articleId);
@@ -107,9 +107,9 @@ exports.removeInit = function (articleId) {
 
 exports.clearAuth = function () {
 	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
-		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
+		for (const key in oCommentUtilities.storageWrapper.sessionStorage.native) {
 			if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(key)) {
-				var matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
+				const matchAuth = key.match(new RegExp(envConfig.get().cacheConfig.authBaseName + '(.*)'));
 				if (matchAuth && matchAuth.length) {
 					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
 				}
@@ -120,9 +120,9 @@ exports.clearAuth = function () {
 
 exports.clearLivefyreInit = function () {
 	if (oCommentUtilities.storageWrapper.sessionStorage.native) {
-		for (var key in oCommentUtilities.storageWrapper.sessionStorage.native) {
+		for (const key in oCommentUtilities.storageWrapper.sessionStorage.native) {
 			if (oCommentUtilities.storageWrapper.sessionStorage.hasItem(key)) {
-				var matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
+				const matchInit = key.match(new RegExp(envConfig.get().cacheConfig.initBaseName + '(.*)'));
 				if (matchInit && matchInit.length) {
 					oCommentUtilities.storageWrapper.sessionStorage.removeItem(key);
 				}
@@ -133,6 +133,7 @@ exports.clearLivefyreInit = function () {
 
 /**
  * Clears all entries created by the cache.
+ * @return {undefined}
  */
 exports.clear = function () {
 	exports.clearAuth();

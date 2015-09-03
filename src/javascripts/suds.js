@@ -1,20 +1,19 @@
-"use strict";
-
-var cache = require('./cache.js'),
-	utils = require('./utils.js'),
-	envConfig = require('./config.js'),
-	oCommentUtilities = require('o-comment-utilities');
+const cache = require('./cache.js');
+const utils = require('./utils.js');
+const envConfig = require('./config.js');
+const oCommentUtilities = require('o-comment-utilities');
 
 
 /**
  * Livefyre related SUDS endpoints.
  * @type {Object}
  */
-var livefyre = {};
+const livefyre = {};
 
 /**
  * Uses SUDS.livefyre.init endpoint, but it also embeds an optional caching layer.
  *
+ * @param {Object} conf Configuration object
  * ### Configuration
  * #### Mandatory fields:
  * - elId: ID of the HTML element in which the widget should be loaded
@@ -27,6 +26,8 @@ var livefyre = {};
  * - force: has effect in combination with cache enabled. If force set to true, the data won't be readed from the cache even if a valid entry exists, but it will force the call to the webservice to happen.
  * - section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
  * - tags: Tags which will be added to the collection in Livefyre
+ * @param {Function} callback function (err, data)
+ * @return {undefined}
  */
 livefyre.getInitConfig = function (conf, callback) {
 	if (typeof callback !== 'function') {
@@ -54,15 +55,15 @@ livefyre.getInitConfig = function (conf, callback) {
 	}
 
 
-	var cacheEnabled = false;
+	let cacheEnabled = false;
 	if (envConfig.get('cache') === true) {
 		cacheEnabled = true;
 	}
 
 
 	// actually make the request to SUDS
-	var makeCall = function () {
-			var dataToBeSent = {
+	const makeCall = function () {
+			const dataToBeSent = {
 				title: conf.title,
 				url: conf.url,
 				articleId: conf.articleId,
@@ -110,7 +111,7 @@ livefyre.getInitConfig = function (conf, callback) {
 	if (!cacheEnabled) {
 		makeCall();
 	} else {
-		var initCache = cache.getInit(conf.articleId);
+		const initCache = cache.getInit(conf.articleId);
 
 		if (conf.force === true || !initCache) {
 			makeCall();
@@ -126,7 +127,7 @@ livefyre.getInitConfig = function (conf, callback) {
  * User related SUDS endpoints.
  * @type {Object}
  */
-var user = {};
+const user = {};
 
 
 /**
@@ -138,6 +139,7 @@ var user = {};
  *
  * @param  {Object|Function}   confOrCallback Configuration object following the fields from the description, or if it isn't relevant, callback function.
  * @param  {Function}          callback       Callback function if configuration is provided as well.
+ * @return {undefined}
  */
 user.getAuth = function (confOrCallback, callback) {
 	if (typeof confOrCallback === 'function') {
@@ -148,12 +150,12 @@ user.getAuth = function (confOrCallback, callback) {
 		throw new Error('Callback not provided.');
 	}
 
-	var cacheEnabled = false;
+	let cacheEnabled = false;
 	if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
 		cacheEnabled = true;
 	}
 
-	var makeCall = function () {
+	const makeCall = function () {
 		oCommentUtilities.jsonp(
 			{
 				url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.getAuth
@@ -177,7 +179,7 @@ user.getAuth = function (confOrCallback, callback) {
 	if (!cacheEnabled) {
 		makeCall();
 	} else {
-		var authCache = cache.getAuth(envConfig.get('sessionId'));
+		const authCache = cache.getAuth(envConfig.get('sessionId'));
 
 		if (!authCache || confOrCallback.force === true) {
 			makeCall();
@@ -193,6 +195,7 @@ user.getAuth = function (confOrCallback, callback) {
  * Saves the user's settings by making a call to SUDS.user.updateuser endpoint.
  * @param {Object} userSettings Fields: pseudonym, emailcomments, emailreplies, emaillikes, emailautofollow
  * @param {Function} callback function (err, data)
+ * @return {undefined}
  */
 user.updateUser = function (userSettings, callback) {
 	if (typeof callback !== 'function') {

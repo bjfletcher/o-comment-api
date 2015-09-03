@@ -1,12 +1,10 @@
-"use strict";
-
-var config = require('./src/javascripts/config.js'),
-	suds = require('./src/javascripts/suds.js'),
-	ccs = require('./src/javascripts/ccs.js'),
-	cache = require('./src/javascripts/cache.js'),
-	stream = require('./src/javascripts/stream.js'),
-	defaultConfig = require('./config.json'),
-	oCommentUtilities = require('o-comment-utilities');
+const config = require('./src/javascripts/config.js');
+const suds = require('./src/javascripts/suds.js');
+const ccs = require('./src/javascripts/ccs.js');
+const cache = require('./src/javascripts/cache.js');
+const stream = require('./src/javascripts/stream.js');
+const defaultConfig = require('./config.json');
+const oCommentUtilities = require('o-comment-utilities');
 
 
 config.set(defaultConfig);
@@ -42,7 +40,7 @@ exports.cache = {
 
 /**
  * Enables logging.
- * @type {function}
+ * @return {undefined}
  */
 exports.enableLogging = function () {
 	oCommentUtilities.logger.enable.apply(this, arguments);
@@ -50,7 +48,7 @@ exports.enableLogging = function () {
 
 /**
  * Disables logging.
- * @type {function}
+ * @return {undefined}
  */
 exports.disableLogging = function () {
 	oCommentUtilities.logger.disable.apply(this, arguments);
@@ -58,7 +56,7 @@ exports.disableLogging = function () {
 
 /**
  * Sets logging level.
- * @type {number|string}
+ * @return {undefined}
  */
 exports.setLoggingLevel = function () {
 	oCommentUtilities.logger.setLevel.apply(this, arguments);
@@ -69,6 +67,7 @@ exports.setLoggingLevel = function () {
  *
  * @param  {string|object} keyOrObject Key or actually an object with key-value pairs.
  * @param  {anything} value Optional. Should be specified only if keyOrObject is actually a key (string).
+ * @return {undefined}
  */
 exports.setConfig = function () {
 	config.set.apply(this, arguments);
@@ -77,9 +76,9 @@ exports.setConfig = function () {
 
 document.addEventListener('o.DOMContentLoaded', function () {
 	try {
-		var configInDomEl = document.querySelector('script[type="application/json"][data-o-comment-api-config]');
+		const configInDomEl = document.querySelector('script[type="application/json"][data-o-comment-api-config]');
 		if (configInDomEl) {
-			var configInDom = JSON.parse(configInDomEl.innerHTML);
+			const configInDom = JSON.parse(configInDomEl.innerHTML);
 
 			exports.setConfig(configInDom);
 		}

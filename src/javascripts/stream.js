@@ -1,19 +1,17 @@
-"use strict";
+const events = require('./events.js');
 
-var events = require('./events.js');
-
-var request = require('./request.js');
-var envConfig = require('./config.js');
-var logger = require('o-comment-utilities').logger;
+const request = require('./request.js');
+const envConfig = require('./config.js');
+const logger = require('o-comment-utilities').logger;
 
 function Stream (collectionId, config) {
-	var callbacks = [];
-	var lastEventId;
+	let callbacks = [];
+	let lastEventId;
 
-	var commentIds = [];
+	const commentIds = [];
 
-	var initialized = false;
-	var destroyed = false;
+	let initialized = false;
+	let destroyed = false;
 
 	if (config.callbacks && config.callbacks instanceof Array) {
 		callbacks = config.callbacks;
@@ -27,11 +25,11 @@ function Stream (collectionId, config) {
 	}
 
 
-	var callAllCallbacks = function () {
-		var i;
-		var args = arguments;
+	const callAllCallbacks = function () {
+		let i;
+		const args = arguments;
 
-		var callCallback = function (currentCallback) {
+		const callCallback = function (currentCallback) {
 			setTimeout(function () {
 				currentCallback.apply(this, args);
 			});
@@ -42,7 +40,7 @@ function Stream (collectionId, config) {
 		}
 	};
 
-	var handleNewComment = function (data, authorData) {
+	const handleNewComment = function (data, authorData) {
 		if (commentIds.indexOf(data.content.id) === -1) {
 			commentIds.push(data.content.id);
 		}
@@ -63,7 +61,7 @@ function Stream (collectionId, config) {
 		});
 	};
 
-	var handleUpdateComment = function (data) {
+	const handleUpdateComment = function (data) {
 		callAllCallbacks({
 			comment: {
 				updated: true,
@@ -73,7 +71,7 @@ function Stream (collectionId, config) {
 		});
 	};
 
-	var handleDeleteComment = function (data) {
+	const handleDeleteComment = function (data) {
 		callAllCallbacks({
 			comment: {
 				deleted: true,
@@ -82,7 +80,7 @@ function Stream (collectionId, config) {
 		});
 	};
 
-	var handleCommentsEnabled = function (data) {
+	const handleCommentsEnabled = function (data) {
 		callAllCallbacks({
 			collection: {
 				commentsEnabled: data.value
@@ -90,13 +88,13 @@ function Stream (collectionId, config) {
 		});
 	};
 
-	var handleResponseData = function (data) {
+	const handleResponseData = function (data) {
 		if (data.states) {
-			var eventCollection = data.states;
+			const eventCollection = data.states;
 
-			for (var key in eventCollection) {
+			for (const key in eventCollection) {
 				if (eventCollection.hasOwnProperty(key)) {
-					var item = eventCollection[key];
+					const item = eventCollection[key];
 
 					// type: comment
 					if (item.type === 0) {
@@ -115,8 +113,8 @@ function Stream (collectionId, config) {
 		}
 
 		if (data.settings && data.settings.length) {
-			var i = 0;
-			var setting;
+			let i = 0;
+			let setting;
 
 			for (i = 0; i < data.settings.length; i++) {
 				setting = data.settings[i];
@@ -137,13 +135,13 @@ function Stream (collectionId, config) {
 			return;
 		}
 
-		var lastTime = new Date();
-		var timeToWait = 0;
-		var aborted = false;
+		const lastTime = new Date();
+		let timeToWait = 0;
+		let aborted = false;
 
-		var lfStreamUrl = "//"+ envConfig.get().livefyre.networkName +".stream1.fyre.co/v3.0/collection/"+ collectionId +"/"+ lastEventId +"/";
+		const lfStreamUrl = "//"+ envConfig.get().livefyre.networkName +".stream1.fyre.co/v3.0/collection/"+ collectionId +"/"+ lastEventId +"/";
 
-		var backupRestart = setTimeout(function () {
+		const backupRestart = setTimeout(function () {
 			aborted = true;
 
 			logger.debug('oCommentApi', 'stream', 'backup restart');
@@ -152,7 +150,7 @@ function Stream (collectionId, config) {
 			});
 		}, 30000);
 
-		var restartConnection = function (options) {
+		const restartConnection = function (options) {
 			options = options || {};
 
 			logger.debug('oCommentApi', 'stream', 'restart');
@@ -289,11 +287,11 @@ function Stream (collectionId, config) {
 }
 
 
-var streamsForCollectionId = {};
+const streamsForCollectionId = {};
 
 function create (collectionId, configOrCallback) {
-	var callback;
-	var lastEventId = 0;
+	let callback;
+	let lastEventId = 0;
 
 	if (!collectionId) {
 		return;
@@ -333,7 +331,7 @@ function create (collectionId, configOrCallback) {
 }
 
 function destroy (collectionId, configOrCallback) {
-	var callback;
+	let callback;
 
 	if (!collectionId) {
 		return;

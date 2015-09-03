@@ -1,14 +1,13 @@
-"use strict";
-
-var oCommentUtilities = require('o-comment-utilities');
-var envConfig = require('./config.js');
-var cache = require('./cache.js');
-var stream = require('./stream.js');
+const oCommentUtilities = require('o-comment-utilities');
+const envConfig = require('./config.js');
+const cache = require('./cache.js');
+const stream = require('./stream.js');
 
 
 /**
  * Uses CCS.getComments endpoint, but it also embeds an optional caching layer for the authentication info.
  *
+ * @param {Object} conf Configuration object:
  * ### Configuration
  * #### Mandatory fields:
  * - articleId: ID of the article, any string
@@ -20,6 +19,8 @@ var stream = require('./stream.js');
  * - page: the page number to be fetched. By default it is 0.
  * - section: Override the default mapping based on URL or CAPI with an explicit mapping. Section parameter should be a valid FT metadata term (Primary section)
  * - tags: Tags which will be added to the collection in Livefyre
+ * @param {function} callback function (err, data)
+ * @return {undefined}
  */
 function getComments (conf, callback) {
 	if (typeof callback !== 'function') {
@@ -47,12 +48,12 @@ function getComments (conf, callback) {
 		return;
 	}
 
-	var cacheEnabled = false;
+	let cacheEnabled = false;
 	if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
 		cacheEnabled = true;
 	}
 
-	var dataToBeSent = {
+	const dataToBeSent = {
 		title: conf.title,
 		url: conf.url,
 		articleId: conf.articleId
@@ -116,6 +117,7 @@ function getComments (conf, callback) {
  *
  * @param  {Object}   conf     Configuration object
  * @param  {Function} callback function (err, data)
+ * @return {undefined}
  */
 function postComment (conf, callback) {
 	if (typeof callback !== 'function') {
@@ -138,7 +140,7 @@ function postComment (conf, callback) {
 	}
 
 
-	var dataToBeSent = {
+	const dataToBeSent = {
 		collectionId: conf.collectionId,
 		commentBody: conf.commentBody
 	};
@@ -178,7 +180,7 @@ function deleteComment (conf, callback) {
 	}
 
 
-	var dataToBeSent = {
+	const dataToBeSent = {
 		collectionId: conf.collectionId,
 		commentId: conf.commentId
 	};

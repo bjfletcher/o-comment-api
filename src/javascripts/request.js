@@ -1,19 +1,17 @@
-"use strict";
-
 /* global XDomainRequest:false, ActiveXObject:false */
 
-var oCommentUtilities = require('o-comment-utilities');
+const oCommentUtilities = require('o-comment-utilities');
 
 exports.get = function (url, callback) {
-	var xhr = getXhrForUrl(url);
-	var aborted = false;
+	const xhr = getXhrForUrl(url);
+	let aborted = false;
 
 	if (!xhr) {
 		callback.error(new Error("No XML Http support"));
 		return;
 	}
 
-	var timestamp = new Date().getTime();
+	const timestamp = new Date().getTime();
 	if (url.indexOf('?') !== -1) {
 		url += '&_=' + timestamp;
 	} else {
@@ -34,7 +32,7 @@ exports.get = function (url, callback) {
 		xhr.onload = function () {
 			if (!aborted) {
 				if ((!xhr.status || xhr.status === 200) && xhr.responseText) {
-					var responseText = xhr.responseText;
+					let responseText = xhr.responseText;
 					try {
 						responseText = JSON.parse(responseText);
 					} catch (e) {}
@@ -71,7 +69,7 @@ exports.get = function (url, callback) {
 		xhr.onreadystatechange = function () {
 			if (xhr.readyState === 4) {
 				if (xhr.responseText) {
-					var responseText = xhr.responseText;
+					let responseText = xhr.responseText;
 					try {
 						responseText = JSON.parse(responseText);
 					} catch (e) {}
@@ -96,10 +94,10 @@ exports.get = function (url, callback) {
  */
 
 function getXhrForUrl (requestUrl) {
-	var isXDomainRequest = false;
+	let isXDomainRequest = false;
 
 	if (typeof window.location !== 'undefined') {
-		var hostnameMatch = requestUrl.match(/(http[s]?:)?\/\/([^\/]*)/);
+		const hostnameMatch = requestUrl.match(/(http[s]?:)?\/\/([^\/]*)/);
 
 		if (hostnameMatch && hostnameMatch[2] !== window.location.hostname) {
 			isXDomainRequest = true;
