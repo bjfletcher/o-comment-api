@@ -1,4 +1,4 @@
-# Introduction
+# o-comment-api [![Build Status](https://travis-ci.org/Financial-Times/o-comment-api.svg?branch=master)](https://travis-ci.org/Financial-Times/o-comment-api)
 
 A JavaScript API that provides a simple abstraction of the FT's commenting APIs.
 
