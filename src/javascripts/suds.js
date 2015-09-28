@@ -96,6 +96,8 @@ livefyre.getInitConfig = function (conf, callback) {
 							cache.cacheInit(conf.articleId, data.init);
 							if (data.auth && data.auth.token) {
 								cache.cacheAuth(data.auth);
+							} else {
+								cache.removeAuth();
 							}
 						}
 
@@ -166,8 +168,12 @@ user.getAuth = function (confOrCallback, callback) {
 					return;
 				}
 
-				if (cacheEnabled && data && data.token) {
-					cache.cacheAuth(data);
+				if (cacheEnabled) {
+					if (data && data.token) {
+						cache.cacheAuth(data);
+					} else {
+						cache.removeAuth();
+					}
 				}
 
 				callback(null, data);

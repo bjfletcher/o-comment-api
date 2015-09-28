@@ -83,6 +83,8 @@ function getComments (conf, callback) {
 				if (data.collection.unclassifiedArticle !== true && cacheEnabled) {
 					if (data.userDetails && data.userDetails.token) {
 						cache.cacheAuth(data.userDetails);
+					} else {
+						cache.removeAuth();
 					}
 				}
 
