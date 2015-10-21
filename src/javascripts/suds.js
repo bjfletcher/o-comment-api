@@ -56,7 +56,7 @@ livefyre.getInitConfig = function (conf, callback) {
 
 
 	let cacheEnabled = false;
-	if (envConfig.get('cache') === true) {
+	if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
 		cacheEnabled = true;
 	}
 
@@ -69,6 +69,11 @@ livefyre.getInitConfig = function (conf, callback) {
 				articleId: conf.articleId,
 				el: conf.elId
 			};
+
+			if (envConfig.get('sessionId')) {
+				dataToBeSent.sessionId = envConfig.get('sessionId');
+			}
+
 			if (typeof conf.stream_type !== 'undefined') {
 				dataToBeSent.stream_type = conf.stream_type;
 			}
@@ -157,10 +162,16 @@ user.getAuth = function (confOrCallback, callback) {
 		cacheEnabled = true;
 	}
 
+	const dataToBeSent = {};
+	if (envConfig.get('sessionId')) {
+		dataToBeSent.sessionId = envConfig.get('sessionId');
+	}
+
 	const makeCall = function () {
 		oCommentUtilities.jsonp(
 			{
-				url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.getAuth
+				url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.getAuth,
+				data: dataToBeSent
 			},
 			function (err, data) {
 				if (err) {
@@ -213,14 +224,20 @@ user.updateUser = function (userSettings, callback) {
 		return;
 	}
 
-	if (userSettings.hasOwnProperty('pseudonym')) {
-		userSettings.pseudonym = utils.trim(userSettings.pseudonym);
+	const dataToBeSent = userSettings;
+
+	if (dataToBeSent.hasOwnProperty('pseudonym')) {
+		dataToBeSent.pseudonym = utils.trim(dataToBeSent.pseudonym);
+	}
+
+	if (envConfig.get('sessionId')) {
+		dataToBeSent.sessionId = envConfig.get('sessionId');
 	}
 
 	if (!userSettings.hasOwnProperty('pseudonym') || (userSettings.hasOwnProperty('pseudonym') && userSettings.pseudonym)) {
 		oCommentUtilities.jsonp({
 				url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.user.updateUser,
-				data: userSettings
+				data: dataToBeSent
 			},
 			function(err, data) {
 				if (err) {
