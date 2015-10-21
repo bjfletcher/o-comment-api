@@ -97,7 +97,7 @@ livefyre.getInitConfig = function (conf, callback) {
 					}
 
 					if (data && data.init) {
-						if (data.init.unclassifiedArticle !== true && data.init.collectionMeta && cacheEnabled) {
+						if (data.init.unclassifiedArticle !== true && data.init.notAllowedToCreateCollection !== true && data.init.metadataToken && cacheEnabled) {
 							cache.cacheInit(conf.articleId, data.init);
 							if (data.auth && data.auth.token) {
 								cache.cacheAuth(data.auth);
