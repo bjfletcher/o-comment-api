@@ -66,7 +66,9 @@ function Stream (collectionId, config) {
 			comment: {
 				updated: true,
 				commentId: data.content.id,
-				content: data.content.bodyHtml
+				content: data.content.bodyHtml,
+				lastVisibility: data.lastVis,
+				visibility: data.vis
 			}
 		});
 	};
