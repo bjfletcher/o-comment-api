@@ -73,7 +73,9 @@ function Stream (collectionId, config) {
 				} : null,
 				content: data.content.bodyHtml || null,
 				timestamp: data.content.createdAt || null,
-				commentId: data.content.id || null
+				commentId: data.content.id || null,
+				visibility: data.vis,
+				lastVisibility: data.lastVis
 			}
 		});
 	};
