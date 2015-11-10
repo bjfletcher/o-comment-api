@@ -61,14 +61,19 @@ function Stream (collectionId, config) {
 		});
 	};
 
-	const handleUpdateComment = function (data) {
+	const handleUpdateComment = function (data, authorData) {
 		callAllCallbacks({
 			comment: {
 				updated: true,
-				commentId: data.content.id,
-				content: data.content.bodyHtml,
-				lastVisibility: data.lastVis,
-				visibility: data.vis
+				parentId: data.content.parentId || null,
+				author: authorData ? {
+					displayName: authorData.displayName,
+					tags: authorData.tags,
+					type: authorData.type
+				} : null,
+				content: data.content.bodyHtml || null,
+				timestamp: data.content.createdAt || null,
+				commentId: data.content.id || null
 			}
 		});
 	};
@@ -102,7 +107,7 @@ function Stream (collectionId, config) {
 					if (item.type === 0) {
 						if (item.vis >= 1) {
 							if (item.content.updatedBy || commentIds.indexOf(item.content.id) !== -1) {
-								handleUpdateComment(item);
+								handleUpdateComment(item, ((data.authors && item.content.authorId) ? data.authors[item.content.authorId] : null));
 							} else {
 								handleNewComment(item, ((data.authors && item.content.authorId) ? data.authors[item.content.authorId] : null));
 							}
