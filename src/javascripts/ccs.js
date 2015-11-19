@@ -67,6 +67,9 @@ function getComments (conf, callback) {
 	if (typeof conf.tags !== 'undefined'){
 		dataToBeSent.tags = conf.tags;
 	}
+	if (envConfig.get('sessionId')) {
+		dataToBeSent.sessionId = envConfig.get('sessionId');
+	}
 
 	oCommentUtilities.jsonp(
 		{
@@ -147,6 +150,10 @@ function postComment (conf, callback) {
 		commentBody: conf.commentBody
 	};
 
+	if (envConfig.get('sessionId')) {
+		dataToBeSent.sessionId = envConfig.get('sessionId');
+	}
+
 
 	oCommentUtilities.jsonp({
 		url: envConfig.get().ccs.baseUrl + envConfig.get().ccs.endpoints.postComment,
@@ -186,6 +193,10 @@ function deleteComment (conf, callback) {
 		collectionId: conf.collectionId,
 		commentId: conf.commentId
 	};
+
+	if (envConfig.get('sessionId')) {
+		dataToBeSent.sessionId = envConfig.get('sessionId');
+	}
 
 
 	oCommentUtilities.jsonp({
