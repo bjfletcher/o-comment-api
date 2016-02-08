@@ -54,9 +54,9 @@ livefyre.getInitConfig = function (conf, callback) {
 		callback(new Error("Article title not provided"));
 	}
 
-
+	const sessionId = oCommentUtilities.ftUser.getSession();
 	let cacheEnabled = false;
-	if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
+	if (envConfig.get('cache') === true && sessionId) {
 		cacheEnabled = true;
 	}
 
@@ -70,8 +70,8 @@ livefyre.getInitConfig = function (conf, callback) {
 				el: conf.elId
 			};
 
-			if (envConfig.get('sessionId')) {
-				dataToBeSent.sessionId = envConfig.get('sessionId');
+			if (sessionId) {
+				dataToBeSent.sessionId = sessionId;
 			}
 
 			if (typeof conf.stream_type !== 'undefined') {
@@ -157,14 +157,15 @@ user.getAuth = function (confOrCallback, callback) {
 		throw new Error('Callback not provided.');
 	}
 
+	const sessionId = oCommentUtilities.ftUser.getSession();
 	let cacheEnabled = false;
-	if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
+	if (envConfig.get('cache') === true && sessionId) {
 		cacheEnabled = true;
 	}
 
 	const dataToBeSent = {};
-	if (envConfig.get('sessionId')) {
-		dataToBeSent.sessionId = envConfig.get('sessionId');
+	if (sessionId) {
+		dataToBeSent.sessionId = sessionId;
 	}
 
 	const makeCall = function () {
@@ -196,7 +197,7 @@ user.getAuth = function (confOrCallback, callback) {
 	if (!cacheEnabled) {
 		makeCall();
 	} else {
-		const authCache = cache.getAuth(envConfig.get('sessionId'));
+		const authCache = cache.getAuth(sessionId);
 
 		if (!authCache || confOrCallback.force === true) {
 			makeCall();
@@ -230,8 +231,9 @@ user.updateUser = function (userSettings, callback) {
 		dataToBeSent.pseudonym = utils.trim(dataToBeSent.pseudonym);
 	}
 
-	if (envConfig.get('sessionId')) {
-		dataToBeSent.sessionId = envConfig.get('sessionId');
+	const sessionId = oCommentUtilities.ftUser.getSession();
+	if (sessionId) {
+		dataToBeSent.sessionId = sessionId;
 	}
 
 	if (!userSettings.hasOwnProperty('pseudonym') || (userSettings.hasOwnProperty('pseudonym') && userSettings.pseudonym)) {

@@ -644,12 +644,9 @@ Example:
 
 ```javascript
 oCommentApi.setConfig({
-    "cache": true,
-    "sessionId": 15231
+    "cache": true
 });
 ```
-
-Where `sessionId` is a unique identifier of the current user's session (e.g. FTSession for FT Membership).
 
 #### Clear the cache
 The cache layer uses sessionStorage API to store data. While this is cleared automatically each time the browser is closed, there could be some situations the cache should be cleared explicity.

@@ -48,8 +48,9 @@ function getComments (conf, callback) {
 		return;
 	}
 
+	const sessionId = oCommentUtilities.ftUser.getSession();
 	let cacheEnabled = false;
-	if (envConfig.get('cache') === true && envConfig.get('sessionId')) {
+	if (envConfig.get('cache') === true && sessionId) {
 		cacheEnabled = true;
 	}
 
@@ -67,8 +68,8 @@ function getComments (conf, callback) {
 	if (typeof conf.tags !== 'undefined'){
 		dataToBeSent.tags = conf.tags;
 	}
-	if (envConfig.get('sessionId')) {
-		dataToBeSent.sessionId = envConfig.get('sessionId');
+	if (sessionId) {
+		dataToBeSent.sessionId = sessionId;
 	}
 
 	oCommentUtilities.jsonp(
@@ -150,8 +151,9 @@ function postComment (conf, callback) {
 		commentBody: conf.commentBody
 	};
 
-	if (envConfig.get('sessionId')) {
-		dataToBeSent.sessionId = envConfig.get('sessionId');
+	const sessionId = oCommentUtilities.ftUser.getSession();
+	if (sessionId) {
+		dataToBeSent.sessionId = sessionId;
 	}
 
 
@@ -194,8 +196,9 @@ function deleteComment (conf, callback) {
 		commentId: conf.commentId
 	};
 
-	if (envConfig.get('sessionId')) {
-		dataToBeSent.sessionId = envConfig.get('sessionId');
+	const sessionId = oCommentUtilities.ftUser.getSession();
+	if (sessionId) {
+		dataToBeSent.sessionId = sessionId;
 	}
 
 
