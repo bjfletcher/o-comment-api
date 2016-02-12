@@ -130,6 +130,39 @@ livefyre.getInitConfig = function (conf, callback) {
 };
 
 
+livefyre.getCommentCount = function (articleId, callback) {
+	if (typeof callback !== 'function') {
+		throw "Callbacks not provided";
+	}
+
+	if (!articleId) {
+		callback(new Error("Article ID not provided"));
+	}
+
+
+	oCommentUtilities.jsonp(
+		{
+			url: envConfig.get().suds.baseUrl + envConfig.get().suds.endpoints.livefyre.commentCount,
+			data: {
+				articleId: articleId
+			}
+		},
+		function(err, data) {
+			if (err) {
+				callback(err, null);
+				return;
+			}
+
+			if (data && typeof data.count !== 'undefined') {
+				callback(null, data.count);
+			} else {
+				callback(new Error("No data received from SUDS."), null);
+			}
+		}
+	);
+};
+
+
 /**
  * User related SUDS endpoints.
  * @type {Object}

@@ -15,6 +15,8 @@ config.set(defaultConfig);
  */
 exports.api = {
 	getLivefyreInitConfig: suds.livefyre.getInitConfig,
+	getCommentCount: suds.livefyre.getCommentCount,
+
 	getAuth: suds.user.getAuth,
 	updateUser: suds.user.updateUser,
 
