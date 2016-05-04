@@ -1,4 +1,4 @@
-{
+module.exports = {
     "suds": {
         "baseUrl": "//session-user-data.webservices.ft.com",
         "endpoints": {
